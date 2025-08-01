@@ -1,9 +1,12 @@
 package ru.d3rvich.domain.repositories
 
-import ru.d3rvich.domain.entities.SampleEntity
+import ru.d3rvich.domain.entities.QuizEntity
+import ru.d3rvich.domain.entities.QuizResultEntity
 
 interface SampleRepository {
-    suspend fun getList(): List<SampleEntity>
+    suspend fun getQuiz(): QuizEntity
 
-    suspend fun getSampleBy(id: Int): SampleEntity
+    suspend fun saveQuizResult(quizResult: QuizResultEntity)
+
+    suspend fun getSavedQuiz(): QuizResultEntity
 }

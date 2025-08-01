@@ -1,16 +1,19 @@
 package ru.d3rvich.data.repositories
 
-import ru.d3rvich.domain.entities.SampleEntity
+import ru.d3rvich.domain.entities.QuizEntity
+import ru.d3rvich.domain.entities.QuizResultEntity
 import ru.d3rvich.domain.repositories.SampleRepository
 
 internal class SampleRepositoryImpl : SampleRepository {
-    private val list: List<SampleEntity> by lazy {
-        List(20) {
-            SampleEntity(id = it, text = "Item: $it")
-        }
+    override suspend fun getQuiz(): QuizEntity {
+        TODO("Not yet implemented")
     }
 
-    override suspend fun getList(): List<SampleEntity> = list
+    override suspend fun saveQuizResult(quizResult: QuizResultEntity) {
+        TODO("Not yet implemented")
+    }
 
-    override suspend fun getSampleBy(id: Int): SampleEntity = list.first { it.id == id }
+    override suspend fun getSavedQuiz(): QuizResultEntity {
+        TODO("Not yet implemented")
+    }
 }

@@ -73,7 +73,7 @@ internal fun DetailScreen(
                 }) { innerPadding ->
                 Box(modifier = Modifier.padding(innerPadding)) {
                     Text(
-                        text = "id=${state.entity.id}, text=${state.entity.text}",
+                        text = "id=${state.entity.id}, text=${state.entity.question}",
                         modifier = Modifier.padding(8.dp)
                     )
                 }

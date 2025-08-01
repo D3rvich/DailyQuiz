@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.dailyquiz.android.library)
     alias(libs.plugins.dailyquiz.android.hilt)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -10,6 +11,7 @@ android {
 dependencies {
     implementation(project(":core:common"))
 
+    implementation(libs.kotlinx.serializationJson)
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.android)
     implementation(libs.ktor.client.resources)

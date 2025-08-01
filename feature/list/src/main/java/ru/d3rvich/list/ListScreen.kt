@@ -21,7 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import ru.d3rvich.domain.entities.SampleEntity
+import ru.d3rvich.domain.entities.QuestionEntity
 import ru.d3rvich.list.model.ListUiAction
 import ru.d3rvich.list.model.ListUiEvent
 import ru.d3rvich.list.model.ListUiState
@@ -72,7 +72,7 @@ internal fun ListScreen(
                                 .fillMaxWidth()
                                 .padding(horizontal = 8.dp, vertical = 4.dp)
                         ) {
-                            Text(text = item.text)
+                            Text(text = item.question)
                         }
                     }
                 }
@@ -85,7 +85,7 @@ internal fun ListScreen(
 @Composable
 private fun ListViewPreview() {
     AndroidTemplateTheme {
-        val state = ListUiState.Content(List(15) { SampleEntity(it, it.toString()) })
-        ListScreen(state = state, onItemClick = {})
+//        val state = ListUiState.Content(List(15) { QuestionEntity(it, it.toString()) })
+//        ListScreen(state = state, onItemClick = {})
     }
 }
