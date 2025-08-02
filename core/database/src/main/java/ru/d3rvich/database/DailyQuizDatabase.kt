@@ -1,6 +1,5 @@
 package ru.d3rvich.database
 
-import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import ru.d3rvich.database.dao.QuizDao
@@ -14,10 +13,8 @@ class DailyQuizDatabase internal constructor(private val database: DailyQuizRoom
 
 @Database(
     entities = [QuizDBO::class],
-    version = 2,
-    autoMigrations = [
-        AutoMigration(from = 1, to = 2, spec = DatabaseMigrations.Schema1to2::class),
-    ]
+    version = 1,
+    exportSchema = false,
 )
 internal abstract class DailyQuizRoomDatabase : RoomDatabase() {
     abstract fun quizDao(): QuizDao

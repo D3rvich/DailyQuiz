@@ -26,9 +26,10 @@ internal class HistoryViewModel @Inject constructor(
         }
     }
 
-    override fun createInitialState(): HistoryUiState = HistoryUiState.Loading
+    override fun createInitialState(): HistoryUiState = HistoryUiState.Idle
 
     override fun obtainEvent(event: HistoryUiEvent) {
+        require(currentState !is HistoryUiState.Idle) { "Illegal $event for Idle state" }
         when (event) {
             is HistoryUiEvent.OnRemoveQuiz -> viewModelScope.launch {
                 removeQuizUseCase.get().invoke(event.quiz)

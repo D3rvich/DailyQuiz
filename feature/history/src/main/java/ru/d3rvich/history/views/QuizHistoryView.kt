@@ -1,5 +1,6 @@
 package ru.d3rvich.history.views
 
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,7 +39,11 @@ import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 @Composable
-internal fun QuizHistoryView(quizList: List<QuizResultEntity>, modifier: Modifier = Modifier) {
+internal fun QuizHistoryView(
+    quizList: List<QuizResultEntity>,
+    onQuizCLick: (quizId: Long) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Scaffold(modifier = modifier) { innerPadding ->
         LazyColumn(contentPadding = innerPadding) {
             item(key = "Headline") {
@@ -47,14 +52,20 @@ internal fun QuizHistoryView(quizList: List<QuizResultEntity>, modifier: Modifie
                 }
             }
             items(quizList) { item ->
-                QuizResultItem(item)
+                QuizResultItem(
+                    item,
+                    modifier = Modifier.combinedClickable(onClick = { onQuizCLick(item.id) })
+                )
             }
         }
     }
 }
 
 @Composable
-private fun QuizResultItem(quizResultEntity: QuizResultEntity, modifier: Modifier = Modifier) {
+private fun QuizResultItem(
+    quizResultEntity: QuizResultEntity,
+    modifier: Modifier = Modifier,
+) {
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -72,7 +83,7 @@ private fun QuizResultItem(quizResultEntity: QuizResultEntity, modifier: Modifie
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    quizResultEntity.title,
+                    "Quiz ${quizResultEntity.id}",
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF2B0063)
@@ -122,12 +133,11 @@ private fun QuizHistoryViewPreview() {
         val list = List(8) {
             QuizResultEntity(
                 it.toLong(),
-                "Quiz #$it",
                 "",
                 Clock.System.now().toLocalDateTime(TimeZone.UTC),
                 questions
             )
         }
-        QuizHistoryView(list)
+        QuizHistoryView(list, {})
     }
 }

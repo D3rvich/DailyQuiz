@@ -1,12 +1,8 @@
 package ru.d3rvich.history
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -43,17 +39,18 @@ internal fun HistoryScreen(
     modifier: Modifier = Modifier
 ) {
     when (state) {
-        HistoryUiState.Loading -> {
-            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
+        HistoryUiState.Idle -> { /* Do nothing */
         }
 
         is HistoryUiState.Content -> {
             if (state.quizResultEntities.isEmpty()) {
                 HistoryEmptyView(onStartQuizClick, modifier = modifier)
             } else {
-                QuizHistoryView(state.quizResultEntities, modifier = modifier)
+                QuizHistoryView(
+                    quizList = state.quizResultEntities,
+                    onQuizCLick = onQuizClick,
+                    modifier = modifier
+                )
             }
         }
     }

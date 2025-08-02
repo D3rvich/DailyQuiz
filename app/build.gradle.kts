@@ -24,6 +24,7 @@ dependencies {
     implementation(project(":core:database"))
     implementation(project(":feature:quiz"))
     implementation(project(":feature:history"))
+    implementation(project(":feature:debriefing"))
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.navigation)

@@ -5,19 +5,26 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
-import ru.d3rvich.domain.entities.isCorrectAnswer
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+import ru.d3rvich.domain.entities.QuizResultEntity
+import ru.d3rvich.domain.entities.correctAnswers
 import ru.d3rvich.domain.model.Result
 import ru.d3rvich.domain.usecases.GetQuizUseCase
+import ru.d3rvich.domain.usecases.SaveQuizUseCase
 import ru.d3rvich.quiz.model.QuizUiAction
 import ru.d3rvich.quiz.model.QuizUiEvent
 import ru.d3rvich.quiz.model.QuizUiState
 import ru.d3rvich.ui.mvibase.BaseViewModel
 import javax.inject.Inject
 import javax.inject.Provider
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 @HiltViewModel
 internal class QuizViewModel @Inject constructor(
     private val getQuizUseCase: Provider<GetQuizUseCase>,
+    private val saveQuizResultUseCase: Provider<SaveQuizUseCase>,
 ) : BaseViewModel<QuizUiState, QuizUiEvent, QuizUiAction>() {
 
     override fun createInitialState(): QuizUiState = QuizUiState.Start()
@@ -66,6 +73,7 @@ internal class QuizViewModel @Inject constructor(
         }
     }
 
+    @OptIn(ExperimentalTime::class)
     private fun reduce(state: QuizUiState.Quiz, event: QuizUiEvent) {
         when (event) {
             is QuizUiEvent.OnAnswerSelected -> {
@@ -83,18 +91,24 @@ internal class QuizViewModel @Inject constructor(
             QuizUiEvent.OnNextClicked -> {
                 requireNotNull(state.quiz.questions[state.currentQuestionIndex].selectedAnswerIndex)
                 if (state.currentQuestionIndex == state.quiz.questions.lastIndex) {
-                    var correctAnswers = 0
-                    state.quiz.questions.forEach { question ->
-                        if (question.isCorrectAnswer) {
-                            correctAnswers++
-                        }
+                    viewModelScope.launch {
+                        val passedTime =
+                            Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+                        val result =
+                            state.quiz.let {
+                                QuizResultEntity(
+                                    generalCategory = it.generalCategory,
+                                    passedTime = passedTime,
+                                    questions = it.questions
+                                )
+                            }
+                        saveQuizResultUseCase.get().invoke(result)
                     }
                     setState(
                         QuizUiState.Results(
-                            correctAnswers = correctAnswers,
+                            correctAnswers = state.quiz.correctAnswers,
                             totalQuestions = state.quiz.questions.size
                         )
-                        // TODO: Call use case to save results
                     )
                 } else {
                     val nextIndex = state.currentQuestionIndex + 1

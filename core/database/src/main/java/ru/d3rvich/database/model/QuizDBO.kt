@@ -12,7 +12,6 @@ import ru.d3rvich.database.converters.QuestionsConverter
 @TypeConverters(QuestionsConverter::class, LocalDateTimeConverters::class)
 data class QuizDBO(
     @PrimaryKey(autoGenerate = true) @ColumnInfo("id") val id: Long = 0,
-    @ColumnInfo("title") val title: String,
     @ColumnInfo("category") val category: String,
     @ColumnInfo("passed_time") val passedTime: LocalDateTime,
     @ColumnInfo("questions") val questions: List<QuestionDBO>,

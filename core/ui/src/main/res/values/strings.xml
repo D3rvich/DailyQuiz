@@ -4,6 +4,8 @@
     <string name="selected_item_icon">Selected item icon</string>
     <string name="unselected_item_icon">Unselected item icon</string>
     <string name="star_icon">Star icon</string>
+    <string name="correct_answers">%1$d из %2$d</string>
+    <string name="retry">Начать заново</string>
 
     <string name="result_hl_five">Идеально!</string>
     <string name="result_hl_four">Почти идеально!</string>

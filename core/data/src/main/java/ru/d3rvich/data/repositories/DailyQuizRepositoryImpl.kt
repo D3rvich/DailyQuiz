@@ -23,7 +23,7 @@ internal class DailyQuizRepositoryImpl(
 ) : DailyQuizRepository {
     override suspend fun getQuiz(): Flow<Result<QuizEntity>> = flow {
         when (val result = networkDataSource.getQuiz(DefaultQuestionsCount)) {
-            is NetworkResult.Failure -> Result.Error(result.exception)
+            is NetworkResult.Failure -> throw result.exception
             is NetworkResult.Success -> {
                 val questions = result.value.map { it.toQuestionEntity(::combineAnswers) }
                 emit(QuizEntity(UUID.randomUUID().toString(), "", questions))
@@ -37,8 +37,9 @@ internal class DailyQuizRepositoryImpl(
     override fun getQuizHistory(): Flow<List<QuizResultEntity>> =
         database.quizDao.getQuizHistory().map { list -> list.map { it.toQuizResultEntity() } }
 
-    override suspend fun getQuizBy(id: Long): QuizResultEntity =
-        database.quizDao.getQuizBy(id = id).toQuizResultEntity()
+    override fun getQuizBy(id: Long): Flow<Result<QuizResultEntity>> = flow {
+        emit((database.quizDao.getQuizBy(id = id).toQuizResultEntity()))
+    }.asResult()
 
     override suspend fun removeQuiz(quizResult: QuizResultEntity) {
         database.quizDao.removeQuiz(quizResult.toQuizDBO())

@@ -5,14 +5,12 @@ import ru.d3rvich.domain.entities.QuizResultEntity
 
 internal fun QuizDBO.toQuizResultEntity(): QuizResultEntity = QuizResultEntity(
     id = id,
-    title = title,
     generalCategory = category,
     passedTime = passedTime,
     questions = questions.map { it.toQuestionEntity() },
 )
 
 internal fun QuizResultEntity.toQuizDBO(): QuizDBO = QuizDBO(
-    title = title,
     category = generalCategory,
     passedTime = passedTime,
     questions = questions.map { it.toQuestionDBO() }
