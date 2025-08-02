@@ -21,11 +21,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import ru.d3rvich.domain.entities.QuestionEntity
 import ru.d3rvich.list.model.ListUiAction
 import ru.d3rvich.list.model.ListUiEvent
 import ru.d3rvich.list.model.ListUiState
-import ru.d3rvich.ui.theme.AndroidTemplateTheme
+import ru.d3rvich.ui.theme.DailyQuizTheme
 
 @Composable
 fun ListScreen(navigateToDetail: (itemId: Int) -> Unit, modifier: Modifier = Modifier) {
@@ -72,7 +71,7 @@ internal fun ListScreen(
                                 .fillMaxWidth()
                                 .padding(horizontal = 8.dp, vertical = 4.dp)
                         ) {
-                            Text(text = item.question)
+                            Text(text = item.text)
                         }
                     }
                 }
@@ -84,7 +83,7 @@ internal fun ListScreen(
 @Preview(showBackground = true)
 @Composable
 private fun ListViewPreview() {
-    AndroidTemplateTheme {
+    DailyQuizTheme {
 //        val state = ListUiState.Content(List(15) { QuestionEntity(it, it.toString()) })
 //        ListScreen(state = state, onItemClick = {})
     }

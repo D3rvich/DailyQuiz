@@ -3,7 +3,7 @@ package ru.d3rvich.list
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import ru.d3rvich.domain.usecases.GetSamplesUseCase
+import ru.d3rvich.domain.usecases.GetQuizUseCase
 import ru.d3rvich.list.model.ListUiAction
 import ru.d3rvich.list.model.ListUiEvent
 import ru.d3rvich.list.model.ListUiState
@@ -12,7 +12,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 @HiltViewModel
-internal class ListViewModel @Inject constructor(private val useCase: Provider<GetSamplesUseCase>) :
+internal class ListViewModel @Inject constructor(private val useCase: Provider<GetQuizUseCase>) :
     BaseViewModel<ListUiState, ListUiEvent, ListUiAction>() {
 
     init {

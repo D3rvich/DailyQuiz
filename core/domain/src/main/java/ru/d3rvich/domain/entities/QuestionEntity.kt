@@ -1,11 +1,9 @@
 package ru.d3rvich.domain.entities
 
 data class QuestionEntity(
-    val id: Int,
+    val id: String,
     val category: String,
-    val question: String,
-    val currentAnswer: Answer,
-    val wrongAnswers: List<Answer>,
+    val text: String,
+    val answers: List<AnswerEntity>,
+    val selectedAnswerIndex: Int? = null,
 )
-
-data class Answer(val id: String, val text: String)

@@ -13,11 +13,11 @@ import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.resources.Resources
-import io.ktor.http.ContentType
 import io.ktor.http.URLProtocol
-import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import ru.d3rvich.network.DailyQuizNetworkDataSource
+import ru.d3rvich.network.ktor.DailyQuizNetworkClient
 import javax.inject.Singleton
 
 @Module
@@ -43,7 +43,11 @@ internal object NetworkModule {
                 protocol = URLProtocol.HTTPS
                 host = "opentdb.com/api.php"
             }
-            contentType(ContentType.Application.Json)
         }
     }
+
+    @Provides
+    @Singleton
+    fun provideNetworkDataSource(client: HttpClient): DailyQuizNetworkDataSource =
+        DailyQuizNetworkClient(client)
 }

@@ -7,7 +7,7 @@ import kotlinx.serialization.SerialName
 @OptIn(InternalSerializationApi::class)
 object Routes {
 
-    @Resource("/")
+    @Resource("")
     class Quiz(
         @SerialName("amount") val questionsCount: Int,
         @SerialName("category") val category: String? = null,

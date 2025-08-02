@@ -9,8 +9,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:common"))
-
     implementation(libs.kotlinx.serializationJson)
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.android)
