@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="no_quiz_message">Вы еще не проходили ни одной викторины</string>
+    <string name="start_quiz">Начать викторину</string>
+</resources>

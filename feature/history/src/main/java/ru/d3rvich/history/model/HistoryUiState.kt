@@ -1,0 +1,14 @@
+package ru.d3rvich.history.model
+
+import androidx.compose.runtime.Immutable
+import ru.d3rvich.domain.entities.QuestionEntity
+import ru.d3rvich.domain.entities.QuizResultEntity
+import ru.d3rvich.ui.mvibase.UiState
+
+@Immutable
+internal sealed interface HistoryUiState : UiState {
+    data object Loading : HistoryUiState
+
+    data class Content(val data: List<QuizResultEntity>, val selectedQuizId: Long? = null) :
+        HistoryUiState
+}

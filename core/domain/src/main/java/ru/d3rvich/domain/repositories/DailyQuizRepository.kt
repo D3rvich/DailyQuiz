@@ -10,7 +10,9 @@ interface DailyQuizRepository {
 
     suspend fun saveQuiz(quizResult: QuizResultEntity)
 
-    suspend fun getQuizList(): List<QuizResultEntity>
+    fun getQuizHistory(): Flow<List<QuizResultEntity>>
 
     suspend fun getQuizBy(id: Long): QuizResultEntity
+
+    suspend fun removeQuiz(quizResult: QuizResultEntity)
 }

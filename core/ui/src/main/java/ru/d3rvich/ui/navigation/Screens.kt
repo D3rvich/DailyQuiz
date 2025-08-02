@@ -5,8 +5,11 @@ import kotlinx.serialization.Serializable
 object Screens {
 
     @Serializable
-    data object List
+    data object Quiz
 
     @Serializable
-    data class Detail(val id: Int)
+    data object History
+
+    @Serializable
+    data class QuizDebriefing(val quizId: Long)
 }

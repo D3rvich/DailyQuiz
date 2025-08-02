@@ -7,5 +7,5 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.compose.navigation)
+    implementation(libs.androidx.constraintlayout.compose)
 }

@@ -2,6 +2,7 @@ package ru.d3rvich.data.repositories
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import ru.d3rvich.data.mapper.toQuestionEntity
 import ru.d3rvich.data.mapper.toQuizDBO
 import ru.d3rvich.data.mapper.toQuizResultEntity
@@ -33,11 +34,15 @@ internal class DailyQuizRepositoryImpl(
     override suspend fun saveQuiz(quizResult: QuizResultEntity) =
         database.quizDao.saveQuiz(quizResult.toQuizDBO())
 
-    override suspend fun getQuizList(): List<QuizResultEntity> =
-        database.quizDao.getQuizList().map { it.toQuizResultEntity() }
+    override fun getQuizHistory(): Flow<List<QuizResultEntity>> =
+        database.quizDao.getQuizHistory().map { list -> list.map { it.toQuizResultEntity() } }
 
     override suspend fun getQuizBy(id: Long): QuizResultEntity =
         database.quizDao.getQuizBy(id = id).toQuizResultEntity()
+
+    override suspend fun removeQuiz(quizResult: QuizResultEntity) {
+        database.quizDao.removeQuiz(quizResult.toQuizDBO())
+    }
 }
 
 private fun combineAnswers(currentAnswer: String, otherAnswers: List<String>): List<AnswerEntity> =

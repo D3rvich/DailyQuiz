@@ -11,4 +11,5 @@
     <string name="correct_answers">%1$d из %2$d</string>
     <string name="retry">Начать заново</string>
     <string name="error_message">Ошибка! Попробуйте ещё раз</string>
+    <string name="history">История</string>
 </resources>

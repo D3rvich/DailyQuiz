@@ -23,6 +23,7 @@ dependencies {
     implementation(project(":core:network"))
     implementation(project(":core:database"))
     implementation(project(":feature:quiz"))
+    implementation(project(":feature:history"))
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.navigation)
