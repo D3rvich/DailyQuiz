@@ -9,3 +9,14 @@ data class QuizResultEntity(
     val passedTime: LocalDateTime,
     val questions: List<QuestionEntity>,
 )
+
+val QuizResultEntity.correctAnswers: Int
+    get() {
+        var result = 0
+        questions.forEach {
+            if (it.isCorrectAnswer) {
+                result++
+            }
+        }
+        return result
+    }

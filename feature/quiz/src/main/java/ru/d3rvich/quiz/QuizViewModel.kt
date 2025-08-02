@@ -5,12 +5,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import ru.d3rvich.domain.entities.isCorrectAnswer
+import ru.d3rvich.domain.model.Result
+import ru.d3rvich.domain.usecases.GetQuizUseCase
 import ru.d3rvich.quiz.model.QuizUiAction
 import ru.d3rvich.quiz.model.QuizUiEvent
 import ru.d3rvich.quiz.model.QuizUiState
-import ru.d3rvich.domain.entities.QuestionEntity
-import ru.d3rvich.domain.model.Result
-import ru.d3rvich.domain.usecases.GetQuizUseCase
 import ru.d3rvich.ui.mvibase.BaseViewModel
 import javax.inject.Inject
 import javax.inject.Provider
@@ -118,8 +118,3 @@ internal class QuizViewModel @Inject constructor(
         }
     }
 }
-
-private val QuestionEntity.isCorrectAnswer: Boolean
-    get() = selectedAnswerIndex?.let { selectedAnswerIndexNotNull ->
-        answers[selectedAnswerIndexNotNull].isCorrect
-    } ?: false

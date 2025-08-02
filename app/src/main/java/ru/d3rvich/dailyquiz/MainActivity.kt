@@ -30,7 +30,12 @@ class MainActivity : ComponentActivity() {
                             navigateToQuizDebriefing = {
                                 navController.navigate(Screens.QuizDebriefing(it))
                             },
-                            navigateToQuiz = { navController.navigate(Screens.Quiz) }
+                            navigateToQuiz = {
+                                navController.navigate(Screens.Quiz) {
+                                    launchSingleTop = true
+                                    popUpTo<Screens.Quiz>()
+                                }
+                            }
                         )
                     }
                     composable<Screens.QuizDebriefing> {

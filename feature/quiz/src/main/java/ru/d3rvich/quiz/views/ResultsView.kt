@@ -29,7 +29,7 @@ import ru.d3rvich.ui.model.ResultMessage
 import ru.d3rvich.ui.theme.DailyQuizTheme
 
 @Composable
-fun ResultsView(
+internal fun ResultsView(
     correctAnswers: Int,
     totalQuestions: Int,
     modifier: Modifier = Modifier,
