@@ -188,7 +188,6 @@ private fun QuestionPreview() {
         val answers = List(4) { AnswerEntity("Answer #${it + 1}", it == 1) }
         val entity = QuestionEntity(
             "",
-            "",
             "Lorem ipsum dolor sit amet consectetur adipiscing elit. Dolor sit amet consectetur adipiscing elit quisque faucibus.",
             answers,
             0

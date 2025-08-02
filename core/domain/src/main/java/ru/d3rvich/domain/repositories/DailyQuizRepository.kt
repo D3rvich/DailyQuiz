@@ -8,7 +8,9 @@ import ru.d3rvich.domain.model.Result
 interface DailyQuizRepository {
     suspend fun getQuiz(): Flow<Result<QuizEntity>>
 
-    suspend fun saveQuizResult(quizResult: QuizResultEntity)
+    suspend fun saveQuiz(quizResult: QuizResultEntity)
 
-    suspend fun getSavedQuiz(): QuizResultEntity
+    suspend fun getQuizList(): List<QuizResultEntity>
+
+    suspend fun getQuizBy(id: Long): QuizResultEntity
 }

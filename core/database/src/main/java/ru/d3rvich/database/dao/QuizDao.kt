@@ -11,7 +11,7 @@ interface QuizDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveQuiz(value: QuizDBO)
 
-    @Query("SELECT * FROM quiz ORDER BY passed_time DESC")
+    @Query("SELECT * FROM quiz")
     suspend fun getQuizList(): List<QuizDBO>
 
     @Query("SELECT * FROM quiz WHERE id LIKE :id")
