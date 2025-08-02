@@ -21,6 +21,7 @@ dependencies {
     implementation(project(":core:data"))
     implementation(project(":core:ui"))
     implementation(project(":core:network"))
+    implementation(project(":core:database"))
     implementation(project(":feature:quiz"))
 
     implementation(libs.androidx.activity.compose)
