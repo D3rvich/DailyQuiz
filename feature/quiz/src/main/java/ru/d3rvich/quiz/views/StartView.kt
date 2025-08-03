@@ -2,6 +2,9 @@ package ru.d3rvich.quiz.views
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,12 +46,16 @@ internal fun StartView(
 ) {
     ConstraintLayout(modifier = modifier.fillMaxSize()) {
         val (historyButton, main) = createRefs()
-        AnimatedVisibility(!isLoading, modifier = Modifier.constrainAs(historyButton) {
-            top.linkTo(parent.top)
-            bottom.linkTo(main.top)
-            start.linkTo(parent.start)
-            end.linkTo(parent.end)
-        }) {
+        AnimatedVisibility(
+            !isLoading, modifier = Modifier.constrainAs(historyButton) {
+                top.linkTo(parent.top)
+                bottom.linkTo(main.top)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            },
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
             HistoryButton(onHistoryClick)
         }
         MainContent(
@@ -98,7 +105,10 @@ private fun MainContent(
                 .fillMaxWidth()
                 .height(220.dp), contentAlignment = Alignment.Center
         ) {
-            AnimatedContent(isLoading) { value ->
+            AnimatedContent(
+                isLoading,
+                contentAlignment = Alignment.Center,
+                transitionSpec = { fadeIn() togetherWith fadeOut() }) { value ->
                 if (value) {
                     CircularProgressIndicator(
                         color = Color(0xFFBCB7FF),

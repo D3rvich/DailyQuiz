@@ -52,6 +52,8 @@ import ru.d3rvich.domain.entities.AnswerEntity
 import ru.d3rvich.domain.entities.QuestionEntity
 import ru.d3rvich.domain.entities.QuizResultEntity
 import ru.d3rvich.domain.entities.correctAnswers
+import ru.d3rvich.domain.model.Category
+import ru.d3rvich.domain.model.Difficult
 import ru.d3rvich.history.R
 import ru.d3rvich.ui.components.DailyQuizStarIcon
 import ru.d3rvich.ui.theme.DailyQuizTheme
@@ -158,8 +160,25 @@ private fun QuizResultItem(
                 }
             }
             TimeRow(quizResultEntity.passedTime)
+            Column(
+                Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    stringResource(
+                        R.string.category_placement,
+                        quizResultEntity.generalCategory.text
+                    ),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Text(
+                    stringResource(R.string.difficult_placement, quizResultEntity.difficult.text),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
         }
-        RemoveMenu(
+        RemovedItemMenu(
             isVisible = showMenu,
             onVisibilityChange = { showMenu = it },
             onRemove = onRemoveQuiz,
@@ -193,7 +212,7 @@ private fun TimeRow(dataTime: LocalDateTime, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun RemoveMenu(
+private fun RemovedItemMenu(
     isVisible: Boolean,
     onVisibilityChange: (Boolean) -> Unit,
     onRemove: () -> Unit,
@@ -240,10 +259,11 @@ private fun QuizHistoryViewPreview() {
         }
         val list = List(8) {
             QuizResultEntity(
-                it.toLong(),
-                "",
+                Category.entries[it],
+                Difficult.entries[it % 4],
                 Clock.System.now().toLocalDateTime(TimeZone.UTC),
-                questions
+                questions,
+                it.toLong()
             )
         }
         QuizHistoryView(list, {}, {})

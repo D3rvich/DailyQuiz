@@ -42,6 +42,8 @@ import ru.d3rvich.domain.entities.QuestionEntity
 import ru.d3rvich.domain.entities.QuizResultEntity
 import ru.d3rvich.domain.entities.correctAnswers
 import ru.d3rvich.domain.entities.isCorrectAnswer
+import ru.d3rvich.domain.model.Category
+import ru.d3rvich.domain.model.Difficult
 import ru.d3rvich.result.R
 import ru.d3rvich.ui.components.CorrectCheckIcon
 import ru.d3rvich.ui.components.QuizResultCard
@@ -75,9 +77,16 @@ internal fun QuizResultDetailView(
                         style = MaterialTheme.typography.displaySmall,
                         fontWeight = FontWeight.Bold,
                         letterSpacing = TextUnit(0f, TextUnitType.Sp),
-                        modifier = modifier.padding(bottom = 40.dp, top = 52.dp)
+                        modifier = modifier.padding(bottom = 12.dp, top = 52.dp)
                     )
+                    Text(
+                        stringResource(
+                            R.string.category_placement,
+                            quizResult.generalCategory.text
+                        ))
+                    Text(stringResource(R.string.difficult_placement, quizResult.difficult.text))
                     QuizResultCard(
+                        modifier = Modifier.padding(top = 40.dp),
                         correctAnswers = quizResult.correctAnswers,
                         totalQuestions = quizResult.questions.size,
                         onRetryClick = { onRetryClick(quizResult.id) }
@@ -175,7 +184,8 @@ private fun RetryButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
 private fun EmptyQuizResultDetailPreview() {
     DailyQuizTheme {
         val quizResult = QuizResultEntity(
-            generalCategory = "",
+            generalCategory = Category.AnyCategory,
+            difficult = Difficult.AnyDifficulty,
             passedTime = Clock.System.now().toLocalDateTime(
                 TimeZone.currentSystemDefault()
             ),
@@ -197,7 +207,8 @@ private fun QuizResultDetailPreview() {
             QuestionEntity("Category", "Question $it", answers, (it + 1) % 4)
         }
         val quizResult = QuizResultEntity(
-            generalCategory = "",
+            generalCategory = Category.AnyCategory,
+            difficult = Difficult.AnyDifficulty,
             passedTime = Clock.System.now().toLocalDateTime(
                 TimeZone.currentSystemDefault()
             ),

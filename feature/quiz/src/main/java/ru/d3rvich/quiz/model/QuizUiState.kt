@@ -3,11 +3,20 @@ package ru.d3rvich.quiz.model
 import androidx.compose.runtime.Immutable
 import ru.d3rvich.domain.entities.QuestionEntity
 import ru.d3rvich.domain.entities.QuizEntity
+import ru.d3rvich.domain.model.Category
+import ru.d3rvich.domain.model.Difficult
 import ru.d3rvich.ui.mvibase.UiState
 
 @Immutable
 internal sealed interface QuizUiState : UiState {
     data class Start(val isLoading: Boolean = false) : QuizUiState
+
+    data class Filters(
+        val isLoading: Boolean = false,
+        val selectedCategory: Category? = null,
+        val selectedDifficult: Difficult? = null,
+    ) : QuizUiState
+
     data class Quiz(
         val quiz: QuizEntity,
         val currentQuestion: QuestionEntity = quiz.questions.first(),

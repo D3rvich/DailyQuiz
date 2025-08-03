@@ -1,7 +1,11 @@
 package ru.d3rvich.domain.entities
 
+import ru.d3rvich.domain.model.Category
+import ru.d3rvich.domain.model.Difficult
+
 data class QuizEntity(
-    val generalCategory: String,
+    val generalCategory: Category,
+    val difficult: Difficult,
     val questions: List<QuestionEntity>
 )
 

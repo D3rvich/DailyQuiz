@@ -32,7 +32,7 @@ class MainActivity : ComponentActivity() {
                                 navController.navigate(Screens.QuizResult(it))
                             },
                             navigateToQuiz = {
-                                navController.navigate(Screens.Quiz) {
+                                navController.navigate(Screens.Quiz(startNewQuiz = true)) {
                                     popUpTo<Screens.Quiz>()
                                 }
                             }
@@ -40,7 +40,12 @@ class MainActivity : ComponentActivity() {
                     }
                     composable<Screens.QuizResult> {
                         QuizResultScreen({
-                            navController.navigate(Screens.Quiz(it)) {
+                            navController.navigate(
+                                route = Screens.Quiz(
+                                    startNewQuiz = true,
+                                    quizId = it
+                                )
+                            ) {
                                 popUpTo<Screens.Quiz>()
                             }
                         })

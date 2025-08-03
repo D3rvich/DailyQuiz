@@ -5,6 +5,7 @@ import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.SerialName
 
 @OptIn(InternalSerializationApi::class)
+@Suppress("Unused")
 object Routes {
 
     @Resource("")

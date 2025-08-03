@@ -10,4 +10,8 @@
     <string name="results">Результаты</string>
     <string name="error_message">Ошибка! Попробуйте ещё раз</string>
     <string name="history">История</string>
+    <string name="category">Категория</string>
+    <string name="difficult">Сложность</string>
+    <string name="almost_ready">Почти готовы!</string>
+    <string name="filters_message">Осталось выбрать категорию и сложность викторины.</string>
 </resources>

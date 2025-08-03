@@ -14,8 +14,8 @@ import ru.d3rvich.domain.entities.QuizEntity
 import ru.d3rvich.domain.entities.QuizResultEntity
 import ru.d3rvich.domain.entities.correctAnswers
 import ru.d3rvich.domain.model.Result
+import ru.d3rvich.domain.usecases.GetNewQuizUseCase
 import ru.d3rvich.domain.usecases.GetQuizResultUseCase
-import ru.d3rvich.domain.usecases.GetQuizUseCase
 import ru.d3rvich.domain.usecases.SaveQuizUseCase
 import ru.d3rvich.quiz.model.QuizUiAction
 import ru.d3rvich.quiz.model.QuizUiEvent
@@ -30,7 +30,7 @@ import kotlin.time.ExperimentalTime
 @HiltViewModel
 internal class QuizViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val getQuizUseCase: Provider<GetQuizUseCase>,
+    private val getNewQuizUseCase: Provider<GetNewQuizUseCase>,
     private val saveQuizResultUseCase: Provider<SaveQuizUseCase>,
     private val getQuizResultUseCase: Provider<GetQuizResultUseCase>,
 ) : BaseViewModel<QuizUiState, QuizUiEvent, QuizUiAction>() {
@@ -42,43 +42,96 @@ internal class QuizViewModel @Inject constructor(
             is QuizUiState.Start -> reduce(state, event)
             is QuizUiState.Quiz -> reduce(state, event)
             is QuizUiState.Results -> reduce(state, event)
+            is QuizUiState.Filters -> reduce(state, event)
         }
     }
 
-    private var quizId: Long? =
-        savedStateHandle.toRoute<Screens.Quiz>().repeatQuizId.also { quizId ->
-            quizId?.let { getQuizResult(quizId) }
+    private var startQuiz: Boolean = false
+    private var quizId: Long? = null
+
+    init {
+        savedStateHandle.toRoute<Screens.Quiz>().also { route ->
+            startQuiz = route.startNewQuiz
+            quizId = route.quizId
         }
+    }
+
+    private fun startNewQuiz(state: QuizUiState.Filters) {
+        checkNotNull(state.selectedCategory)
+        checkNotNull(state.selectedDifficult)
+        viewModelScope.launch {
+            getNewQuizUseCase.get().invoke(state.selectedCategory, state.selectedDifficult)
+                .flowOn(Dispatchers.IO)
+                .collect { result ->
+                    when (result) {
+                        Result.Loading -> {
+                            setState(state.copy(isLoading = true))
+                        }
+
+                        is Result.Error -> {
+                            sendAction { QuizUiAction.ShowError }
+                            setState(state.copy(isLoading = false))
+                        }
+
+                        is Result.Success -> {
+                            setState(
+                                QuizUiState.Quiz(quiz = result.value)
+                            )
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun getQuizResult(quizId: Long) {
+        viewModelScope.launch {
+            getQuizResultUseCase.get().invoke(quizId).collect { result ->
+                when (result) {
+                    is Result.Error -> {
+                        sendAction { QuizUiAction.ShowError }
+                        setState(QuizUiState.Start())
+                    }
+
+                    Result.Loading -> QuizUiState.Start(true)
+                    is Result.Success -> {
+                        val quiz = result.value.toQuizEntity()
+                        setState(QuizUiState.Quiz(quiz))
+                    }
+                }
+            }
+        }
+    }
+
+    @OptIn(ExperimentalTime::class)
+    private fun saveQuiz(state: QuizUiState.Quiz) {
+        viewModelScope.launch {
+            val passedTime =
+                Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+            val result =
+                state.quiz.let { quiz ->
+                    QuizResultEntity(
+                        id = quizId ?: 0,
+                        generalCategory = quiz.generalCategory,
+                        difficult = quiz.difficult,
+                        passedTime = passedTime,
+                        questions = quiz.questions
+                    )
+                }
+            saveQuizResultUseCase.get().invoke(result)
+        }
+    }
+
 
     private fun reduce(state: QuizUiState.Start, event: QuizUiEvent) {
         when (event) {
             QuizUiEvent.OnStartClicked -> {
-                viewModelScope.launch {
-                    getQuizUseCase.get().invoke()
-                        .flowOn(Dispatchers.IO)
-                        .collect { result ->
-                            when (result) {
-                                Result.Loading -> {
-                                    setState(state.copy(isLoading = true))
-                                }
-
-                                is Result.Error -> {
-                                    sendAction { QuizUiAction.ShowError }
-                                    setState(state.copy(isLoading = false))
-                                }
-
-                                is Result.Success -> {
-                                    setState(
-                                        QuizUiState.Quiz(quiz = result.value)
-                                    )
-                                }
-                            }
-                        }
-                }
+                setState(QuizUiState.Filters())
             }
 
             QuizUiEvent.EnterScreen -> {
-                quizId?.let { quizId -> getQuizResult(quizId) }
+                if (!state.isLoading && startQuiz) {
+                    quizId?.let { getQuizResult(it) } ?: setState(QuizUiState.Filters())
+                }
             }
 
             else -> throw IllegalArgumentException("Unexpected $event for $state")
@@ -100,6 +153,7 @@ internal class QuizViewModel @Inject constructor(
             }
 
             QuizUiEvent.OnBackClicked -> {
+                startQuiz = false
                 quizId = null
                 setState(QuizUiState.Start())
             }
@@ -143,45 +197,29 @@ internal class QuizViewModel @Inject constructor(
         }
     }
 
-    private fun getQuizResult(quizId: Long) {
-        viewModelScope.launch {
-            getQuizResultUseCase.get().invoke(quizId).collect { result ->
-                when (result) {
-                    is Result.Error -> {
-                        sendAction { QuizUiAction.ShowError }
-                        setState(QuizUiState.Start())
-                    }
-
-                    Result.Loading -> QuizUiState.Start(true)
-                    is Result.Success -> {
-                        val quiz = result.value.toQuizEntity()
-                        setState(QuizUiState.Quiz(quiz))
-                    }
-                }
+    private fun reduce(state: QuizUiState.Filters, event: QuizUiEvent) {
+        when (event) {
+            QuizUiEvent.EnterScreen -> {
             }
-        }
-    }
 
-    @OptIn(ExperimentalTime::class)
-    private fun saveQuiz(state: QuizUiState.Quiz) {
-        viewModelScope.launch {
-            val passedTime =
-                Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-            val result =
-                state.quiz.let {
-                    QuizResultEntity(
-                        id = quizId ?: 0,
-                        generalCategory = it.generalCategory,
-                        passedTime = passedTime,
-                        questions = it.questions
-                    )
-                }
-            saveQuizResultUseCase.get().invoke(result)
+            is QuizUiEvent.OnCategorySelected -> {
+                setState(state.copy(selectedCategory = event.category))
+            }
+
+            is QuizUiEvent.OnDifficultSelected -> {
+                setState(state.copy(selectedDifficult = event.difficult))
+            }
+
+            QuizUiEvent.OnStartClicked -> {
+                startNewQuiz(state)
+            }
+
+            else -> throw IllegalArgumentException("Unexpected $event for $state")
         }
     }
 }
 
 private fun QuizResultEntity.toQuizEntity(): QuizEntity =
-    QuizEntity(generalCategory, questions.map { it.disableAnswers() })
+    QuizEntity(generalCategory, difficult, questions.map { it.disableAnswers() })
 
 private fun QuestionEntity.disableAnswers(): QuestionEntity = copy(selectedAnswerIndex = null)
