@@ -87,6 +87,7 @@ internal fun QuizScreen(
                         progressCount = state.currentQuestionIndex + 1,
                         maxQuestions = state.quiz.questions.size,
                         selectedAnswerIndex = state.quiz.questions[state.currentQuestionIndex].selectedAnswerIndex,
+                        showCorrectAnswer = state.showCorrectAnswer,
                         onAnswerSelect = onAnswerSelected,
                         onNextClick = onNextClick,
                         onBackClick = onBackClick,

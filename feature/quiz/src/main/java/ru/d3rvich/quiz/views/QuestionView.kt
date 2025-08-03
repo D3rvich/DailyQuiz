@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import ru.d3rvich.domain.entities.AnswerEntity
 import ru.d3rvich.domain.entities.QuestionEntity
 import ru.d3rvich.quiz.R
+import ru.d3rvich.ui.components.CorrectCheckIcon
 import ru.d3rvich.ui.components.DailyQuizButton
 import ru.d3rvich.ui.components.DailyQuizLogo
 import ru.d3rvich.ui.components.DailyQuizRadioButtonIcon
@@ -47,6 +48,7 @@ internal fun QuestionView(
     progressCount: Int,
     maxQuestions: Int,
     selectedAnswerIndex: Int?,
+    showCorrectAnswer: Boolean,
     modifier: Modifier = Modifier,
     onAnswerSelect: (index: Int) -> Unit,
     onNextClick: () -> Unit,
@@ -83,7 +85,8 @@ internal fun QuestionView(
                 AnswersView(
                     answers = question.answers,
                     selectedAnswerIndex = selectedAnswerIndex,
-                    onAnswerSelect = onAnswerSelect
+                    onAnswerSelect = onAnswerSelect,
+                    showCorrectAnswer = showCorrectAnswer
                 )
                 val text = if (progressCount == maxQuestions) {
                     stringResource(R.string.complete)
@@ -136,6 +139,7 @@ private fun TopBar(modifier: Modifier = Modifier, onBackClick: () -> Unit) {
 private fun AnswersView(
     answers: List<AnswerEntity>,
     selectedAnswerIndex: Int?,
+    showCorrectAnswer: Boolean,
     modifier: Modifier = Modifier,
     onAnswerSelect: (Int) -> Unit
 ) {
@@ -148,6 +152,7 @@ private fun AnswersView(
             AnswerView(
                 text = answer.text,
                 isSelected = selected,
+                isCorrect = if (showCorrectAnswer) answer.isCorrect else null,
                 modifier = Modifier.selectable(
                     selected = selected,
                     role = Role.RadioButton,
@@ -160,9 +165,24 @@ private fun AnswersView(
 }
 
 @Composable
-private fun AnswerView(text: String, isSelected: Boolean, modifier: Modifier = Modifier) {
+private fun AnswerView(
+    text: String,
+    isSelected: Boolean,
+    isCorrect: Boolean?,
+    modifier: Modifier = Modifier
+) {
+    val selectedColor = Color(0xFF2B0063)
+    val correctColor = Color(0xFF00AE3A)
+    val wrongColor = Color(0xFFE70000)
     val borderColor by
-    animateColorAsState(if (isSelected) Color(0xFF2B0063) else Color.Transparent)
+    animateColorAsState(
+        when {
+            isSelected && isCorrect != null && isCorrect -> correctColor
+            isSelected && isCorrect != null && !isCorrect -> wrongColor
+            isSelected -> selectedColor
+            else -> Color.Transparent
+        }
+    )
     val containerColor by animateColorAsState(
         if (isSelected) CardDefaults.cardColors().containerColor else Color(0xFFF3F3F3)
     )
@@ -174,9 +194,29 @@ private fun AnswerView(text: String, isSelected: Boolean, modifier: Modifier = M
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconToggleButton(isSelected, onCheckedChange = {}, modifier = Modifier.padding(8.dp)) {
-                DailyQuizRadioButtonIcon(isSelected)
+                if (!isSelected) {
+                    DailyQuizRadioButtonIcon(false)
+                } else {
+                    isCorrect?.let {
+                        CorrectCheckIcon(isCorrect)
+                    } ?: DailyQuizRadioButtonIcon(true)
+                }
             }
             Text(text = AnnotatedString.fromHtml(text))
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun AnswerPreview() {
+    DailyQuizTheme {
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            AnswerView(text = "Answer", isSelected = false, isCorrect = null)
+            AnswerView(text = "Answer", isSelected = false, isCorrect = true)
+            AnswerView(text = "Answer", isSelected = false, isCorrect = false)
+            AnswerView(text = "Answer", isSelected = true, isCorrect = true)
+            AnswerView(text = "Answer", isSelected = true, isCorrect = false)
         }
     }
 }
@@ -197,6 +237,7 @@ private fun QuestionPreview() {
             progressCount = 1,
             maxQuestions = 5,
             selectedAnswerIndex = null,
+            showCorrectAnswer = false,
             onAnswerSelect = {},
             onNextClick = {},
             onBackClick = {})

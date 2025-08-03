@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
@@ -121,6 +122,28 @@ internal class QuizViewModel @Inject constructor(
         }
     }
 
+    private suspend fun showCorrectAnswerAndContinue(state: QuizUiState.Quiz) {
+        requireNotNull(state.quiz.questions[state.currentQuestionIndex].selectedAnswerIndex)
+        setState(state.copy(frozen = true, showCorrectAnswer = true))
+        delay(2000L)
+        if (state.currentQuestionIndex == state.quiz.questions.lastIndex) {
+            saveQuiz(state)
+            setState(
+                QuizUiState.Results(
+                    correctAnswers = state.quiz.correctAnswers,
+                    totalQuestions = state.quiz.questions.size
+                )
+            )
+        } else {
+            val nextIndex = state.currentQuestionIndex + 1
+            setState(
+                state.copy(
+                    currentQuestionIndex = nextIndex,
+                    currentQuestion = state.quiz.questions[nextIndex]
+                )
+            )
+        }
+    }
 
     private fun reduce(state: QuizUiState.Start, event: QuizUiEvent) {
         when (event) {
@@ -140,6 +163,9 @@ internal class QuizViewModel @Inject constructor(
 
     @OptIn(ExperimentalTime::class)
     private fun reduce(state: QuizUiState.Quiz, event: QuizUiEvent) {
+        if (state.frozen) {
+            return
+        }
         when (event) {
             is QuizUiEvent.EnterScreen -> { // Ignore
             }
@@ -160,22 +186,8 @@ internal class QuizViewModel @Inject constructor(
 
             QuizUiEvent.OnNextClicked -> {
                 requireNotNull(state.quiz.questions[state.currentQuestionIndex].selectedAnswerIndex)
-                if (state.currentQuestionIndex == state.quiz.questions.lastIndex) {
-                    saveQuiz(state)
-                    setState(
-                        QuizUiState.Results(
-                            correctAnswers = state.quiz.correctAnswers,
-                            totalQuestions = state.quiz.questions.size
-                        )
-                    )
-                } else {
-                    val nextIndex = state.currentQuestionIndex + 1
-                    setState(
-                        state.copy(
-                            currentQuestionIndex = nextIndex,
-                            currentQuestion = state.quiz.questions[nextIndex]
-                        )
-                    )
+                viewModelScope.launch {
+                    showCorrectAnswerAndContinue(state)
                 }
             }
 
