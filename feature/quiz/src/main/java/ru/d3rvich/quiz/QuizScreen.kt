@@ -88,9 +88,13 @@ internal fun QuizScreen(
                         maxQuestions = state.quiz.questions.size,
                         selectedAnswerIndex = state.quiz.questions[state.currentQuestionIndex].selectedAnswerIndex,
                         showCorrectAnswer = state.showCorrectAnswer,
+                        timerCurrentValue = state.timerCurrentValue,
+                        timerMaxValue = state.timerMaxValue,
+                        showTimeoutMessage = state.showTimeout,
                         onAnswerSelect = onAnswerSelected,
                         onNextClick = onNextClick,
                         onBackClick = onBackClick,
+                        onRetryClick = onRetryClick
                     )
                 }
 

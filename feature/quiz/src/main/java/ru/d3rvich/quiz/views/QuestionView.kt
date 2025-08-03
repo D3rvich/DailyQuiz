@@ -1,6 +1,7 @@
 package ru.d3rvich.quiz.views
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,10 +20,13 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconToggleButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,14 +37,23 @@ import androidx.compose.ui.text.fromHtml
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.format
+import kotlinx.datetime.format.Padding
+import kotlinx.datetime.format.char
+import kotlinx.datetime.toLocalDateTime
 import ru.d3rvich.domain.entities.AnswerEntity
 import ru.d3rvich.domain.entities.QuestionEntity
 import ru.d3rvich.quiz.R
+import ru.d3rvich.quiz.model.TimerMaxValue
 import ru.d3rvich.ui.components.CorrectCheckIcon
 import ru.d3rvich.ui.components.DailyQuizButton
 import ru.d3rvich.ui.components.DailyQuizLogo
 import ru.d3rvich.ui.components.DailyQuizRadioButtonIcon
 import ru.d3rvich.ui.theme.DailyQuizTheme
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @Composable
 internal fun QuestionView(
@@ -49,10 +62,14 @@ internal fun QuestionView(
     maxQuestions: Int,
     selectedAnswerIndex: Int?,
     showCorrectAnswer: Boolean,
+    timerCurrentValue: Long,
+    showTimeoutMessage: Boolean,
     modifier: Modifier = Modifier,
     onAnswerSelect: (index: Int) -> Unit,
     onNextClick: () -> Unit,
     onBackClick: () -> Unit,
+    onRetryClick: () -> Unit,
+    timerMaxValue: Long = TimerMaxValue,
 ) {
     require(progressCount > 0)
     require(progressCount <= maxQuestions) { "progressCount can't be more than maxQuestion" }
@@ -70,6 +87,11 @@ internal fun QuestionView(
                     .padding(horizontal = 24.dp, vertical = 32.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                TimerView(
+                    timerCurrentValue,
+                    timerMaxValue,
+                    modifier = Modifier.padding(bottom = 32.dp)
+                )
                 Text(
                     style = MaterialTheme.typography.labelMedium,
                     text = stringResource(R.string.question_count, progressCount, maxQuestions),
@@ -107,6 +129,9 @@ internal fun QuestionView(
             style = MaterialTheme.typography.bodySmall
         )
     }
+    if (showTimeoutMessage) {
+        TimeoutMessage(onDismissRequest = onRetryClick)
+    }
 }
 
 @Composable
@@ -131,6 +156,49 @@ private fun TopBar(modifier: Modifier = Modifier, onBackClick: () -> Unit) {
             modifier = Modifier
                 .align(Alignment.Center)
                 .height(40.dp)
+        )
+    }
+}
+
+@OptIn(ExperimentalTime::class)
+@Composable
+private fun TimerView(currentValue: Long, maxValue: Long, modifier: Modifier = Modifier) {
+    Column(modifier.fillMaxWidth()) {
+        val currentDateTime = Instant.fromEpochMilliseconds(currentValue)
+            .toLocalDateTime(TimeZone.currentSystemDefault())
+        val maxDataTime = Instant.fromEpochMilliseconds(maxValue)
+            .toLocalDateTime(TimeZone.currentSystemDefault())
+        val formater = remember {
+            LocalDateTime.Format {
+                minute(Padding.ZERO)
+                char(':')
+                second(Padding.ZERO)
+            }
+        }
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Text(
+                currentDateTime.format(formater),
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color(0xFF2B0063)
+            )
+            Text(
+                maxDataTime.format(formater),
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color(0xFF2B0063)
+            )
+        }
+        val progress = currentValue.toFloat() / maxValue
+        val animatedProgress by animateFloatAsState(
+            targetValue = progress,
+            animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
+        )
+        LinearProgressIndicator(
+            trackColor = Color(0xFFF3F3F3),
+            color = Color(0xFF2B0063),
+            progress = { animatedProgress },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(4.dp)
         )
     }
 }
@@ -236,10 +304,13 @@ private fun QuestionPreview() {
             question = entity,
             progressCount = 1,
             maxQuestions = 5,
+            timerCurrentValue = 2000L,
             selectedAnswerIndex = null,
             showCorrectAnswer = false,
+            showTimeoutMessage = false,
             onAnswerSelect = {},
             onNextClick = {},
-            onBackClick = {})
+            onBackClick = {},
+            onRetryClick = {})
     }
 }

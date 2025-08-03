@@ -22,8 +22,13 @@ internal sealed interface QuizUiState : UiState {
         val currentQuestion: QuestionEntity = quiz.questions.first(),
         val currentQuestionIndex: Int = 0,
         val showCorrectAnswer: Boolean = false,
+        val timerCurrentValue: Long = 0,
+        val timerMaxValue: Long = TimerMaxValue,
+        val showTimeout: Boolean = false,
         val frozen: Boolean = false,
     ) : QuizUiState
 
     data class Results(val correctAnswers: Int, val totalQuestions: Int) : QuizUiState
 }
+
+internal const val TimerMaxValue: Long = 5 * 60 * 1000  // 5 minutes
