@@ -26,7 +26,7 @@ internal class QuizResultViewModel @Inject constructor(
     }
 
     init {
-        savedStateHandle.toRoute<Screens.QuizDebriefing>().quizId.also { quizId ->
+        savedStateHandle.toRoute<Screens.QuizResult>().quizId.also { quizId ->
             viewModelScope.launch {
                 getQuizResultUseCase.get().invoke(quizId).collect { result ->
                     when (result) {

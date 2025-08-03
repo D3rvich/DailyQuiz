@@ -7,5 +7,7 @@ internal sealed interface QuizUiEvent : UiEvent {
     data object OnRetryClicked : QuizUiEvent
     data object OnNextClicked : QuizUiEvent
     data object OnBackClicked : QuizUiEvent
+    data object EnterScreen : QuizUiEvent
+
     data class OnAnswerSelected(val index: Int) : QuizUiEvent
 }

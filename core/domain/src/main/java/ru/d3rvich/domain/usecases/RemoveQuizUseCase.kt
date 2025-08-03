@@ -6,5 +6,5 @@ import javax.inject.Inject
 
 class RemoveQuizUseCase @Inject constructor(private val repository: DailyQuizRepository) {
     suspend operator fun invoke(quizResultEntity: QuizResultEntity) =
-        repository.saveQuiz(quizResultEntity)
+        repository.removeQuiz(quizResultEntity)
 }

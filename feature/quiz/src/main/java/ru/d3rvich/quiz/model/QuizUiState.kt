@@ -10,8 +10,8 @@ internal sealed interface QuizUiState : UiState {
     data class Start(val isLoading: Boolean = false) : QuizUiState
     data class Quiz(
         val quiz: QuizEntity,
-        val currentQuestion: QuestionEntity,
-        val currentQuestionIndex: Int,
+        val currentQuestion: QuestionEntity = quiz.questions.first(),
+        val currentQuestionIndex: Int = 0,
     ) : QuizUiState
 
     data class Results(val correctAnswers: Int, val totalQuestions: Int) : QuizUiState

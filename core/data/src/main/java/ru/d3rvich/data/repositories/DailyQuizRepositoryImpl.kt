@@ -26,7 +26,7 @@ internal class DailyQuizRepositoryImpl(
             is NetworkResult.Failure -> throw result.exception
             is NetworkResult.Success -> {
                 val questions = result.value.map { it.toQuestionEntity(::combineAnswers) }
-                emit(QuizEntity(UUID.randomUUID().toString(), "", questions))
+                emit(QuizEntity("", questions))
             }
         }
     }.asResult()

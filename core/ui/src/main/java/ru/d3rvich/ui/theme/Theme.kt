@@ -21,7 +21,8 @@ private val DarkColorScheme = darkColorScheme(
     surfaceContainerHighest = Color.White,
     surfaceVariant = Color.White,
     onSurfaceVariant = Color(0xFF000000),
-    onSurface = Color(0xFFBABABA)
+    onSurface = Color.Black,
+    surfaceContainer = Color.White,
 )
 
 @Composable

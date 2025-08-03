@@ -3,4 +3,9 @@
     <string name="no_quiz_message">Вы еще не проходили ни одной викторины</string>
     <string name="start_quiz">Начать викторину</string>
     <string name="history">" История"</string>
+    <string name="remove_quiz">Remove quiz</string>
+    <string name="remove">Удалить</string>
+    <string name="close">Закрыть</string>
+    <string name="attempt_removed">Попытка удалена</string>
+    <string name="retry_message">Вы можете пройти викторину снова, когда будете готовы.</string>
 </resources>

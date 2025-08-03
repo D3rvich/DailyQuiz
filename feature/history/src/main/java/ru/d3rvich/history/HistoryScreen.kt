@@ -20,7 +20,7 @@ import ru.d3rvich.history.views.QuizHistoryView
 @Composable
 fun HistoryScreen(
     navigateToQuiz: () -> Unit,
-    navigateToQuizDebriefing: (quizId: Long) -> Unit,
+    navigateToQuizResult: (quizId: Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val viewModel: HistoryViewModel = hiltViewModel()
@@ -30,7 +30,7 @@ fun HistoryScreen(
         modifier = modifier,
         onRemoveQuiz = { viewModel.obtainEvent(HistoryUiEvent.OnRemoveQuiz(it)) },
         onStartQuizClick = { navigateToQuiz() },
-        onQuizClick = { navigateToQuizDebriefing(it) }
+        onQuizClick = { navigateToQuizResult(it) }
     )
 }
 
@@ -59,6 +59,7 @@ internal fun HistoryScreen(
                     QuizHistoryView(
                         quizList = state.quizResultEntities,
                         onQuizCLick = onQuizClick,
+                        onRemoveQuiz = onRemoveQuiz
                     )
                 }
             }

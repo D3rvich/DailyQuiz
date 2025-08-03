@@ -22,25 +22,28 @@ class MainActivity : ComponentActivity() {
         setContent {
             DailyQuizTheme {
                 val navController = rememberNavController()
-                NavHost(navController, startDestination = Screens.Quiz) {
+                NavHost(navController, startDestination = Screens.Quiz()) {
                     composable<Screens.Quiz> {
                         QuizScreen(navigateToHistory = { navController.navigate(Screens.History) })
                     }
                     composable<Screens.History> {
                         HistoryScreen(
-                            navigateToQuizDebriefing = {
-                                navController.navigate(Screens.QuizDebriefing(it))
+                            navigateToQuizResult = {
+                                navController.navigate(Screens.QuizResult(it))
                             },
                             navigateToQuiz = {
                                 navController.navigate(Screens.Quiz) {
-                                    launchSingleTop = true
                                     popUpTo<Screens.Quiz>()
                                 }
                             }
                         )
                     }
-                    composable<Screens.QuizDebriefing> {
-                        QuizResultScreen({  })
+                    composable<Screens.QuizResult> {
+                        QuizResultScreen({
+                            navController.navigate(Screens.Quiz(it)) {
+                                popUpTo<Screens.Quiz>()
+                            }
+                        })
                     }
                 }
             }

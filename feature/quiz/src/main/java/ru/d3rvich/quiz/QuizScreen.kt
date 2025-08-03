@@ -35,6 +35,7 @@ fun QuizScreen(navigateToHistory: () -> Unit, modifier: Modifier = Modifier) {
         onHistoryClick = navigateToHistory
     )
     val context = LocalContext.current
+    viewModel.obtainEvent(QuizUiEvent.EnterScreen)
     LaunchedEffect(viewModel) {
         viewModel.uiAction.collect { action ->
             when (action) {

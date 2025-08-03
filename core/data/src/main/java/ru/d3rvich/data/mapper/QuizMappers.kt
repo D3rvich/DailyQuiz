@@ -11,6 +11,7 @@ internal fun QuizDBO.toQuizResultEntity(): QuizResultEntity = QuizResultEntity(
 )
 
 internal fun QuizResultEntity.toQuizDBO(): QuizDBO = QuizDBO(
+    id = id,
     category = generalCategory,
     passedTime = passedTime,
     questions = questions.map { it.toQuestionDBO() }
