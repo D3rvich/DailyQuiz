@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.d3rvich.debriefing"
+    namespace = "ru.d3rvich.result"
 }
 
 dependencies {

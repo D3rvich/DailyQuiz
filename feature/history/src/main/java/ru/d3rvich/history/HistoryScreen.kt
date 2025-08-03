@@ -1,9 +1,14 @@
 package ru.d3rvich.history
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ru.d3rvich.domain.entities.QuizResultEntity
@@ -38,19 +43,24 @@ internal fun HistoryScreen(
     onRemoveQuiz: (quiz: QuizResultEntity) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    when (state) {
-        HistoryUiState.Idle -> { /* Do nothing */
-        }
-
-        is HistoryUiState.Content -> {
-            if (state.quizResultEntities.isEmpty()) {
-                HistoryEmptyView(onStartQuizClick, modifier = modifier)
-            } else {
-                QuizHistoryView(
-                    quizList = state.quizResultEntities,
-                    onQuizCLick = onQuizClick,
-                    modifier = modifier
+    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        when (state) {
+            HistoryUiState.Loading -> {
+                CircularProgressIndicator(
+                    color = Color(0xFFBCB7FF),
+                    trackColor = Color.White,
                 )
+            }
+
+            is HistoryUiState.Content -> {
+                if (state.quizResultEntities.isEmpty()) {
+                    HistoryEmptyView(onStartQuizClick)
+                } else {
+                    QuizHistoryView(
+                        quizList = state.quizResultEntities,
+                        onQuizCLick = onQuizClick,
+                    )
+                }
             }
         }
     }

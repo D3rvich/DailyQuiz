@@ -6,7 +6,7 @@ import ru.d3rvich.ui.mvibase.UiState
 
 @Immutable
 internal sealed interface HistoryUiState : UiState {
-    data object Idle : HistoryUiState
+    data object Loading : HistoryUiState
 
     data class Content(val quizResultEntities: List<QuizResultEntity>) : HistoryUiState
 }

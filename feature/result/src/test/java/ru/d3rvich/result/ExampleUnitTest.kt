@@ -1,4 +1,4 @@
-package ru.d3rvich.debriefing
+package ru.d3rvich.result
 
 import org.junit.Test
 

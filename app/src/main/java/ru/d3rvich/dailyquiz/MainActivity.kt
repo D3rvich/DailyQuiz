@@ -8,7 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import ru.d3rvich.debriefing.DebriefingScreen
+import ru.d3rvich.result.QuizResultScreen
 import ru.d3rvich.history.HistoryScreen
 import ru.d3rvich.quiz.QuizScreen
 import ru.d3rvich.ui.navigation.Screens
@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable<Screens.QuizDebriefing> {
-                        DebriefingScreen()
+                        QuizResultScreen({  })
                     }
                 }
             }
