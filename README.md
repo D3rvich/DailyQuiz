@@ -12,13 +12,23 @@ Tech Stack
 - [Room](https://developer.android.com/jetpack/androidx/releases/room)
 - [Ktor Client](https://ktor.io/docs/welcome.html)
 
-Приложение начиналось разрабатываться с [шаблона](https://github.com/D3rvich/AndroidTemplate)/n
-Структура проекта и convention плагины вдохновены [now in android](https://github.com/android/nowinandroid)
+Описание
+-----------
+Миногомодульный клин с фиче модулями. На уровне ui используется MVI.
+
+Приложение начиналось разрабатываться с [шаблона](https://github.com/D3rvich/AndroidTemplate)
+
+Структура проекта и convention плагины вдохновены [Now in Android](https://github.com/android/nowinandroid)
 
 Видео
 ---------
-Ps: 10 секунд только для демонстрации завершения по таймеру
+P. s.: 10 секунд только для демонстрации завершения по таймеру
+P. p. s: Шакалы пожрали почти все видео(
+
 [Screen_recording_20250804_012451.webm](https://github.com/user-attachments/assets/8e715d2b-3f48-4c2d-ba19-4932bf7aa41c)
+
 [Screen_recording_20250804_012830.webm](https://github.com/user-attachments/assets/244587cb-702b-44e9-8193-8ada3bc362f9)
+
 [Screen_recording_20250804_012943.webm](https://github.com/user-attachments/assets/0286d34f-a648-48ed-8eaa-53050ea57f73)
+
 [Screen_recording_20250804_013252.webm](https://github.com/user-attachments/assets/d084f91b-3e82-41ec-8384-f6175999df4a)
