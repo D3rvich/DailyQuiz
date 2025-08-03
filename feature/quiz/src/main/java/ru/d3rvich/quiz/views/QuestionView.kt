@@ -46,7 +46,7 @@ import kotlinx.datetime.toLocalDateTime
 import ru.d3rvich.domain.entities.AnswerEntity
 import ru.d3rvich.domain.entities.QuestionEntity
 import ru.d3rvich.quiz.R
-import ru.d3rvich.quiz.model.TimerMaxValue
+import ru.d3rvich.quiz.TimerMaxValue
 import ru.d3rvich.ui.components.CorrectCheckIcon
 import ru.d3rvich.ui.components.DailyQuizButton
 import ru.d3rvich.ui.components.DailyQuizLogo

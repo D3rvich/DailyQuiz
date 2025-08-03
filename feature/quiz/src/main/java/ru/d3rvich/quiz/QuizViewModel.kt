@@ -4,9 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -21,7 +19,6 @@ import ru.d3rvich.domain.usecases.SaveQuizUseCase
 import ru.d3rvich.quiz.model.QuizUiAction
 import ru.d3rvich.quiz.model.QuizUiEvent
 import ru.d3rvich.quiz.model.QuizUiState
-import ru.d3rvich.quiz.model.TimerMaxValue
 import ru.d3rvich.ui.mvibase.BaseViewModel
 import ru.d3rvich.ui.navigation.Screens
 import javax.inject.Inject
@@ -30,54 +27,43 @@ import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 @HiltViewModel
-internal class QuizViewModel @Inject constructor(
+internal class QuizNewViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val getNewQuizUseCase: Provider<GetNewQuizUseCase>,
     private val saveQuizResultUseCase: Provider<SaveQuizUseCase>,
     private val getQuizResultUseCase: Provider<GetQuizResultUseCase>,
 ) : BaseViewModel<QuizUiState, QuizUiEvent, QuizUiAction>() {
 
-    override fun createInitialState(): QuizUiState = QuizUiState.Start(quizId != null)
+    private val args = savedStateHandle.toRoute<Screens.QuizMain.Quiz>().also { args ->
+        args.quizId?.also { quizId ->
+            viewModelScope.launch {
+                getQuizResultUseCase.get().invoke(quizId).collect { result ->
+                    when (result) {
+                        is Result.Error -> {
+                            sendAction { QuizUiAction.ShowError }
+                            sendAction { QuizUiAction.NavigateToStart }
+                        }
 
-    override fun obtainEvent(event: QuizUiEvent) {
-        when (val state = currentState) {
-            is QuizUiState.Start -> reduce(state, event)
-            is QuizUiState.Quiz -> reduce(state, event)
-            is QuizUiState.Results -> reduce(state, event)
-            is QuizUiState.Filters -> reduce(state, event)
-        }
-    }
-
-    private var startQuiz: Boolean = false
-    private var quizId: Long? = null
-
-    init {
-        savedStateHandle.toRoute<Screens.Quiz>().also { route ->
-            startQuiz = route.startNewQuiz
-            quizId = route.quizId
-        }
-    }
-
-    private fun startNewQuiz(state: QuizUiState.Filters) {
-        checkNotNull(state.selectedCategory)
-        checkNotNull(state.selectedDifficult)
-        viewModelScope.launch {
-            getNewQuizUseCase.get().invoke(state.selectedCategory, state.selectedDifficult)
-                .flowOn(Dispatchers.IO)
+                        Result.Loading -> setState(QuizUiState.Loading)
+                        is Result.Success -> {
+                            val quiz = result.value.toQuizEntity()
+                            startQuiz(quiz)
+                        }
+                    }
+                }
+            }
+        } ?: viewModelScope.launch {
+            getNewQuizUseCase.get().invoke(args.category, args.difficult)
                 .collect { result ->
                     when (result) {
-                        Result.Loading -> {
-                            setState(state.copy(isLoading = true))
-                        }
+                        Result.Loading -> setState(QuizUiState.Loading)
 
                         is Result.Error -> {
                             sendAction { QuizUiAction.ShowError }
-                            setState(state.copy(isLoading = false))
+                            sendAction { QuizUiAction.NavigateToStart }
                         }
 
-                        is Result.Success -> {
-                            startQuiz(result.value)
-                        }
+                        is Result.Success -> startQuiz(result.value)
                     }
                 }
         }
@@ -88,11 +74,11 @@ internal class QuizViewModel @Inject constructor(
         viewModelScope.launch {
             var currentTimer: Long = 0
             val tick = 1000L
-            while (currentState is QuizUiState.Quiz && currentTimer < maxValue) {
+            while (currentTimer < maxValue) {
                 delay(tick)
                 currentTimer += tick
                 (currentState as? QuizUiState.Quiz)?.also { quizState ->
-                    setState(quizState.copy(timerCurrentValue = currentTimer))
+                    setState(quizState.copy(timer = currentTimer))
                 }
             }
             (currentState as? QuizUiState.Quiz)?.also { quizState ->
@@ -101,22 +87,21 @@ internal class QuizViewModel @Inject constructor(
         }
     }
 
-    private fun startSavedQuiz(quizId: Long) {
-        viewModelScope.launch {
-            getQuizResultUseCase.get().invoke(quizId).collect { result ->
-                when (result) {
-                    is Result.Error -> {
-                        sendAction { QuizUiAction.ShowError }
-                        setState(QuizUiState.Start())
-                    }
-
-                    Result.Loading -> QuizUiState.Start(true)
-                    is Result.Success -> {
-                        val quiz = result.value.toQuizEntity()
-                        startQuiz(quiz)
-                    }
-                }
-            }
+    private suspend fun showCorrectAnswerAndContinue(state: QuizUiState.Quiz) {
+        requireNotNull(state.quiz.questions[state.currentQuestionIndex].selectedAnswerIndex)
+        setState(state.copy(frozen = true, showCorrectAnswer = true))
+        delay(2000L)
+        if (state.currentQuestionIndex == state.quiz.questions.lastIndex) {
+            saveQuiz(state, false)
+        } else {
+            val currentTimer = (currentState as? QuizUiState.Quiz)?.timer
+            val nextIndex = state.currentQuestionIndex + 1
+            setState(
+                state.copy(
+                    timer = currentTimer ?: state.timer,
+                    currentQuestionIndex = nextIndex,
+                )
+            )
         }
     }
 
@@ -137,7 +122,7 @@ internal class QuizViewModel @Inject constructor(
             val result =
                 state.quiz.let { quiz ->
                     QuizResultEntity(
-                        id = quizId ?: 0,
+                        id = args.quizId ?: 0,
                         generalCategory = quiz.generalCategory,
                         difficult = quiz.difficult,
                         passedTime = passedTime,
@@ -145,125 +130,46 @@ internal class QuizViewModel @Inject constructor(
                     )
                 }
             saveQuizResultUseCase.get().invoke(result)
-        }
-    }
-
-    private suspend fun showCorrectAnswerAndContinue(state: QuizUiState.Quiz) {
-        requireNotNull(state.quiz.questions[state.currentQuestionIndex].selectedAnswerIndex)
-        setState(state.copy(frozen = true, showCorrectAnswer = true))
-        delay(2000L)
-        if (state.currentQuestionIndex == state.quiz.questions.lastIndex) {
-            saveQuiz(state, false)
-            setState(
-                QuizUiState.Results(
-                    correctAnswers = state.quiz.correctAnswers,
-                    totalQuestions = state.quiz.questions.size
+            sendAction {
+                QuizUiAction.OpenResults(
+                    state.quiz.correctAnswers,
+                    state.quiz.questions.size
                 )
-            )
-        } else {
-            val currentTimer = (currentState as? QuizUiState.Quiz)?.timerCurrentValue
-            val nextIndex = state.currentQuestionIndex + 1
-            setState(
-                state.copy(
-                    timerCurrentValue = currentTimer ?: state.timerCurrentValue,
-                    currentQuestionIndex = nextIndex,
-                    currentQuestion = state.quiz.questions[nextIndex]
-                )
-            )
+            }
         }
     }
 
-    private fun reduce(state: QuizUiState.Start, event: QuizUiEvent) {
-        when (event) {
-            QuizUiEvent.OnStartClicked -> {
-                setState(QuizUiState.Filters())
-            }
+    override fun createInitialState(): QuizUiState = QuizUiState.Loading
 
-            QuizUiEvent.EnterScreen -> {
-                if (!state.isLoading && startQuiz) {
-                    quizId?.let { startSavedQuiz(it) } ?: setState(QuizUiState.Filters())
-                }
-            }
+    override fun obtainEvent(event: QuizUiEvent) {
+        when (val state = currentState) {
+            QuizUiState.Loading -> return
 
-            else -> throw IllegalArgumentException("Unexpected $event for $state")
+            is QuizUiState.Quiz -> reduce(state, event)
         }
     }
 
-    @OptIn(ExperimentalTime::class)
     private fun reduce(state: QuizUiState.Quiz, event: QuizUiEvent) {
-        if (state.frozen) {
-            return
-        }
+        if (state.frozen) return
         when (event) {
-            is QuizUiEvent.EnterScreen -> { // Ignore
+            QuizUiEvent.OnRetryClicked -> {
+                saveQuiz(state, true)
+                sendAction { QuizUiAction.NavigateToStart }
+            }
+
+            QuizUiEvent.OnNextClicked -> viewModelScope.launch {
+                showCorrectAnswerAndContinue(state)
             }
 
             is QuizUiEvent.OnAnswerSelected -> {
-                val question = state.currentQuestion.copy(selectedAnswerIndex = event.index)
-                val mutableQuestions = state.quiz.questions.toMutableList()
-                mutableQuestions[state.currentQuestionIndex] = question
-                val quiz = state.quiz.copy(questions = mutableQuestions.toList())
-                setState(state.copy(quiz = quiz, currentQuestion = question))
+                val question =
+                    state.quiz.questions[state.currentQuestionIndex].copy(selectedAnswerIndex = event.index)
+                val questions = state.quiz.questions.toMutableList().apply {
+                    set(state.currentQuestionIndex, question)
+                }.toList()
+                val quiz = state.quiz.copy(questions = questions)
+                setState(state.copy(quiz = quiz))
             }
-
-            QuizUiEvent.OnRetryClicked -> {
-                check(state.showTimeout)
-                startQuiz = false
-                quizId = null
-                saveQuiz(state, true)
-                setState(QuizUiState.Start())
-            }
-
-            QuizUiEvent.OnBackClicked -> {
-                startQuiz = false
-                quizId = null
-                setState(QuizUiState.Start())
-            }
-
-            QuizUiEvent.OnNextClicked -> {
-                requireNotNull(state.quiz.questions[state.currentQuestionIndex].selectedAnswerIndex)
-                viewModelScope.launch {
-                    showCorrectAnswerAndContinue(state)
-                }
-            }
-
-
-            else -> throw IllegalArgumentException("Unexpected $event for $state")
-        }
-    }
-
-    private fun reduce(state: QuizUiState.Results, event: QuizUiEvent) {
-        when (event) {
-            is QuizUiEvent.EnterScreen -> { // Ignore
-            }
-
-            QuizUiEvent.OnRetryClicked -> {
-                quizId = null
-                setState(QuizUiState.Start())
-            }
-
-            else -> throw IllegalArgumentException("Unexpected $event for $state")
-        }
-    }
-
-    private fun reduce(state: QuizUiState.Filters, event: QuizUiEvent) {
-        when (event) {
-            QuizUiEvent.EnterScreen -> {
-            }
-
-            is QuizUiEvent.OnCategorySelected -> {
-                setState(state.copy(selectedCategory = event.category))
-            }
-
-            is QuizUiEvent.OnDifficultSelected -> {
-                setState(state.copy(selectedDifficult = event.difficult))
-            }
-
-            QuizUiEvent.OnStartClicked -> {
-                startNewQuiz(state)
-            }
-
-            else -> throw IllegalArgumentException("Unexpected $event for $state")
         }
     }
 }
@@ -272,3 +178,5 @@ private fun QuizResultEntity.toQuizEntity(): QuizEntity =
     QuizEntity(generalCategory, difficult, questions.map { it.disableAnswers() })
 
 private fun QuestionEntity.disableAnswers(): QuestionEntity = copy(selectedAnswerIndex = null)
+
+internal const val TimerMaxValue: Long = 5 * 60 * 1000  // 5 minutes
