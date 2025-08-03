@@ -96,12 +96,16 @@ internal class QuizNewViewModel @Inject constructor(
         } else {
             val currentTimer = (currentState as? QuizUiState.Quiz)?.timer
             val nextIndex = state.currentQuestionIndex + 1
-            setState(
-                state.copy(
-                    timer = currentTimer ?: state.timer,
-                    currentQuestionIndex = nextIndex,
+            if ((currentTimer ?: state.timer) < state.maxTimerValue) {
+                setState(
+                    state.copy(
+                        timer = currentTimer ?: state.timer,
+                        currentQuestionIndex = nextIndex,
+                    )
                 )
-            )
+            } else (currentState as? QuizUiState.Quiz)?.let { state ->
+                setState(state.copy(frozen = false))
+            }
         }
     }
 
