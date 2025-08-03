@@ -110,8 +110,8 @@ internal class QuizNewViewModel @Inject constructor(
         val questions = if (hasTimeout) {
             state.quiz.questions.map { question ->
                 if (question.selectedAnswerIndex == null) {
-                    val randomWrongAnswerIndex: Int =
-                        question.answers.filterNot { it.isCorrect }.indices.random()
+                    val wrongAnswer = question.answers.filterNot { it.isCorrect }.random()
+                    val randomWrongAnswerIndex: Int = question.answers.indexOf(wrongAnswer)
                     question.copy(selectedAnswerIndex = randomWrongAnswerIndex)
                 } else question
             }
