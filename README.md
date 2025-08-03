@@ -2,15 +2,19 @@ DailyQuiz
 =========
 Tech Stack
 ------
-[KotlinX Coroutines](https://github.com/Kotlin/kotlinx.coroutines)
-[KotlinX Serialization](https://github.com/Kotlin/kotlinx.serialization)
-[KotlinX Datetime](https://github.com/Kotlin/kotlinx-datetime)
-[KSP](https://github.com/google/ksp)
-[Jetpack Compose](https://developer.android.com/compose) + [Material3](https://m3.material.io/)]
-[Compose Navigation](https://developer.android.com/develop/ui/compose/navigation)
-[Dagger](https://dagger.dev/dev-guide/) + [Hilt](https://dagger.dev/hilt/)
-[Room](https://developer.android.com/jetpack/androidx/releases/room)
-[Ktor Client](https://ktor.io/docs/welcome.html)
+- [KotlinX Coroutines](https://github.com/Kotlin/kotlinx.coroutines)
+- [KotlinX Serialization](https://github.com/Kotlin/kotlinx.serialization)
+- [KotlinX Datetime](https://github.com/Kotlin/kotlinx-datetime)
+- [KSP](https://github.com/google/ksp)
+- [Jetpack Compose](https://developer.android.com/compose) + [Material3](https://m3.material.io/)]
+- [Compose Navigation](https://developer.android.com/develop/ui/compose/navigation)
+- [Dagger](https://dagger.dev/dev-guide/) + [Hilt](https://dagger.dev/hilt/)
+- [Room](https://developer.android.com/jetpack/androidx/releases/room)
+- [Ktor Client](https://ktor.io/docs/welcome.html)
+
+Приложение начиналось разрабатываться с [шаблона](https://github.com/D3rvich/AndroidTemplate)/n
+Структура проекта и convention плагины вдохновены [now in android](https://github.com/android/nowinandroid)
+
 Видео
 ---------
 Ps: 10 секунд только для демонстрации завершения по таймеру
