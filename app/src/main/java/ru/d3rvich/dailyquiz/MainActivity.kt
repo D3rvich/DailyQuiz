@@ -45,14 +45,19 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable<Screens.QuizResult> {
-                        QuizResultScreen({
-                            navController.navigate(
-                                Screens.QuizMain.Quiz(quizId = it)
-                            ) {
-                                launchSingleTop = true
-                                popUpTo<Screens.QuizMain.Start>()
+                        QuizResultScreen(
+                            navigateToQuiz = {
+                                navController.navigate(Screens.QuizMain.Quiz(quizId = it)) {
+                                    launchSingleTop = true
+                                }
+                            },
+                            navigateToStart = {
+                                navController.navigate(Screens.QuizMain.Start) {
+                                    launchSingleTop = true
+                                    popUpTo<Screens.QuizMain.Start>()
+                                }
                             }
-                        })
+                        )
                     }
                 }
             }
