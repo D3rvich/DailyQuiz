@@ -128,7 +128,7 @@ private fun NavGraphBuilder.quiz(navController: NavController) {
                             context,
                             R.string.error_message,
                             Toast.LENGTH_LONG
-                        )
+                        ).show()
                     }
                 }
             }

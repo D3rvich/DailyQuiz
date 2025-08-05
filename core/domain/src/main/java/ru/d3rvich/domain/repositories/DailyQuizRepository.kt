@@ -8,7 +8,11 @@ import ru.d3rvich.domain.model.Difficult
 import ru.d3rvich.domain.model.Result
 
 interface DailyQuizRepository {
-    suspend fun getNewQuiz(category: Category, difficult: Difficult): Flow<Result<QuizEntity>>
+    fun getExistedOrNewQuiz(
+        quizId: Long?,
+        category: Category,
+        difficult: Difficult
+    ): Flow<Result<QuizEntity>>
 
     suspend fun saveQuiz(quizResult: QuizResultEntity)
 

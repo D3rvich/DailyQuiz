@@ -1,6 +1,9 @@
 package ru.d3rvich.data.mapper
 
+import ru.d3rvich.database.model.QuestionDBO
 import ru.d3rvich.database.model.QuizDBO
+import ru.d3rvich.domain.entities.QuestionEntity
+import ru.d3rvich.domain.entities.QuizEntity
 import ru.d3rvich.domain.entities.QuizResultEntity
 
 internal fun QuizDBO.toQuizResultEntity(): QuizResultEntity = QuizResultEntity(
@@ -8,13 +11,22 @@ internal fun QuizDBO.toQuizResultEntity(): QuizResultEntity = QuizResultEntity(
     generalCategory = category,
     difficult = difficult,
     passedTime = passedTime,
-    questions = questions.map { it.toQuestionEntity() },
+    questions = questions.map(QuestionDBO::toQuestionEntity),
 )
+
+internal fun QuizDBO.toQuizEntity(disableAnswers: Boolean): QuizEntity =
+    QuizEntity(
+        generalCategory = category,
+        difficult = difficult,
+        questions = questions.map { quiz ->
+            quiz.toQuestionEntity()
+                .let { question -> if (disableAnswers) question.copy(selectedAnswerIndex = null) else question }
+        })
 
 internal fun QuizResultEntity.toQuizDBO(): QuizDBO = QuizDBO(
     id = id,
     category = generalCategory,
     difficult = difficult,
     passedTime = passedTime,
-    questions = questions.map { it.toQuestionDBO() }
+    questions = questions.map(QuestionEntity::toQuestionDBO)
 )

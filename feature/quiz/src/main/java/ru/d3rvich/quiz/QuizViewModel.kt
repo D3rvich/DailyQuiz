@@ -8,13 +8,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import ru.d3rvich.domain.entities.QuestionEntity
 import ru.d3rvich.domain.entities.QuizEntity
 import ru.d3rvich.domain.entities.QuizResultEntity
 import ru.d3rvich.domain.entities.correctAnswers
 import ru.d3rvich.domain.model.Result
-import ru.d3rvich.domain.usecases.GetNewQuizUseCase
-import ru.d3rvich.domain.usecases.GetQuizResultUseCase
+import ru.d3rvich.domain.usecases.GetExistedOrNewQuizUseCase
 import ru.d3rvich.domain.usecases.SaveQuizUseCase
 import ru.d3rvich.quiz.model.QuizUiAction
 import ru.d3rvich.quiz.model.QuizUiEvent
@@ -29,31 +27,13 @@ import kotlin.time.ExperimentalTime
 @HiltViewModel
 internal class QuizNewViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val getNewQuizUseCase: Provider<GetNewQuizUseCase>,
+    private val getExistedOrNewQuizUseCase: Provider<GetExistedOrNewQuizUseCase>,
     private val saveQuizResultUseCase: Provider<SaveQuizUseCase>,
-    private val getQuizResultUseCase: Provider<GetQuizResultUseCase>,
 ) : BaseViewModel<QuizUiState, QuizUiEvent, QuizUiAction>() {
 
     private val args = savedStateHandle.toRoute<Screens.QuizMain.Quiz>().also { args ->
-        args.quizId?.also { quizId ->
-            viewModelScope.launch {
-                getQuizResultUseCase.get().invoke(quizId).collect { result ->
-                    when (result) {
-                        is Result.Error -> {
-                            sendAction { QuizUiAction.ShowError }
-                            sendAction { QuizUiAction.NavigateToStart }
-                        }
-
-                        Result.Loading -> setState(QuizUiState.Loading)
-                        is Result.Success -> {
-                            val quiz = result.value.toQuizEntity()
-                            startQuiz(quiz)
-                        }
-                    }
-                }
-            }
-        } ?: viewModelScope.launch {
-            getNewQuizUseCase.get().invoke(args.category, args.difficult)
+        viewModelScope.launch {
+            getExistedOrNewQuizUseCase.get().invoke(args.quizId, args.category, args.difficult)
                 .collect { result ->
                     when (result) {
                         Result.Loading -> setState(QuizUiState.Loading)
@@ -92,7 +72,7 @@ internal class QuizNewViewModel @Inject constructor(
         setState(state.copy(frozen = true, showCorrectAnswer = true))
         delay(2000L)
         if (state.currentQuestionIndex == state.quiz.questions.lastIndex) {
-            saveQuiz(state, false)
+            saveQuizAndShowResult(state, false)
         } else {
             val currentTimer = (currentState as? QuizUiState.Quiz)?.timer
             val nextIndex = state.currentQuestionIndex + 1
@@ -110,29 +90,27 @@ internal class QuizNewViewModel @Inject constructor(
     }
 
     @OptIn(ExperimentalTime::class)
-    private fun saveQuiz(state: QuizUiState.Quiz, hasTimeout: Boolean) {
-        val questions = if (hasTimeout) {
-            state.quiz.questions.map { question ->
-                if (question.selectedAnswerIndex == null) {
-                    val wrongAnswer = question.answers.filterNot { it.isCorrect }.random()
-                    val randomWrongAnswerIndex: Int = question.answers.indexOf(wrongAnswer)
-                    question.copy(selectedAnswerIndex = randomWrongAnswerIndex)
-                } else question
-            }
-        } else state.quiz.questions
+    private fun saveQuizAndShowResult(state: QuizUiState.Quiz, hasTimeout: Boolean) {
         viewModelScope.launch {
-            val passedTime =
-                Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-            val result =
-                state.quiz.let { quiz ->
-                    QuizResultEntity(
-                        id = args.quizId ?: 0,
-                        generalCategory = quiz.generalCategory,
-                        difficult = quiz.difficult,
-                        passedTime = passedTime,
-                        questions = questions
-                    )
+            val questions = if (hasTimeout) {
+                state.quiz.questions.map { question ->
+                    if (question.selectedAnswerIndex == null) {
+                        val wrongAnswer = question.answers.filterNot { it.isCorrect }.random()
+                        val randomWrongAnswerIndex: Int = question.answers.indexOf(wrongAnswer)
+                        question.copy(selectedAnswerIndex = randomWrongAnswerIndex)
+                    } else question
                 }
+            } else state.quiz.questions
+            val passedTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+            val result = state.quiz.let { quiz ->
+                QuizResultEntity(
+                    id = args.quizId ?: 0,
+                    generalCategory = quiz.generalCategory,
+                    difficult = quiz.difficult,
+                    passedTime = passedTime,
+                    questions = questions
+                )
+            }
             saveQuizResultUseCase.get().invoke(result)
             sendAction {
                 QuizUiAction.OpenResults(
@@ -157,8 +135,8 @@ internal class QuizNewViewModel @Inject constructor(
         if (state.frozen) return
         when (event) {
             QuizUiEvent.OnRetryClicked -> {
-                saveQuiz(state, true)
-                sendAction { QuizUiAction.NavigateToStart }
+                saveQuizAndShowResult(state, true)
+                setState(state.copy(showTimeout = false))
             }
 
             QuizUiEvent.OnNextClicked -> viewModelScope.launch {
@@ -177,10 +155,5 @@ internal class QuizNewViewModel @Inject constructor(
         }
     }
 }
-
-private fun QuizResultEntity.toQuizEntity(): QuizEntity =
-    QuizEntity(generalCategory, difficult, questions.map { it.disableAnswers() })
-
-private fun QuestionEntity.disableAnswers(): QuestionEntity = copy(selectedAnswerIndex = null)
 
 internal const val TimerMaxValue: Long = 5 * 60 * 1000  // 5 minutes

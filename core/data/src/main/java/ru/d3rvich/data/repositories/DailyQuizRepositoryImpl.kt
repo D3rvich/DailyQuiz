@@ -5,8 +5,10 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import ru.d3rvich.data.mapper.toQuestionEntity
 import ru.d3rvich.data.mapper.toQuizDBO
+import ru.d3rvich.data.mapper.toQuizEntity
 import ru.d3rvich.data.mapper.toQuizResultEntity
 import ru.d3rvich.database.DailyQuizDatabase
+import ru.d3rvich.database.model.QuizDBO
 import ru.d3rvich.domain.entities.AnswerEntity
 import ru.d3rvich.domain.entities.QuizEntity
 import ru.d3rvich.domain.entities.QuizResultEntity
@@ -22,11 +24,15 @@ internal class DailyQuizRepositoryImpl(
     private val networkDataSource: DailyQuizNetworkDataSource,
     private val database: DailyQuizDatabase
 ) : DailyQuizRepository {
-    override suspend fun getNewQuiz(
+    override fun getExistedOrNewQuiz(
+        quizId: Long?,
         category: Category,
         difficult: Difficult
     ): Flow<Result<QuizEntity>> = flow {
-        when (val result = networkDataSource.getQuiz(DefaultQuestionsCount, category, difficult)) {
+        quizId?.also {
+            emit(database.quizDao.getQuizBy(quizId).toQuizEntity(true))
+        } ?: when (val result =
+            networkDataSource.getQuiz(DefaultQuestionsAmount, category, difficult)) {
             is NetworkResult.Failure -> throw result.exception
             is NetworkResult.Success -> {
                 val questions = result.value.map { it.toQuestionEntity(::combineAnswers) }
@@ -45,7 +51,7 @@ internal class DailyQuizRepositoryImpl(
         database.quizDao.saveQuiz(quizResult.toQuizDBO())
 
     override fun getQuizHistory(): Flow<List<QuizResultEntity>> =
-        database.quizDao.getQuizHistory().map { list -> list.map { it.toQuizResultEntity() } }
+        database.quizDao.getQuizHistory().map { list -> list.map(QuizDBO::toQuizResultEntity) }
 
     override fun getQuizBy(id: Long): Flow<Result<QuizResultEntity>> = flow {
         emit((database.quizDao.getQuizBy(id = id).toQuizResultEntity()))
@@ -58,4 +64,4 @@ internal class DailyQuizRepositoryImpl(
 private fun combineAnswers(currentAnswer: String, otherAnswers: List<String>): List<AnswerEntity> =
     (otherAnswers.map { AnswerEntity(it, false) } + AnswerEntity(currentAnswer, true)).shuffled()
 
-private const val DefaultQuestionsCount = 5
+private const val DefaultQuestionsAmount = 5

@@ -1,5 +1,6 @@
 package ru.d3rvich.data.mapper
 
+import ru.d3rvich.database.model.AnswerDBO
 import ru.d3rvich.database.model.QuestionDBO
 import ru.d3rvich.domain.entities.AnswerEntity
 import ru.d3rvich.domain.entities.QuestionEntity
@@ -17,13 +18,13 @@ internal inline fun Question.toQuestionEntity(
 internal fun QuestionDBO.toQuestionEntity(): QuestionEntity = QuestionEntity(
     category = category,
     text = text,
-    answers = answers.map { it.toAnswerEntity() },
+    answers = answers.map(AnswerDBO::toAnswerEntity),
     selectedAnswerIndex = selectedAnswerIndex
 )
 
 internal fun QuestionEntity.toQuestionDBO(): QuestionDBO = QuestionDBO(
     category = category,
     text = text,
-    answers = answers.map { it.toAnswerDBO() },
+    answers = answers.map(AnswerEntity::toAnswerDBO),
     selectedAnswerIndex = selectedAnswerIndex ?: Random.nextInt(answers.lastIndex)
 )

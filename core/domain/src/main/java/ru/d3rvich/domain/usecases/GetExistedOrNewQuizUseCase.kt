@@ -8,9 +8,10 @@ import ru.d3rvich.domain.model.Result
 import ru.d3rvich.domain.repositories.DailyQuizRepository
 import javax.inject.Inject
 
-class GetNewQuizUseCase @Inject constructor(private val repository: DailyQuizRepository) {
-    suspend operator fun invoke(
+class GetExistedOrNewQuizUseCase @Inject constructor(private val repository: DailyQuizRepository) {
+    operator fun invoke(
+        quizId: Long?,
         category: Category,
         difficult: Difficult
-    ): Flow<Result<QuizEntity>> = repository.getNewQuiz(category, difficult)
+    ): Flow<Result<QuizEntity>> = repository.getExistedOrNewQuiz(quizId, category, difficult)
 }
