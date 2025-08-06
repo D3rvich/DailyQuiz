@@ -23,15 +23,15 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.fromHtml
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import ru.d3rvich.domain.entities.AnswerEntity
 import ru.d3rvich.result.R
-import ru.d3rvich.ui.R as uiR
 import ru.d3rvich.ui.components.CorrectCheckIcon
+import ru.d3rvich.ui.model.AnswerUiModel
 import ru.d3rvich.ui.theme.DailyQuizTheme
+import ru.d3rvich.ui.R as uiR
 
 @Composable
 internal fun AnswersView(
-    answers: List<AnswerEntity>,
+    answers: List<AnswerUiModel>,
     selectedAnswerIndex: Int,
     modifier: Modifier = Modifier
 ) {

@@ -7,5 +7,4 @@
     <string name="unselected_answer">Unselected answer</string>
     <string name="category_placement">Категория: %1$s</string>
     <string name="difficult_placement">Сложность: %1$s</string>
-    <string name="error_message">Ошибка! Попробуйте ещё раз</string>
 </resources>

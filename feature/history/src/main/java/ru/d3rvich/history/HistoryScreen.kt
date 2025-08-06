@@ -17,16 +17,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import ru.d3rvich.domain.entities.QuizResultEntity
 import ru.d3rvich.history.model.HistoryUiEvent
 import ru.d3rvich.history.model.HistoryUiState
 import ru.d3rvich.history.views.HistoryEmptyView
 import ru.d3rvich.history.views.QuizHistoryView
+import ru.d3rvich.ui.model.QuizResultUiModel
 
 @Composable
 fun HistoryScreen(
     navigateToQuiz: () -> Unit,
-    navigateToQuizResult: (quizId: Long) -> Unit,
+    navigateToQuizResult: (quizResult: QuizResultUiModel) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val viewModel: HistoryViewModel = hiltViewModel()
@@ -45,8 +45,8 @@ fun HistoryScreen(
 internal fun HistoryScreen(
     state: HistoryUiState,
     onStartQuizClick: () -> Unit,
-    onQuizClick: (quizId: Long) -> Unit,
-    onRemoveQuiz: (quiz: QuizResultEntity) -> Unit,
+    onQuizClick: (quizResult: QuizResultUiModel) -> Unit,
+    onRemoveQuiz: (quizResult: QuizResultUiModel) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

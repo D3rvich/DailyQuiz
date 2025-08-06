@@ -48,23 +48,23 @@ import kotlinx.datetime.format.MonthNames
 import kotlinx.datetime.format.Padding
 import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
-import ru.d3rvich.domain.entities.AnswerEntity
-import ru.d3rvich.domain.entities.QuestionEntity
-import ru.d3rvich.domain.entities.QuizResultEntity
-import ru.d3rvich.domain.entities.correctAnswers
 import ru.d3rvich.domain.model.Category
 import ru.d3rvich.domain.model.Difficult
 import ru.d3rvich.history.R
 import ru.d3rvich.ui.components.DailyQuizStarIcon
+import ru.d3rvich.ui.model.AnswerUiModel
+import ru.d3rvich.ui.model.QuestionUiModel
+import ru.d3rvich.ui.model.QuizResultUiModel
+import ru.d3rvich.ui.model.correctAnswers
 import ru.d3rvich.ui.theme.DailyQuizTheme
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 @Composable
 internal fun QuizHistoryView(
-    quizList: List<QuizResultEntity>,
-    onQuizCLick: (quizId: Long) -> Unit,
-    onRemoveQuiz: (quiz: QuizResultEntity) -> Unit,
+    quizList: List<QuizResultUiModel>,
+    onQuizCLick: (quizResult: QuizResultUiModel) -> Unit,
+    onRemoveQuiz: (quizResult: QuizResultUiModel) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(modifier = modifier) { innerPadding ->
@@ -81,8 +81,8 @@ internal fun QuizHistoryView(
             items(quizList, key = { it.id }) { item ->
                 QuizResultItem(
                     modifier = modifier.animateItem(),
-                    quizResultEntity = item,
-                    onQuizCLick = { onQuizCLick(item.id) },
+                    quizResult = item,
+                    onQuizCLick = { onQuizCLick(item) },
                     onRemoveQuiz = {
                         showDialog = true
                         onRemoveQuiz(item)
@@ -98,7 +98,7 @@ internal fun QuizHistoryView(
 
 @Composable
 private fun QuizResultItem(
-    quizResultEntity: QuizResultEntity,
+    quizResult: QuizResultUiModel,
     onQuizCLick: () -> Unit,
     onRemoveQuiz: () -> Unit,
     modifier: Modifier = Modifier,
@@ -121,7 +121,7 @@ private fun QuizResultItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .indication(interactionSource, LocalIndication.current)
-                .pointerInput(quizResultEntity) {
+                .pointerInput(quizResult) {
                     detectTapGestures(
                         onLongPress = {
                             showMenu = true
@@ -147,19 +147,19 @@ private fun QuizResultItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    "Quiz ${quizResultEntity.id}",
+                    "Quiz ${quizResult.id}",
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF2B0063)
                 )
-                val correctAnswers = remember { quizResultEntity.correctAnswers }
+                val correctAnswers = remember { quizResult.correctAnswers }
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    repeat(quizResultEntity.questions.size) {
+                    repeat(quizResult.questions.size) {
                         DailyQuizStarIcon(it + 1 <= correctAnswers, modifier = Modifier.size(18.dp))
                     }
                 }
             }
-            TimeRow(quizResultEntity.passedTime)
+            TimeRow(quizResult.passedTime)
             Column(
                 Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(2.dp),
@@ -168,12 +168,12 @@ private fun QuizResultItem(
                 Text(
                     stringResource(
                         R.string.category_placement,
-                        quizResultEntity.generalCategory.text
+                        quizResult.generalCategory.text
                     ),
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Text(
-                    stringResource(R.string.difficult_placement, quizResultEntity.difficult.text),
+                    stringResource(R.string.difficult_placement, quizResult.difficult.text),
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
@@ -252,13 +252,13 @@ private fun RemovedItemMenu(
 private fun QuizHistoryViewPreview() {
     DailyQuizTheme {
         val answers = List(4) {
-            AnswerEntity("it?", it == 1)
+            AnswerUiModel("it?", it == 1)
         }
         val questions = List(5) {
-            QuestionEntity("", "it?", answers, it % 4)
+            QuestionUiModel("", "it?", answers, it % 4)
         }
         val list = List(8) {
-            QuizResultEntity(
+            QuizResultUiModel(
                 Category.entries[it],
                 Difficult.entries[it % 4],
                 Clock.System.now().toLocalDateTime(TimeZone.UTC),

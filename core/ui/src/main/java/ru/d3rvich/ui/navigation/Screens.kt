@@ -30,5 +30,5 @@ object Screens {
     data object History
 
     @Serializable
-    data class QuizResult(val quizId: Long)
+    data class QuizResult(val quizResultJson: String)
 }

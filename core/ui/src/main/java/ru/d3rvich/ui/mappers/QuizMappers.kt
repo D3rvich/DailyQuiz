@@ -1,0 +1,12 @@
+package ru.d3rvich.ui.mappers
+
+import ru.d3rvich.domain.entities.QuestionEntity
+import ru.d3rvich.domain.entities.QuizEntity
+import ru.d3rvich.ui.model.QuizUiModel
+
+fun QuizEntity.toQuizUiModel(): QuizUiModel =
+    QuizUiModel(
+        category = generalCategory,
+        difficult = difficult,
+        questions = questions.map(QuestionEntity::toQuestionUiModel),
+    )

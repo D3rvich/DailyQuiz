@@ -37,23 +37,23 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import ru.d3rvich.domain.entities.AnswerEntity
-import ru.d3rvich.domain.entities.QuestionEntity
-import ru.d3rvich.domain.entities.QuizResultEntity
-import ru.d3rvich.domain.entities.correctAnswers
-import ru.d3rvich.domain.entities.isCorrectAnswer
 import ru.d3rvich.domain.model.Category
 import ru.d3rvich.domain.model.Difficult
 import ru.d3rvich.result.R
 import ru.d3rvich.ui.components.CorrectCheckIcon
 import ru.d3rvich.ui.components.QuizResultCard
+import ru.d3rvich.ui.model.AnswerUiModel
+import ru.d3rvich.ui.model.QuestionUiModel
+import ru.d3rvich.ui.model.QuizResultUiModel
+import ru.d3rvich.ui.model.correctAnswers
+import ru.d3rvich.ui.model.isCorrectAnswer
 import ru.d3rvich.ui.theme.DailyQuizTheme
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 @Composable
 internal fun QuizResultDetailView(
-    quizResult: QuizResultEntity,
+    quizResult: QuizResultUiModel,
     onRetryClick: (quizId: Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -83,7 +83,8 @@ internal fun QuizResultDetailView(
                         stringResource(
                             R.string.category_placement,
                             quizResult.generalCategory.text
-                        ))
+                        )
+                    )
                     Text(stringResource(R.string.difficult_placement, quizResult.difficult.text))
                     QuizResultCard(
                         modifier = Modifier.padding(top = 40.dp),
@@ -118,7 +119,7 @@ internal fun QuizResultDetailView(
 
 @Composable
 private fun QuestionResultItem(
-    question: QuestionEntity,
+    question: QuestionUiModel,
     currentCount: Int,
     totalCount: Int,
     modifier: Modifier = Modifier
@@ -183,13 +184,13 @@ private fun RetryButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
 @Composable
 private fun EmptyQuizResultDetailPreview() {
     DailyQuizTheme {
-        val quizResult = QuizResultEntity(
+        val quizResult = QuizResultUiModel(
             generalCategory = Category.AnyCategory,
             difficult = Difficult.AnyDifficulty,
             passedTime = Clock.System.now().toLocalDateTime(
                 TimeZone.currentSystemDefault()
             ),
-            questions = emptyList(),
+            questions = listOf(),
         )
         QuizResultDetailView(quizResult, {})
     }
@@ -201,12 +202,12 @@ private fun EmptyQuizResultDetailPreview() {
 private fun QuizResultDetailPreview() {
     DailyQuizTheme {
         val answers = List(4) {
-            AnswerEntity("Answer $it", it == 1)
+            AnswerUiModel("Answer $it", it == 1)
         }
         val question = List(5) {
-            QuestionEntity("Category", "Question $it", answers, (it + 1) % 4)
+            QuestionUiModel("Category", "Question $it", answers, (it + 1) % 4)
         }
-        val quizResult = QuizResultEntity(
+        val quizResult = QuizResultUiModel(
             generalCategory = Category.AnyCategory,
             difficult = Difficult.AnyDifficulty,
             passedTime = Clock.System.now().toLocalDateTime(

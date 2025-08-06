@@ -10,13 +10,16 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import ru.d3rvich.domain.entities.QuizEntity
 import ru.d3rvich.domain.entities.QuizResultEntity
-import ru.d3rvich.domain.entities.correctAnswers
 import ru.d3rvich.domain.model.Result
 import ru.d3rvich.domain.usecases.GetExistedOrNewQuizUseCase
 import ru.d3rvich.domain.usecases.SaveQuizUseCase
 import ru.d3rvich.quiz.model.QuizUiAction
 import ru.d3rvich.quiz.model.QuizUiEvent
 import ru.d3rvich.quiz.model.QuizUiState
+import ru.d3rvich.ui.mappers.toQuestionEntity
+import ru.d3rvich.ui.mappers.toQuizUiModel
+import ru.d3rvich.ui.model.QuestionUiModel
+import ru.d3rvich.ui.model.correctAnswers
 import ru.d3rvich.ui.mvibase.BaseViewModel
 import ru.d3rvich.ui.navigation.Screens
 import javax.inject.Inject
@@ -50,7 +53,7 @@ internal class QuizNewViewModel @Inject constructor(
     }
 
     private fun startQuiz(quizEntity: QuizEntity, maxValue: Long = TimerMaxValue) {
-        setState(QuizUiState.Quiz(quiz = quizEntity))
+        setState(QuizUiState.Quiz(quiz = quizEntity.toQuizUiModel()))
         viewModelScope.launch {
             var currentTimer: Long = 0
             val tick = 1000L
@@ -105,10 +108,10 @@ internal class QuizNewViewModel @Inject constructor(
             val result = state.quiz.let { quiz ->
                 QuizResultEntity(
                     id = args.quizId ?: 0,
-                    generalCategory = quiz.generalCategory,
+                    generalCategory = quiz.category,
                     difficult = quiz.difficult,
                     passedTime = passedTime,
-                    questions = questions
+                    questions = questions.map(QuestionUiModel::toQuestionEntity)
                 )
             }
             saveQuizResultUseCase.get().invoke(result)

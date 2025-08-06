@@ -3,10 +3,13 @@ package ru.d3rvich.history
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import ru.d3rvich.domain.entities.QuizResultEntity
 import ru.d3rvich.domain.usecases.GetQuizHistoryUseCase
 import ru.d3rvich.domain.usecases.RemoveQuizUseCase
 import ru.d3rvich.history.model.HistoryUiEvent
 import ru.d3rvich.history.model.HistoryUiState
+import ru.d3rvich.ui.mappers.toQuizResultEntity
+import ru.d3rvich.ui.mappers.toQuizResultUiModel
 import ru.d3rvich.ui.mvibase.BaseViewModel
 import ru.d3rvich.ui.mvibase.UiAction
 import javax.inject.Inject
@@ -20,8 +23,12 @@ internal class HistoryViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            getQuizHistoryUseCase.get().invoke().collect { quizResultEntities ->
-                setState(HistoryUiState.Content(quizResultEntities))
+            getQuizHistoryUseCase.get().invoke().collect { quizResults ->
+                setState(
+                    HistoryUiState.Content(
+                        quizResults.map(QuizResultEntity::toQuizResultUiModel)
+                    )
+                )
             }
         }
     }
@@ -29,10 +36,10 @@ internal class HistoryViewModel @Inject constructor(
     override fun createInitialState(): HistoryUiState = HistoryUiState.Loading
 
     override fun obtainEvent(event: HistoryUiEvent) {
-        require(currentState !is HistoryUiState.Loading) { "Illegal $event for Idle state" }
+        require(currentState !is HistoryUiState.Loading) { "Illegal $event for $currentState state" }
         when (event) {
             is HistoryUiEvent.OnRemoveQuiz -> viewModelScope.launch {
-                removeQuizUseCase.get().invoke(event.quiz)
+                removeQuizUseCase.get().invoke(event.quiz.toQuizResultEntity())
             }
         }
     }

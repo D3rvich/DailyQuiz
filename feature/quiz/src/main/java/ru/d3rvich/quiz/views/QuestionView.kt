@@ -1,6 +1,7 @@
 package ru.d3rvich.quiz.views
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -43,21 +44,21 @@ import kotlinx.datetime.format
 import kotlinx.datetime.format.Padding
 import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
-import ru.d3rvich.domain.entities.AnswerEntity
-import ru.d3rvich.domain.entities.QuestionEntity
 import ru.d3rvich.quiz.R
 import ru.d3rvich.quiz.TimerMaxValue
 import ru.d3rvich.ui.components.CorrectCheckIcon
 import ru.d3rvich.ui.components.DailyQuizButton
 import ru.d3rvich.ui.components.DailyQuizLogo
 import ru.d3rvich.ui.components.DailyQuizRadioButtonIcon
+import ru.d3rvich.ui.model.AnswerUiModel
+import ru.d3rvich.ui.model.QuestionUiModel
 import ru.d3rvich.ui.theme.DailyQuizTheme
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 @Composable
 internal fun QuestionView(
-    question: QuestionEntity,
+    question: QuestionUiModel,
     progressCount: Int,
     maxQuestions: Int,
     selectedAnswerIndex: Int?,
@@ -78,7 +79,8 @@ internal fun QuestionView(
         Card(
             modifier = Modifier
                 .padding(horizontal = 24.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .animateContentSize(),
             shape = RoundedCornerShape(40.dp)
         ) {
             Column(
@@ -205,7 +207,7 @@ private fun TimerView(currentValue: Long, maxValue: Long, modifier: Modifier = M
 
 @Composable
 private fun AnswersView(
-    answers: List<AnswerEntity>,
+    answers: List<AnswerUiModel>,
     selectedAnswerIndex: Int?,
     showCorrectAnswer: Boolean,
     modifier: Modifier = Modifier,
@@ -293,8 +295,8 @@ private fun AnswerPreview() {
 @Composable
 private fun QuestionPreview() {
     DailyQuizTheme {
-        val answers = List(4) { AnswerEntity("Answer #${it + 1}", it == 1) }
-        val entity = QuestionEntity(
+        val answers = List(4) { AnswerUiModel("Answer #${it + 1}", it == 1) }
+        val entity = QuestionUiModel(
             "",
             "Lorem ipsum dolor sit amet consectetur adipiscing elit. Dolor sit amet consectetur adipiscing elit quisque faucibus.",
             answers,
