@@ -64,13 +64,13 @@ internal fun QuestionView(
     selectedAnswerIndex: Int?,
     showCorrectAnswer: Boolean,
     timerCurrentValue: Long,
+    timerMaxValue: Long,
     showTimeoutMessage: Boolean,
     modifier: Modifier = Modifier,
     onAnswerSelect: (index: Int) -> Unit,
     onNextClick: () -> Unit,
     onBackClick: () -> Unit,
     onRetryClick: () -> Unit,
-    timerMaxValue: Long = TimerMaxValue,
 ) {
     require(progressCount > 0)
     require(progressCount <= maxQuestions) { "progressCount can't be more than maxQuestion" }
@@ -165,6 +165,8 @@ private fun TopBar(modifier: Modifier = Modifier, onBackClick: () -> Unit) {
 @OptIn(ExperimentalTime::class)
 @Composable
 private fun TimerView(currentValue: Long, maxValue: Long, modifier: Modifier = Modifier) {
+    require(maxValue > 0) { "Timer max value had to be greater than zero." }
+    require(currentValue <= maxValue) { "Timer current value can't me greater it's max value." }
     Column(modifier.fillMaxWidth()) {
         val currentDateTime = Instant.fromEpochMilliseconds(currentValue)
             .toLocalDateTime(TimeZone.currentSystemDefault())
@@ -307,6 +309,7 @@ private fun QuestionPreview() {
             progressCount = 1,
             maxQuestions = 5,
             timerCurrentValue = 2000L,
+            timerMaxValue = TimerMaxValue,
             selectedAnswerIndex = null,
             showCorrectAnswer = false,
             showTimeoutMessage = false,

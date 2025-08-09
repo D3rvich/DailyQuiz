@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -57,7 +58,7 @@ internal class QuizNewViewModel @Inject constructor(
         viewModelScope.launch {
             var currentTimer: Long = 0
             val tick = 1000L
-            while (currentTimer < maxValue) {
+            while (isActive && currentTimer < maxValue) {
                 delay(tick)
                 currentTimer += tick
                 (currentState as? QuizUiState.Quiz)?.also { quizState ->
