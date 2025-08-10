@@ -118,7 +118,7 @@ private fun MainContent(
                     Card(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(horizontal = 12.dp),
+                            .padding(horizontal = 20.dp),
                         shape = RoundedCornerShape(40.dp)
                     ) {
                         Column(

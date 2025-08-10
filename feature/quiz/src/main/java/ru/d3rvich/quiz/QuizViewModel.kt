@@ -117,7 +117,7 @@ internal class QuizNewViewModel @Inject constructor(
             }
             saveQuizResultUseCase.get().invoke(result)
             sendAction {
-                QuizUiAction.OpenResults(
+                QuizUiAction.NavigateToResults(
                     state.quiz.correctAnswers,
                     state.quiz.questions.size
                 )
