@@ -1,15 +1,9 @@
 package ru.d3rvich.history
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -27,6 +21,7 @@ import ru.d3rvich.ui.model.QuizResultUiModel
 fun HistoryScreen(
     navigateToQuiz: () -> Unit,
     navigateToQuizResult: (quizResult: QuizResultUiModel) -> Unit,
+    navigateBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val viewModel: HistoryViewModel = hiltViewModel()
@@ -36,7 +31,8 @@ fun HistoryScreen(
         modifier = modifier,
         onRemoveQuiz = { viewModel.obtainEvent(HistoryUiEvent.OnRemoveQuiz(it)) },
         onStartQuizClick = { navigateToQuiz() },
-        onQuizClick = { navigateToQuizResult(it) }
+        onQuizClick = { navigateToQuizResult(it) },
+        onBackClick = navigateBack,
     )
 }
 
@@ -47,6 +43,7 @@ internal fun HistoryScreen(
     onStartQuizClick: () -> Unit,
     onQuizClick: (quizResult: QuizResultUiModel) -> Unit,
     onRemoveQuiz: (quizResult: QuizResultUiModel) -> Unit,
+    onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -65,17 +62,11 @@ internal fun HistoryScreen(
                     QuizHistoryView(
                         quizList = state.quizResultEntities,
                         onQuizCLick = onQuizClick,
-                        onRemoveQuiz = onRemoveQuiz
+                        onRemoveQuiz = onRemoveQuiz,
+                        onBackClick = onBackClick
                     )
                 }
             }
         }
-        Box(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.background.copy(alpha = 0.5f))
-                .fillMaxWidth()
-                .windowInsetsTopHeight(WindowInsets.safeDrawing)
-                .align(Alignment.TopStart)
-        )
     }
 }
