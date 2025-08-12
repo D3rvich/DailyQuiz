@@ -82,6 +82,7 @@ private fun NavGraphBuilder.quizResult(navController: NavController) {
                     launchSingleTop = true
                 }
             },
+            navigateBack = { navController.popBackStack() }
         )
     }
 }

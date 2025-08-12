@@ -1,8 +1,6 @@
 package ru.d3rvich.result.view
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -13,27 +11,28 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.fromHtml
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -51,48 +50,42 @@ import ru.d3rvich.ui.theme.DailyQuizTheme
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun QuizResultDetailView(
     quizResult: QuizResultUiModel,
     onRetryClick: (quizId: Long) -> Unit,
+    onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Box(modifier.fillMaxWidth()) {
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    Scaffold(
+        modifier = modifier.fillMaxWidth(),
+        contentWindowInsets = WindowInsets(0),
+        topBar = {
+            QuizResultTopAppBar(
+                category = quizResult.generalCategory.text,
+                difficult = quizResult.difficult.text,
+                scrollBehavior = scrollBehavior,
+                onBackClick = onBackClick
+            )
+        }) { innerPadding ->
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = WindowInsets.safeDrawing.only(WindowInsetsSides.Vertical)
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
+            contentPadding = WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom)
                 .asPaddingValues(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             item {
-                Column(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 12.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = stringResource(R.string.results),
-                        style = MaterialTheme.typography.displaySmall,
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = TextUnit(0f, TextUnitType.Sp),
-                        modifier = modifier.padding(bottom = 12.dp, top = 52.dp)
-                    )
-                    Text(
-                        stringResource(
-                            R.string.category_placement,
-                            quizResult.generalCategory.text
-                        )
-                    )
-                    Text(stringResource(R.string.difficult_placement, quizResult.difficult.text))
-                    QuizResultCard(
-                        modifier = Modifier.padding(top = 40.dp),
-                        correctAnswers = quizResult.correctAnswers,
-                        totalQuestions = quizResult.questions.size,
-                        onRetryClick = { onRetryClick(quizResult.id) }
-                    )
-                }
+                QuizResultCard(
+                    correctAnswers = quizResult.correctAnswers,
+                    totalQuestions = quizResult.questions.size,
+                    onRetryClick = { onRetryClick(quizResult.id) }
+                )
             }
             itemsIndexed(
                 quizResult.questions,
@@ -107,13 +100,6 @@ internal fun QuizResultDetailView(
                 RetryButton({ onRetryClick(quizResult.id) })
             }
         }
-        Box(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.background.copy(alpha = 0.5f))
-                .windowInsetsTopHeight(WindowInsets.safeDrawing)
-                .fillMaxWidth()
-                .align(Alignment.TopStart)
-        )
     }
 }
 
@@ -192,7 +178,7 @@ private fun EmptyQuizResultDetailPreview() {
             ),
             questions = listOf(),
         )
-        QuizResultDetailView(quizResult, {})
+        QuizResultDetailView(quizResult, {}, {})
     }
 }
 
@@ -215,6 +201,6 @@ private fun QuizResultDetailPreview() {
             ),
             questions = question,
         )
-        QuizResultDetailView(quizResult, {})
+        QuizResultDetailView(quizResult, {}, {})
     }
 }
