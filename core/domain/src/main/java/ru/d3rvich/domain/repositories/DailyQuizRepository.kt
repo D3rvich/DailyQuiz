@@ -6,6 +6,7 @@ import ru.d3rvich.domain.entities.QuizResultEntity
 import ru.d3rvich.domain.model.Category
 import ru.d3rvich.domain.model.Difficult
 import ru.d3rvich.domain.model.Result
+import ru.d3rvich.domain.model.SortBy
 
 interface DailyQuizRepository {
     fun getExistedOrNewQuiz(
@@ -16,7 +17,7 @@ interface DailyQuizRepository {
 
     suspend fun saveQuiz(quizResult: QuizResultEntity)
 
-    fun getQuizHistory(): Flow<List<QuizResultEntity>>
+    fun getQuizHistory(sortBy: SortBy, byAscending: Boolean): Flow<List<QuizResultEntity>>
 
     fun getQuizBy(id: Long): Flow<Result<QuizResultEntity>>
 
