@@ -7,25 +7,20 @@ import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -46,11 +41,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
@@ -63,8 +55,6 @@ import ru.d3rvich.domain.model.Category
 import ru.d3rvich.domain.model.Difficult
 import ru.d3rvich.history.R
 import ru.d3rvich.ui.components.DailyQuizStarIcon
-import ru.d3rvich.ui.components.appbar.CollapsingTopAppBar
-import ru.d3rvich.ui.components.appbar.CollapsingTopAppBarDefaults
 import ru.d3rvich.ui.model.AnswerUiModel
 import ru.d3rvich.ui.model.QuestionUiModel
 import ru.d3rvich.ui.model.QuizResultUiModel
@@ -84,39 +74,7 @@ internal fun QuizHistoryView(
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(modifier = modifier, topBar = {
-        val expandedHeight = 200.dp
-        CollapsingTopAppBar(
-            title = { Text(stringResource(R.string.history), color = Color.White) },
-            scrollBehavior = scrollBehavior,
-            expandedContent = {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(expandedHeight),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = stringResource(R.string.history),
-                        style = MaterialTheme.typography.displaySmall,
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = TextUnit(0f, TextUnitType.Sp),
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                    )
-                }
-            },
-            navigationIcon = {
-                IconButton(onBackClick) {
-                    Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = stringResource(R.string.navigate_back))
-                }
-            },
-            expandedHeight = expandedHeight,
-            colors = CollapsingTopAppBarDefaults.colors.copy(
-                containerColor = MaterialTheme.colorScheme.background,
-                navigationIconContentColor = Color.White,
-                scrolledContainerColor = MaterialTheme.colorScheme.background
-            )
-        )
+        QuizHistoryTopAppBar(scrollBehavior = scrollBehavior, onBackClick = onBackClick)
     }) { innerPadding ->
         var showDialog by rememberSaveable { mutableStateOf(false) }
         LazyColumn(
