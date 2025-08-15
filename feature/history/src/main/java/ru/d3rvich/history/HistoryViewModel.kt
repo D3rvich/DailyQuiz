@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import ru.d3rvich.domain.entities.QuizResultEntity
+import ru.d3rvich.domain.model.SortBy
 import ru.d3rvich.domain.usecases.GetQuizHistoryUseCase
 import ru.d3rvich.domain.usecases.RemoveQuizUseCase
 import ru.d3rvich.history.model.HistoryUiEvent
@@ -22,15 +23,7 @@ internal class HistoryViewModel @Inject constructor(
 ) : BaseViewModel<HistoryUiState, HistoryUiEvent, UiAction>() {
 
     init {
-        viewModelScope.launch {
-            getQuizHistoryUseCase.get().invoke().collect { quizResults ->
-                setState(
-                    HistoryUiState.Content(
-                        quizResults.map(QuizResultEntity::toQuizResultUiModel)
-                    )
-                )
-            }
-        }
+        setUpHistory(sortBy = SortBy.Default, byAscending = true)
     }
 
     override fun createInitialState(): HistoryUiState = HistoryUiState.Loading
@@ -40,6 +33,26 @@ internal class HistoryViewModel @Inject constructor(
         when (event) {
             is HistoryUiEvent.OnRemoveQuiz -> viewModelScope.launch {
                 removeQuizUseCase.get().invoke(event.quiz.toQuizResultEntity())
+            }
+
+            is HistoryUiEvent.OnSortChange -> {
+                setUpHistory(event.selectedSort, event.byAscending)
+            }
+        }
+    }
+
+    private fun setUpHistory(sortBy: SortBy, byAscending: Boolean) {
+        viewModelScope.launch {
+            getQuizHistoryUseCase.get().invoke(
+                sortBy = sortBy,
+                byAscending = byAscending
+            ).collect { quizResults ->
+                setState(
+                    HistoryUiState.Content(
+                        quizResultEntities = quizResults.map(QuizResultEntity::toQuizResultUiModel),
+                        selectedSort = sortBy, byAscending = byAscending
+                    )
+                )
             }
         }
     }

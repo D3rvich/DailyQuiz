@@ -53,6 +53,7 @@ import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
 import ru.d3rvich.domain.model.Category
 import ru.d3rvich.domain.model.Difficult
+import ru.d3rvich.domain.model.SortBy
 import ru.d3rvich.history.R
 import ru.d3rvich.ui.components.DailyQuizStarIcon
 import ru.d3rvich.ui.model.AnswerUiModel
@@ -67,6 +68,9 @@ import kotlin.time.ExperimentalTime
 @Composable
 internal fun QuizHistoryView(
     quizList: List<QuizResultUiModel>,
+    selectedSort: SortBy,
+    byAscending: Boolean,
+    onSortChange: (selectedSort: SortBy, byAscending: Boolean) -> Unit,
     onQuizCLick: (quizResult: QuizResultUiModel) -> Unit,
     onRemoveQuiz: (quizResult: QuizResultUiModel) -> Unit,
     onBackClick: () -> Unit,
@@ -74,7 +78,13 @@ internal fun QuizHistoryView(
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(modifier = modifier, topBar = {
-        QuizHistoryTopAppBar(scrollBehavior = scrollBehavior, onBackClick = onBackClick)
+        QuizHistoryTopAppBar(
+            selectedSort = selectedSort,
+            byAscending = byAscending,
+            scrollBehavior = scrollBehavior,
+            onSortChange = onSortChange,
+            onBackClick = onBackClick
+        )
     }) { innerPadding ->
         var showDialog by rememberSaveable { mutableStateOf(false) }
         LazyColumn(
@@ -272,6 +282,6 @@ private fun QuizHistoryViewPreview() {
                 it.toLong()
             )
         }
-        QuizHistoryView(list, {}, {}, {})
+        QuizHistoryView(list, SortBy.Default, true, { _, _ -> }, {}, {}, {})
     }
 }

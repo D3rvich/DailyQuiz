@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import ru.d3rvich.domain.model.SortBy
 import ru.d3rvich.history.model.HistoryUiEvent
 import ru.d3rvich.history.model.HistoryUiState
 import ru.d3rvich.history.views.HistoryEmptyView
@@ -30,9 +31,12 @@ fun HistoryScreen(
         state = state,
         modifier = modifier,
         onRemoveQuiz = { viewModel.obtainEvent(HistoryUiEvent.OnRemoveQuiz(it)) },
+        onSortChange = { selectedSort, byAscending ->
+            viewModel.obtainEvent(HistoryUiEvent.OnSortChange(selectedSort, byAscending))
+        },
         onStartQuizClick = { navigateToQuiz() },
         onQuizClick = { navigateToQuizResult(it) },
-        onBackClick = navigateBack,
+        onBackClick = navigateBack
     )
 }
 
@@ -41,6 +45,7 @@ fun HistoryScreen(
 internal fun HistoryScreen(
     state: HistoryUiState,
     onStartQuizClick: () -> Unit,
+    onSortChange: (selectedSort: SortBy, byAscending: Boolean) -> Unit,
     onQuizClick: (quizResult: QuizResultUiModel) -> Unit,
     onRemoveQuiz: (quizResult: QuizResultUiModel) -> Unit,
     onBackClick: () -> Unit,
@@ -61,6 +66,9 @@ internal fun HistoryScreen(
                 } else {
                     QuizHistoryView(
                         quizList = state.quizResultEntities,
+                        selectedSort = state.selectedSort,
+                        byAscending = state.byAscending,
+                        onSortChange = onSortChange,
                         onQuizCLick = onQuizClick,
                         onRemoveQuiz = onRemoveQuiz,
                         onBackClick = onBackClick
