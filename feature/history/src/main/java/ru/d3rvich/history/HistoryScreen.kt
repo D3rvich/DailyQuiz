@@ -31,8 +31,8 @@ fun HistoryScreen(
         state = state,
         modifier = modifier,
         onRemoveQuiz = { viewModel.obtainEvent(HistoryUiEvent.OnRemoveQuiz(it)) },
-        onSortChange = { selectedSort, byAscending ->
-            viewModel.obtainEvent(HistoryUiEvent.OnSortChange(selectedSort, byAscending))
+        onSortChange = { selectedSort ->
+            viewModel.obtainEvent(HistoryUiEvent.OnSortChange(selectedSort))
         },
         onStartQuizClick = { navigateToQuiz() },
         onQuizClick = { navigateToQuizResult(it) },
@@ -45,7 +45,7 @@ fun HistoryScreen(
 internal fun HistoryScreen(
     state: HistoryUiState,
     onStartQuizClick: () -> Unit,
-    onSortChange: (selectedSort: SortBy, byAscending: Boolean) -> Unit,
+    onSortChange: (selectedSort: SortBy) -> Unit,
     onQuizClick: (quizResult: QuizResultUiModel) -> Unit,
     onRemoveQuiz: (quizResult: QuizResultUiModel) -> Unit,
     onBackClick: () -> Unit,
@@ -67,7 +67,6 @@ internal fun HistoryScreen(
                     QuizHistoryView(
                         quizList = state.quizResultEntities,
                         selectedSort = state.selectedSort,
-                        byAscending = state.byAscending,
                         onSortChange = onSortChange,
                         onQuizCLick = onQuizClick,
                         onRemoveQuiz = onRemoveQuiz,

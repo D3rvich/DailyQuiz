@@ -69,8 +69,7 @@ import kotlin.time.ExperimentalTime
 internal fun QuizHistoryView(
     quizList: List<QuizResultUiModel>,
     selectedSort: SortBy,
-    byAscending: Boolean,
-    onSortChange: (selectedSort: SortBy, byAscending: Boolean) -> Unit,
+    onSortChange: (selectedSort: SortBy) -> Unit,
     onQuizCLick: (quizResult: QuizResultUiModel) -> Unit,
     onRemoveQuiz: (quizResult: QuizResultUiModel) -> Unit,
     onBackClick: () -> Unit,
@@ -80,7 +79,6 @@ internal fun QuizHistoryView(
     Scaffold(modifier = modifier, topBar = {
         QuizHistoryTopAppBar(
             selectedSort = selectedSort,
-            byAscending = byAscending,
             scrollBehavior = scrollBehavior,
             onSortChange = onSortChange,
             onBackClick = onBackClick
@@ -282,6 +280,6 @@ private fun QuizHistoryViewPreview() {
                 it.toLong()
             )
         }
-        QuizHistoryView(list, SortBy.Default, true, { _, _ -> }, {}, {}, {})
+        QuizHistoryView(list, SortBy.Default(true), { }, {}, {}, {})
     }
 }

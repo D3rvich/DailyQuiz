@@ -23,7 +23,7 @@ internal class HistoryViewModel @Inject constructor(
 ) : BaseViewModel<HistoryUiState, HistoryUiEvent, UiAction>() {
 
     init {
-        setUpHistory(sortBy = SortBy.Default, byAscending = true)
+        setUpHistory(sortBy = SortBy.Default(true))
     }
 
     override fun createInitialState(): HistoryUiState = HistoryUiState.Loading
@@ -36,21 +36,18 @@ internal class HistoryViewModel @Inject constructor(
             }
 
             is HistoryUiEvent.OnSortChange -> {
-                setUpHistory(event.selectedSort, event.byAscending)
+                setUpHistory(event.selectedSort)
             }
         }
     }
 
-    private fun setUpHistory(sortBy: SortBy, byAscending: Boolean) {
+    private fun setUpHistory(sortBy: SortBy) {
         viewModelScope.launch {
-            getQuizHistoryUseCase.get().invoke(
-                sortBy = sortBy,
-                byAscending = byAscending
-            ).collect { quizResults ->
+            getQuizHistoryUseCase.get().invoke(sortBy = sortBy).collect { quizResults ->
                 setState(
                     HistoryUiState.Content(
                         quizResultEntities = quizResults.map(QuizResultEntity::toQuizResultUiModel),
-                        selectedSort = sortBy, byAscending = byAscending
+                        selectedSort = sortBy
                     )
                 )
             }

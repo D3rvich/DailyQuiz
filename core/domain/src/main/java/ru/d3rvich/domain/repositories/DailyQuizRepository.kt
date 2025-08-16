@@ -17,7 +17,7 @@ interface DailyQuizRepository {
 
     suspend fun saveQuiz(quizResult: QuizResultEntity)
 
-    fun getQuizHistory(sortBy: SortBy, byAscending: Boolean): Flow<List<QuizResultEntity>>
+    fun getQuizHistory(sortBy: SortBy): Flow<List<QuizResultEntity>>
 
     fun getQuizBy(id: Long): Flow<Result<QuizResultEntity>>
 

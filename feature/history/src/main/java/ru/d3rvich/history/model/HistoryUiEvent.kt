@@ -8,5 +8,5 @@ internal sealed interface HistoryUiEvent : UiEvent {
 
     data class OnRemoveQuiz(val quiz: QuizResultUiModel) : HistoryUiEvent
 
-    data class OnSortChange(val selectedSort: SortBy, val byAscending: Boolean) : HistoryUiEvent
+    data class OnSortChange(val selectedSort: SortBy) : HistoryUiEvent
 }

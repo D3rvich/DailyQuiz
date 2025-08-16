@@ -1,6 +1,6 @@
 package ru.d3rvich.domain.model
 
-enum class SortBy {
-    Default,
-    PassedTime,
+sealed class SortBy(val byAscending: Boolean) {
+    class Default(byAscending: Boolean) : SortBy(byAscending)
+    class PassedTime(byAscending: Boolean) : SortBy(byAscending)
 }

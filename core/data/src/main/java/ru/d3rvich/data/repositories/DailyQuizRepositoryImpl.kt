@@ -52,11 +52,8 @@ internal class DailyQuizRepositoryImpl(
     override suspend fun saveQuiz(quizResult: QuizResultEntity) =
         database.quizDao.saveQuiz(quizResult.toQuizDBO())
 
-    override fun getQuizHistory(
-        sortBy: SortBy,
-        byAscending: Boolean
-    ): Flow<List<QuizResultEntity>> =
-        database.quizDao.getQuizHistory(sortBy = sortBy.rawValue, isAsc = byAscending)
+    override fun getQuizHistory(sortBy: SortBy): Flow<List<QuizResultEntity>> =
+        database.quizDao.getQuizHistory(sortBy = sortBy.rawValue, isAsc = sortBy.byAscending)
             .map { list -> list.map(QuizDBO::toQuizResultEntity) }
 
     override fun getQuizBy(id: Long): Flow<Result<QuizResultEntity>> = flow {
@@ -76,8 +73,8 @@ internal class DailyQuizRepositoryImpl(
 
 private val SortBy.rawValue: String
     get() = when (this) {
-        SortBy.Default -> SortByRaw.DEFAULT
-        SortBy.PassedTime -> SortByRaw.PASSED_TIME
+        is SortBy.Default -> SortByRaw.DEFAULT
+        is SortBy.PassedTime -> SortByRaw.PASSED_TIME
     }
 
 private const val DefaultQuestionsAmount = 5

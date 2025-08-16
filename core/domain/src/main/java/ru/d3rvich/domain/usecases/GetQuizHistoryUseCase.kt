@@ -7,8 +7,6 @@ import ru.d3rvich.domain.repositories.DailyQuizRepository
 import javax.inject.Inject
 
 class GetQuizHistoryUseCase @Inject constructor(private val repository: DailyQuizRepository) {
-    operator fun invoke(
-        sortBy: SortBy = SortBy.Default,
-        byAscending: Boolean = true
-    ): Flow<List<QuizResultEntity>> = repository.getQuizHistory(sortBy, byAscending)
+    operator fun invoke(sortBy: SortBy): Flow<List<QuizResultEntity>> =
+        repository.getQuizHistory(sortBy)
 }
