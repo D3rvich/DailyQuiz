@@ -9,6 +9,7 @@ import ru.d3rvich.domain.usecases.GetQuizHistoryUseCase
 import ru.d3rvich.domain.usecases.RemoveQuizUseCase
 import ru.d3rvich.history.model.HistoryUiEvent
 import ru.d3rvich.history.model.HistoryUiState
+import ru.d3rvich.history.model.SortByProvider
 import ru.d3rvich.ui.mappers.toQuizResultEntity
 import ru.d3rvich.ui.mappers.toQuizResultUiModel
 import ru.d3rvich.ui.mvibase.BaseViewModel
@@ -20,10 +21,15 @@ import javax.inject.Provider
 internal class HistoryViewModel @Inject constructor(
     private val getQuizHistoryUseCase: Provider<GetQuizHistoryUseCase>,
     private val removeQuizUseCase: Provider<RemoveQuizUseCase>,
+    private val sortByProvider: SortByProvider,
 ) : BaseViewModel<HistoryUiState, HistoryUiEvent, UiAction>() {
 
     init {
-        setUpHistory(sortBy = SortBy.Default(true))
+        viewModelScope.launch {
+            sortByProvider.currentValue.collect { sortBy ->
+                setUpHistory(sortBy = sortBy)
+            }
+        }
     }
 
     override fun createInitialState(): HistoryUiState = HistoryUiState.Loading
@@ -36,21 +42,19 @@ internal class HistoryViewModel @Inject constructor(
             }
 
             is HistoryUiEvent.OnSortChange -> {
-                setUpHistory(event.selectedSort)
+                sortByProvider.setSortBy(event.selectedSort)
             }
         }
     }
 
-    private fun setUpHistory(sortBy: SortBy) {
-        viewModelScope.launch {
-            getQuizHistoryUseCase.get().invoke(sortBy = sortBy).collect { quizResults ->
-                setState(
-                    HistoryUiState.Content(
-                        quizResultEntities = quizResults.map(QuizResultEntity::toQuizResultUiModel),
-                        selectedSort = sortBy
-                    )
+    private suspend fun setUpHistory(sortBy: SortBy) {
+        getQuizHistoryUseCase.get().invoke(sortBy = sortBy).collect { quizResults ->
+            setState(
+                HistoryUiState.Content(
+                    quizResultEntities = quizResults.map(QuizResultEntity::toQuizResultUiModel),
+                    selectedSort = sortBy
                 )
-            }
+            )
         }
     }
 }
