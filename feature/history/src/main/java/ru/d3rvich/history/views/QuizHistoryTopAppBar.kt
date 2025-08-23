@@ -102,29 +102,27 @@ private fun Actions(
     modifier: Modifier = Modifier
 ) {
     var showMenu by rememberSaveable { mutableStateOf(false) }
-    Box(modifier = modifier) {
-        IconButton({ showMenu = !showMenu }) {
-            Icon(painterResource(R.drawable.outline_sort_24), stringResource(R.string.open_sorting))
-        }
-        DropdownMenu(showMenu, { showMenu = false }) {
-            SortByEnum.entries.forEach { item ->
-                val isSelected = selectedSort.asSortByEnum() == item
-                SortingOptionsItem(
-                    item = item,
-                    byAscending = selectedSort.byAscending,
-                    isSelected = isSelected,
-                    onSortChange = { sortByEnum ->
-                        onSortChange(
-                            sortByEnum.toDomainSortBy(
-                                if (isSelected) {
-                                    !selectedSort.byAscending
-                                } else {
-                                    selectedSort.byAscending
-                                }
-                            )
+    IconButton({ showMenu = !showMenu }, modifier = modifier) {
+        Icon(painterResource(R.drawable.outline_sort_24), stringResource(R.string.open_sorting))
+    }
+    DropdownMenu(showMenu, { showMenu = false }) {
+        SortByEnum.entries.forEach { item ->
+            val isSelected = selectedSort.asSortByEnum() == item
+            SortingOptionsItem(
+                item = item,
+                byAscending = selectedSort.byAscending,
+                isSelected = isSelected,
+                onSortChange = { sortByEnum ->
+                    onSortChange(
+                        sortByEnum.toDomainSortBy(
+                            if (isSelected) {
+                                !selectedSort.byAscending
+                            } else {
+                                selectedSort.byAscending
+                            }
                         )
-                    })
-            }
+                    )
+                })
         }
     }
 }

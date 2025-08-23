@@ -118,12 +118,8 @@ internal fun QuizHistoryView(
                         showDialog = true
                         onRemoveQuiz(item)
                     },
-                    onItemSelectChange = { isSelected ->
-                        selectedItem = if (isSelected) {
-                            item
-                        } else {
-                            null
-                        }
+                    onItemSelectChange = { selected ->
+                        selectedItem = selected
                     },
                 )
             }
@@ -147,7 +143,7 @@ private fun animateColor(target: Boolean): Color =
 @Composable
 private fun QuizResultItem(
     quizResult: QuizResultUiModel,
-    onItemSelectChange: (Boolean) -> Unit,
+    onItemSelectChange: (QuizResultUiModel?) -> Unit,
     onQuizCLick: () -> Unit,
     onRemoveQuiz: () -> Unit,
     modifier: Modifier = Modifier,
@@ -162,14 +158,14 @@ private fun QuizResultItem(
             .clip(RoundedCornerShape(40.dp))
             .then(modifier)
     ) {
-        Column(
+        QuizResultItemContent(
+            quizResult = quizResult,
             modifier = Modifier
-                .fillMaxWidth()
                 .indication(interactionSource, LocalIndication.current)
                 .pointerInput(quizResult) {
                     detectTapGestures(
                         onLongPress = {
-                            onItemSelectChange(true)
+                            onItemSelectChange(quizResult)
                             showMenu = true
                             pressOffset = DpOffset(it.x.toDp(), it.y.toDp())
                         },
@@ -183,56 +179,63 @@ private fun QuizResultItem(
                             interactionSource.emit(PressInteraction.Release(press))
                         }
                     )
-                }
-                .padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    "Quiz ${quizResult.id}",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF2B0063)
-                )
-                val correctAnswers = remember { quizResult.correctAnswers }
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    repeat(quizResult.questions.size) {
-                        DailyQuizStarIcon(it + 1 <= correctAnswers, modifier = Modifier.size(18.dp))
-                    }
-                }
-            }
-            TimeRow(quizResult.passedTime)
-            Column(
-                Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(2.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    stringResource(
-                        R.string.category_placement,
-                        quizResult.generalCategory.text
-                    ),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-                Text(
-                    stringResource(R.string.difficult_placement, quizResult.difficult.text),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-        }
+                })
         RemoveItemMenu(
             isVisible = showMenu,
             onCloseRequest = {
-                onItemSelectChange(false)
+                onItemSelectChange(null)
                 showMenu = false
             },
             onRemove = onRemoveQuiz,
             offset = pressOffset.copy(y = 0.dp)
         )
+    }
+}
+
+@Composable
+private fun QuizResultItemContent(quizResult: QuizResultUiModel, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(20.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                "Quiz ${quizResult.id}",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF2B0063)
+            )
+            val correctAnswers = remember { quizResult.correctAnswers }
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                repeat(quizResult.questions.size) {
+                    DailyQuizStarIcon(it + 1 <= correctAnswers, modifier = Modifier.size(18.dp))
+                }
+            }
+        }
+        TimeRow(quizResult.passedTime)
+        Column(
+            Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                stringResource(
+                    R.string.category_placement,
+                    quizResult.generalCategory.text
+                ),
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Text(
+                stringResource(R.string.difficult_placement, quizResult.difficult.text),
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
     }
 }
 

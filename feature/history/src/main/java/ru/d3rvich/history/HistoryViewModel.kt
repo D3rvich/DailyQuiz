@@ -47,14 +47,16 @@ internal class HistoryViewModel @Inject constructor(
         }
     }
 
-    private suspend fun setUpHistory(sortBy: SortBy) {
-        getQuizHistoryUseCase.get().invoke(sortBy = sortBy).collect { quizResults ->
-            setState(
-                HistoryUiState.Content(
-                    quizResultEntities = quizResults.map(QuizResultEntity::toQuizResultUiModel),
-                    selectedSort = sortBy
+    private fun setUpHistory(sortBy: SortBy) {
+        viewModelScope.launch {
+            getQuizHistoryUseCase.get().invoke(sortBy = sortBy).collect { quizResults ->
+                setState(
+                    HistoryUiState.Content(
+                        quizResultEntities = quizResults.map(QuizResultEntity::toQuizResultUiModel),
+                        selectedSort = sortBy
+                    )
                 )
-            )
+            }
         }
     }
 }
