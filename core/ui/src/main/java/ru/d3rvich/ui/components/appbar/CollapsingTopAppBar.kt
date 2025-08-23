@@ -272,7 +272,7 @@ private fun ExpandedContentLayout(
             }
 
         val contentPlaceable = measurables.fastFirst { it.layoutId == ExpandedContentId }
-            .measure(constraints.copy(minHeight = 0, maxHeight = layoutHeight))
+            .measure(constraints.copy(minHeight = 0, maxHeight = constraints.maxHeight))
 
         layout(constraints.maxWidth, layoutHeight) {
             contentPlaceable.placeRelative(x = 0, y = 0)
