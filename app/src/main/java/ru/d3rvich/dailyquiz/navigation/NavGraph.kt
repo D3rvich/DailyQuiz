@@ -64,7 +64,8 @@ private fun NavGraphBuilder.history(navController: NavController) {
                     launchSingleTop = true
                     popUpTo<Screens.QuizMain.Start>()
                 }
-            }
+            },
+            navigateBack = { navController.popBackStack() }
         )
     }
 }
@@ -81,6 +82,7 @@ private fun NavGraphBuilder.quizResult(navController: NavController) {
                     launchSingleTop = true
                 }
             },
+            navigateBack = { navController.popBackStack() }
         )
     }
 }

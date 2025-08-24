@@ -9,11 +9,13 @@ import ru.d3rvich.ui.model.QuizResultUiModel
 fun QuizResultScreen(
     quizResult: QuizResultUiModel,
     navigateToQuiz: (quizId: Long) -> Unit,
+    navigateBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     QuizResultDetailView(
         modifier = modifier,
         quizResult = quizResult,
         onRetryClick = navigateToQuiz,
+        onBackClick = navigateBack
     )
 }

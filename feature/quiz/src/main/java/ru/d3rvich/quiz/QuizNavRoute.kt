@@ -94,6 +94,9 @@ private fun NavGraphBuilder.filtersScreen(navController: NavController) {
                 ) {
                     popUpTo<Screens.QuizMain.Start>()
                 }
+            },
+            onBackClick = {
+                navController.popBackStack()
             }
         )
     }

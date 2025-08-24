@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenuItem
@@ -18,6 +19,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
@@ -51,6 +53,7 @@ internal fun FiltersView(
     onCategoryChange: (Category) -> Unit,
     onDifficultChange: (Difficult) -> Unit,
     onStartClick: () -> Unit,
+    onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -60,6 +63,16 @@ internal fun FiltersView(
                 .fillMaxWidth()
                 .padding(vertical = 32.dp)
         ) {
+            IconButton(
+                onClick = onBackClick, modifier = Modifier
+                    .padding(start = 8.dp)
+                    .align(Alignment.CenterStart)
+            ) {
+                Icon(
+                    Icons.AutoMirrored.Default.ArrowBack,
+                    contentDescription = stringResource(R.string.navigate_back)
+                )
+            }
             DailyQuizLogo(
                 modifier = Modifier.height(40.dp)
             )
@@ -193,7 +206,7 @@ private fun <T> DropdownTextField(
 @Composable
 private fun FiltersEmptyPreview() {
     DailyQuizTheme {
-        FiltersView(null, null, {}, {}, {})
+        FiltersView(null, null, {}, {}, {}, {})
     }
 }
 
@@ -201,6 +214,6 @@ private fun FiltersEmptyPreview() {
 @Composable
 private fun FiltersPreview() {
     DailyQuizTheme {
-        FiltersView(Category.AnyCategory, Difficult.AnyDifficulty, {}, {}, {})
+        FiltersView(Category.AnyCategory, Difficult.AnyDifficulty, {}, {}, {}, {})
     }
 }
