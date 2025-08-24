@@ -26,7 +26,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -57,7 +56,7 @@ internal fun QuizHistoryTopAppBar(
     val expandedHeight = 200.dp
     CollapsingTopAppBar(
         modifier = modifier,
-        title = { Text(stringResource(R.string.history), color = Color.White) },
+        title = { Text(stringResource(R.string.history)) },
         scrollBehavior = scrollBehavior,
         expandedContent = {
             val heightOffset =
@@ -93,8 +92,6 @@ internal fun QuizHistoryTopAppBar(
         expandedHeight = expandedHeight,
         colors = CollapsingTopAppBarDefaults.colors.copy(
             containerColor = MaterialTheme.colorScheme.background,
-            actionsContentColor = Color.White,
-            navigationIconContentColor = Color.White,
             scrolledContainerColor = MaterialTheme.colorScheme.background
         )
     )
