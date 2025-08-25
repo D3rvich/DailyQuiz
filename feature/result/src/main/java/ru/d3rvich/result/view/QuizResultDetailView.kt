@@ -20,6 +20,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -33,6 +34,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.fromHtml
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewDynamicColors
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -202,5 +205,24 @@ private fun QuizResultDetailPreview() {
             questions = question,
         )
         QuizResultDetailView(quizResult, {}, {})
+    }
+}
+
+@PreviewLightDark
+@PreviewDynamicColors
+@Composable
+private fun QuestionCardPreview() {
+    DailyQuizTheme {
+        val answers = List(4) {
+            AnswerUiModel("Answer $it", it == 1)
+        }
+        val question = QuestionUiModel("Category", "Question", answers, 1)
+        Surface(color = MaterialTheme.colorScheme.background) {
+            QuestionResultItem(
+                question = question,
+                currentCount = 1,
+                totalCount = 5
+            )
+        }
     }
 }
