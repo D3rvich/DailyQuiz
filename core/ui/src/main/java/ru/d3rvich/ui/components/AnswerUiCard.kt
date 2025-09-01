@@ -64,7 +64,7 @@ fun AnswerUiCard(text: String, answerType: AnswerType, modifier: Modifier = Modi
                     }
                 }
             }
-            Text(text = AnnotatedString.fromHtml(text))
+            Text(text = AnnotatedString.fromHtml(text), modifier = Modifier.padding(end = 4.dp))
         }
     }
 }
