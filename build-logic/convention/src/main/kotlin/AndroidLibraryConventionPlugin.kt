@@ -4,7 +4,6 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import ru.d3rvich.dailyquiz.configureKotlinAndroid
-import ru.d3rvich.dailyquiz.implementation
 import ru.d3rvich.dailyquiz.libs
 import ru.d3rvich.dailyquiz.testImplementation
 
@@ -18,9 +17,9 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
 
             extensions.configure<LibraryExtension> {
                 configureKotlinAndroid(this)
-                lint.targetSdk = 36
+                lint.targetSdk = libs.findVersion("targetSdk").get().requiredVersion.toInt()
                 testOptions {
-                    targetSdk = 36
+                    targetSdk = libs.findVersion("targetSdk").get().requiredVersion.toInt()
                 }
                 buildTypes {
                     release {

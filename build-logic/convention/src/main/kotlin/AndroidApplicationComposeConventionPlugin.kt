@@ -7,7 +7,6 @@ import org.gradle.kotlin.dsl.getByType
 import ru.d3rvich.dailyquiz.androidTestImplementation
 import ru.d3rvich.dailyquiz.configureAndroidCompose
 import ru.d3rvich.dailyquiz.configureKotlinAndroid
-import ru.d3rvich.dailyquiz.implementation
 import ru.d3rvich.dailyquiz.libs
 import ru.d3rvich.dailyquiz.testImplementation
 
@@ -21,8 +20,8 @@ class AndroidApplicationComposeConventionPlugin : Plugin<Project> {
             extensions.configure<ApplicationExtension> {
                 configureKotlinAndroid(this)
                 defaultConfig {
-                    targetSdk = 36
-                    minSdk = 24
+                    targetSdk = libs.findVersion("targetSdk").get().requiredVersion.toInt()
+                    minSdk = libs.findVersion("minSdk").get().requiredVersion.toInt()
                 }
                 buildTypes {
                     release {
