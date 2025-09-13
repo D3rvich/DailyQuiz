@@ -8,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -30,10 +29,7 @@ internal fun QuizScreen(
     when (val state = state.value) {
         QuizUiState.Loading -> {
             Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(
-                    color = Color(0xFFBCB7FF),
-                    trackColor = Color.White,
-                )
+                CircularProgressIndicator()
             }
         }
 
@@ -53,7 +49,6 @@ internal fun QuizScreen(
                 onRetryClick = { viewModel.obtainEvent(QuizUiEvent.OnRetryClicked) },
                 onBackClick = onBackClick
             )
-
         }
     }
     LaunchedEffect(viewModel) {

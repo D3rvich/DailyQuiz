@@ -1,38 +1,56 @@
 package ru.d3rvich.result.view
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.fromHtml
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewDynamicColors
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -40,6 +58,7 @@ import ru.d3rvich.domain.model.Category
 import ru.d3rvich.domain.model.Difficult
 import ru.d3rvich.result.R
 import ru.d3rvich.ui.components.CorrectCheckIcon
+import ru.d3rvich.ui.components.DailyQuizButton
 import ru.d3rvich.ui.components.QuizResultCard
 import ru.d3rvich.ui.model.AnswerUiModel
 import ru.d3rvich.ui.model.QuestionUiModel
@@ -47,6 +66,7 @@ import ru.d3rvich.ui.model.QuizResultUiModel
 import ru.d3rvich.ui.model.correctAnswers
 import ru.d3rvich.ui.model.isCorrectAnswer
 import ru.d3rvich.ui.theme.DailyQuizTheme
+import ru.d3rvich.ui.theme.Grey75
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
@@ -70,35 +90,47 @@ internal fun QuizResultDetailView(
                 onBackClick = onBackClick
             )
         }) { innerPadding ->
-        LazyColumn(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .nestedScroll(scrollBehavior.nestedScrollConnection),
-            contentPadding = WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom)
-                .asPaddingValues(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(20.dp)
-        ) {
-            item {
-                QuizResultCard(
-                    correctAnswers = quizResult.correctAnswers,
-                    totalQuestions = quizResult.questions.size,
-                    onRetryClick = { onRetryClick(quizResult.id) }
-                )
+        Box(modifier = Modifier.fillMaxSize()) {
+            var buttonPadding by remember { mutableStateOf(0.dp) }
+            val state = rememberLazyListState()
+            LazyColumn(
+                state = state,
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize()
+                    .nestedScroll(scrollBehavior.nestedScrollConnection),
+                contentPadding = PaddingValues(bottom = buttonPadding),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                item {
+                    QuizResultCard(
+                        correctAnswers = quizResult.correctAnswers,
+                        totalQuestions = quizResult.questions.size,
+                        onRetryClick = { onRetryClick(quizResult.id) },
+                    )
+                }
+                itemsIndexed(
+                    quizResult.questions,
+                    key = { _, item -> item.hashCode() }) { index, item ->
+                    QuestionResultItem(
+                        question = item,
+                        currentCount = index + 1,
+                        totalCount = quizResult.questions.size,
+                    )
+                }
             }
-            itemsIndexed(
-                quizResult.questions,
-                key = { index, item -> item.hashCode() }) { index, item ->
-                QuestionResultItem(
-                    question = item,
-                    currentCount = index + 1,
-                    totalCount = quizResult.questions.size,
-                )
-            }
-            item {
-                RetryButton({ onRetryClick(quizResult.id) })
-            }
+            val showButton by remember { derivedStateOf { state.firstVisibleItemIndex > 0 } }
+            val density = LocalDensity.current
+            RetryButton(
+                isVisible = showButton,
+                onClick = { onRetryClick(quizResult.id) },
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .onSizeChanged {
+                        buttonPadding = density.run { it.height.toDp() }
+                    }
+            )
         }
     }
 }
@@ -129,7 +161,7 @@ private fun QuestionResultItem(
             ) {
                 Text(
                     stringResource(R.string.question_progress, currentCount, totalCount),
-                    color = Color(0xFFBABABA)
+                    color = Grey75
                 )
                 CorrectCheckIcon(question.isCorrectAnswer)
             }
@@ -145,24 +177,46 @@ private fun QuestionResultItem(
 }
 
 @Composable
-private fun RetryButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
-    Button(
+private fun RetryButton(
+    isVisible: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val bottomWindowInsets = WindowInsets.safeDrawing.asPaddingValues().calculateBottomPadding()
+    var buttonHeight by remember { mutableStateOf(0.dp) }
+    val animateDpOffset by animateDpAsState(
+        if (isVisible) -buttonHeight - bottomWindowInsets else 0.dp,
+        animationSpec = spring(stiffness = Spring.StiffnessLow)
+    )
+    val density = LocalDensity.current
+    val backgroundColor = MaterialTheme.colorScheme.background
+    DailyQuizButton(
+        text = stringResource(ru.d3rvich.ui.R.string.retry),
         onClick = onClick,
         modifier = modifier
+            .drawWithCache {
+                val backgroundBrush = Brush.verticalGradient(
+                    listOf(
+                        Color.Transparent,
+                        backgroundColor
+                    )
+                )
+                onDrawBehind {
+                    drawRect(backgroundBrush)
+                }
+            }
+            .padding(top = 32.dp)
             .padding(horizontal = 40.dp)
+            .onSizeChanged {
+                buttonHeight = density.run { it.height.toDp() }
+            }
             .fillMaxWidth()
-            .padding(bottom = 40.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = ButtonDefaults.buttonColors()
-            .copy(containerColor = Color.White, contentColor = Color(0xFF2B0063))
-    ) {
-        Text(
-            text = stringResource(ru.d3rvich.ui.R.string.retry).uppercase(),
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(vertical = 4.dp)
-        )
-    }
+            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom))
+            .graphicsLayer {
+                translationY = density.run { buttonHeight.toPx() + bottomWindowInsets.toPx() }
+            }
+            .offset(y = animateDpOffset)
+    )
 }
 
 @OptIn(ExperimentalTime::class)
@@ -202,5 +256,24 @@ private fun QuizResultDetailPreview() {
             questions = question,
         )
         QuizResultDetailView(quizResult, {}, {})
+    }
+}
+
+@PreviewLightDark
+@PreviewDynamicColors
+@Composable
+private fun QuestionCardPreview() {
+    DailyQuizTheme {
+        val answers = List(4) {
+            AnswerUiModel("Answer $it", it == 1)
+        }
+        val question = QuestionUiModel("Category", "Question", answers, 1)
+        Surface(color = MaterialTheme.colorScheme.background) {
+            QuestionResultItem(
+                question = question,
+                currentCount = 1,
+                totalCount = 5
+            )
+        }
     }
 }

@@ -43,7 +43,8 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewDynamicColors
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import kotlinx.datetime.LocalDateTime
@@ -209,7 +210,7 @@ private fun QuizResultItemContent(quizResult: QuizResultUiModel, modifier: Modif
                 "Quiz ${quizResult.id}",
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF2B0063)
+                color = MaterialTheme.colorScheme.primary
             )
             val correctAnswers = remember { quizResult.correctAnswers }
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -299,7 +300,32 @@ private fun RemoveItemMenu(
 }
 
 @OptIn(ExperimentalTime::class)
-@Preview(showBackground = true, apiLevel = 35)
+@PreviewLightDark
+@Composable
+private fun QuizHistoryNonDynamicPreview() {
+    DailyQuizTheme(dynamicColor = false) {
+        val answers = List(4) {
+            AnswerUiModel("it?", it == 1)
+        }
+        val questions = List(5) {
+            QuestionUiModel("", "it?", answers, it % 4)
+        }
+        val list = List(8) {
+            QuizResultUiModel(
+                Category.entries[it],
+                Difficult.entries[it % 4],
+                Clock.System.now().toLocalDateTime(TimeZone.UTC),
+                questions,
+                it.toLong()
+            )
+        }
+        QuizHistoryView(list, SortBy.Default(true), { }, {}, {}, {})
+    }
+}
+
+@OptIn(ExperimentalTime::class)
+@PreviewDynamicColors
+@PreviewLightDark
 @Composable
 private fun QuizHistoryViewPreview() {
     DailyQuizTheme {

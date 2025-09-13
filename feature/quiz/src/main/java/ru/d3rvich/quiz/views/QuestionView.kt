@@ -1,9 +1,7 @@
 package ru.d3rvich.quiz.views
 
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,26 +15,26 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProgressIndicatorDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.fromHtml
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewDynamicColors
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
@@ -46,10 +44,10 @@ import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
 import ru.d3rvich.quiz.R
 import ru.d3rvich.quiz.TimerMaxValue
-import ru.d3rvich.ui.components.CorrectCheckIcon
+import ru.d3rvich.ui.components.AnswerType
+import ru.d3rvich.ui.components.AnswerUiCard
 import ru.d3rvich.ui.components.DailyQuizButton
 import ru.d3rvich.ui.components.DailyQuizLogo
-import ru.d3rvich.ui.components.DailyQuizRadioButtonIcon
 import ru.d3rvich.ui.model.AnswerUiModel
 import ru.d3rvich.ui.model.QuestionUiModel
 import ru.d3rvich.ui.theme.DailyQuizTheme
@@ -98,7 +96,7 @@ internal fun QuestionView(
                     style = MaterialTheme.typography.labelMedium,
                     text = stringResource(R.string.question_count, progressCount, maxQuestions),
                     modifier = Modifier.padding(bottom = 8.dp),
-                    color = Color(0xFFBCB7FF)
+                    color = MaterialTheme.colorScheme.primary,
                 )
                 Text(
                     text = AnnotatedString.fromHtml(question.text),
@@ -183,12 +181,12 @@ private fun TimerView(currentValue: Long, maxValue: Long, modifier: Modifier = M
             Text(
                 currentDateTime.format(formater),
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color(0xFF2B0063)
+                color = MaterialTheme.colorScheme.primary,
             )
             Text(
                 maxDataTime.format(formater),
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color(0xFF2B0063)
+                color = MaterialTheme.colorScheme.primary,
             )
         }
         val progress = currentValue.toFloat() / maxValue
@@ -197,8 +195,6 @@ private fun TimerView(currentValue: Long, maxValue: Long, modifier: Modifier = M
             animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
         )
         LinearProgressIndicator(
-            trackColor = Color(0xFFF3F3F3),
-            color = Color(0xFF2B0063),
             progress = { animatedProgress },
             modifier = Modifier
                 .fillMaxWidth()
@@ -220,80 +216,31 @@ private fun AnswersView(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         answers.forEachIndexed { index, answer ->
-            val selected = index == selectedAnswerIndex
-            AnswerView(
-                text = answer.text,
-                isSelected = selected,
-                isCorrect = if (showCorrectAnswer) answer.isCorrect else null,
-                modifier = Modifier.selectable(
-                    selected = selected,
-                    role = Role.RadioButton,
-                    onClick = {
-                        onAnswerSelect(index)
-                    }
-                ))
-        }
-    }
-}
-
-@Composable
-private fun AnswerView(
-    text: String,
-    isSelected: Boolean,
-    isCorrect: Boolean?,
-    modifier: Modifier = Modifier
-) {
-    val selectedColor = Color(0xFF2B0063)
-    val correctColor = Color(0xFF00AE3A)
-    val wrongColor = Color(0xFFE70000)
-    val borderColor by
-    animateColorAsState(
-        when {
-            isSelected && isCorrect != null && isCorrect -> correctColor
-            isSelected && isCorrect != null && !isCorrect -> wrongColor
-            isSelected -> selectedColor
-            else -> Color.Transparent
-        }
-    )
-    val containerColor by animateColorAsState(
-        if (isSelected) CardDefaults.cardColors().containerColor else Color(0xFFF3F3F3)
-    )
-    Card(
-        shape = RoundedCornerShape(16.dp),
-        modifier = modifier.fillMaxWidth(),
-        border = BorderStroke(2.dp, color = borderColor),
-        colors = CardDefaults.cardColors().copy(containerColor = containerColor)
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            IconToggleButton(isSelected, onCheckedChange = {}, modifier = Modifier.padding(8.dp)) {
-                if (!isSelected) {
-                    DailyQuizRadioButtonIcon(false)
-                } else {
-                    isCorrect?.let {
-                        CorrectCheckIcon(isCorrect)
-                    } ?: DailyQuizRadioButtonIcon(true)
-                }
+            val isSelected = index == selectedAnswerIndex
+            val type = when {
+                isSelected && !showCorrectAnswer -> AnswerType.Selected
+                isSelected && answer.isCorrect -> AnswerType.Correct
+                isSelected && !answer.isCorrect -> AnswerType.Wrong
+                else -> AnswerType.NotSelected
             }
-            Text(text = AnnotatedString.fromHtml(text))
+            AnswerUiCard(
+                text = answer.text,
+                answerType = type,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(16.dp))
+                    .selectable(
+                        selected = isSelected,
+                        role = Role.RadioButton,
+                        onClick = {
+                            onAnswerSelect(index)
+                        }
+                    ))
         }
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun AnswerPreview() {
-    DailyQuizTheme {
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            AnswerView(text = "Answer", isSelected = false, isCorrect = null)
-            AnswerView(text = "Answer", isSelected = false, isCorrect = true)
-            AnswerView(text = "Answer", isSelected = false, isCorrect = false)
-            AnswerView(text = "Answer", isSelected = true, isCorrect = true)
-            AnswerView(text = "Answer", isSelected = true, isCorrect = false)
-        }
-    }
-}
-
-@Preview(showBackground = true, apiLevel = 35)
+@PreviewLightDark
+@PreviewDynamicColors
 @Composable
 private fun QuestionPreview() {
     DailyQuizTheme {
@@ -304,18 +251,20 @@ private fun QuestionPreview() {
             answers,
             0
         )
-        QuestionView(
-            question = entity,
-            progressCount = 1,
-            maxQuestions = 5,
-            timerCurrentValue = 2000L,
-            timerMaxValue = TimerMaxValue,
-            selectedAnswerIndex = null,
-            showCorrectAnswer = false,
-            showTimeoutMessage = false,
-            onAnswerSelect = {},
-            onNextClick = {},
-            onBackClick = {},
-            onRetryClick = {})
+        Surface(color = MaterialTheme.colorScheme.background) {
+            QuestionView(
+                question = entity,
+                progressCount = 1,
+                maxQuestions = 5,
+                timerCurrentValue = 20000L,
+                timerMaxValue = TimerMaxValue,
+                selectedAnswerIndex = null,
+                showCorrectAnswer = false,
+                showTimeoutMessage = false,
+                onAnswerSelect = {},
+                onNextClick = {},
+                onBackClick = {},
+                onRetryClick = {})
+        }
     }
 }

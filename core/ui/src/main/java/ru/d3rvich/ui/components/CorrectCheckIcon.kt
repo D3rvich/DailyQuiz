@@ -13,6 +13,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import ru.d3rvich.ui.R
+import ru.d3rvich.ui.theme.Green50
+import ru.d3rvich.ui.theme.Red50
 
 @Composable
 fun CorrectCheckIcon(isCorrect: Boolean, modifier: Modifier = Modifier) {
@@ -21,7 +23,7 @@ fun CorrectCheckIcon(isCorrect: Boolean, modifier: Modifier = Modifier) {
             Icon(
                 Icons.Default.CheckCircle,
                 contentDescription = stringResource(R.string.correct_answer),
-                tint = Color(0xFF00AE3A)
+                tint = Green50
             )
         } else {
             Icon(
@@ -29,7 +31,7 @@ fun CorrectCheckIcon(isCorrect: Boolean, modifier: Modifier = Modifier) {
                 contentDescription = stringResource(R.string.wrong_answer),
                 modifier = Modifier
                     .clip(CircleShape)
-                    .background(Color(0xFFE70000)),
+                    .background(Red50),
                 tint = Color.White
             )
         }

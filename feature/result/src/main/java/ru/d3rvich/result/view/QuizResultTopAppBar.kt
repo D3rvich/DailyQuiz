@@ -17,7 +17,6 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,7 +42,7 @@ internal fun QuizResultTopAppBar(
     val expandedHeight = 260.dp
     CollapsingTopAppBar(
         scrollBehavior = scrollBehavior,
-        title = { Text(text = stringResource(R.string.results), color = Color.White) },
+        title = { Text(text = stringResource(R.string.results)) },
         navigationIcon = {
             IconButton(onClick = onBackClick) {
                 Icon(
@@ -84,7 +83,6 @@ internal fun QuizResultTopAppBar(
         expandedHeight = expandedHeight,
         colors = CollapsingTopAppBarDefaults.colors.copy(
             containerColor = MaterialTheme.colorScheme.background,
-            navigationIconContentColor = Color.White,
             scrolledContainerColor = MaterialTheme.colorScheme.background
         )
     )

@@ -8,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ru.d3rvich.domain.model.SortBy
@@ -54,10 +53,7 @@ internal fun HistoryScreen(
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         when (state) {
             HistoryUiState.Loading -> {
-                CircularProgressIndicator(
-                    color = Color(0xFFBCB7FF),
-                    trackColor = Color.White,
-                )
+                CircularProgressIndicator()
             }
 
             is HistoryUiState.Content -> {

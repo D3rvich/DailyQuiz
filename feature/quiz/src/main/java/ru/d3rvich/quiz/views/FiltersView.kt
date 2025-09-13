@@ -3,7 +3,6 @@ package ru.d3rvich.quiz.views
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Card
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -39,6 +39,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
 import ru.d3rvich.domain.model.Category
 import ru.d3rvich.domain.model.Difficult
 import ru.d3rvich.quiz.R
@@ -46,6 +47,7 @@ import ru.d3rvich.ui.components.DailyQuizButton
 import ru.d3rvich.ui.components.DailyQuizLogo
 import ru.d3rvich.ui.theme.DailyQuizTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun FiltersView(
     category: Category?,
@@ -56,28 +58,35 @@ internal fun FiltersView(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 32.dp)
-        ) {
-            IconButton(
-                onClick = onBackClick, modifier = Modifier
-                    .padding(start = 8.dp)
-                    .align(Alignment.CenterStart)
-            ) {
-                Icon(
-                    Icons.AutoMirrored.Default.ArrowBack,
-                    contentDescription = stringResource(R.string.navigate_back)
+    ConstraintLayout(modifier = modifier.fillMaxSize()) {
+        val (topBar, filtersCard) = createRefs()
+        CenterAlignedTopAppBar(
+            modifier = Modifier.constrainAs(topBar) {
+                top.linkTo(parent.top)
+            },
+            title = {
+                DailyQuizLogo(
+                    modifier = Modifier.height(40.dp)
                 )
-            }
-            DailyQuizLogo(
-                modifier = Modifier.height(40.dp)
-            )
-        }
-        SelectorCard(category, difficult, onCategoryChange, onDifficultChange, onStartClick)
+            },
+            navigationIcon = {
+                IconButton(onClick = onBackClick) {
+                    Icon(
+                        Icons.AutoMirrored.Default.ArrowBack,
+                        contentDescription = stringResource(R.string.navigate_back)
+                    )
+                }
+            })
+        SelectorCard(
+            category = category,
+            difficult = difficult,
+            onCategoryChange = onCategoryChange,
+            onDifficultChange = onDifficultChange,
+            onStartClick = onStartClick,
+            modifier = Modifier.constrainAs(filtersCard) {
+                top.linkTo(parent.top)
+                bottom.linkTo(parent.bottom)
+            })
     }
 }
 
@@ -153,7 +162,6 @@ private fun <T> DropdownTextField(
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
     val rotate by animateFloatAsState(targetValue = if (expanded) -180f else 0f)
-    val containerColor = Color(0xFFF3F3F3)
     ExposedDropdownMenuBox(
         expanded,
         onExpandedChange = { expanded = it },
@@ -167,7 +175,7 @@ private fun <T> DropdownTextField(
                 Text(
                     label,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF2B0063),
+                    color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.background(Color.Transparent)
                 )
             },
@@ -183,8 +191,6 @@ private fun <T> DropdownTextField(
                 )
             },
             colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(
-                unfocusedContainerColor = containerColor,
-                focusedContainerColor = containerColor,
                 focusedBorderColor = Color.Transparent,
                 unfocusedBorderColor = Color.Transparent,
             )

@@ -13,7 +13,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -22,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import ru.d3rvich.ui.R
 import ru.d3rvich.ui.model.ResultMessage
 import ru.d3rvich.ui.theme.DailyQuizTheme
+import ru.d3rvich.ui.theme.Yellow80
 
 @Composable
 fun QuizResultCard(
@@ -45,7 +45,7 @@ fun QuizResultCard(
             ProgressStars(correctCount = correctAnswers, totalCount = totalQuestions)
             Text(
                 stringResource(R.string.correct_answers, correctAnswers, totalQuestions),
-                color = Color(0xFFFFB800),
+                color = Yellow80,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(vertical = 20.dp)
             )
