@@ -29,6 +29,8 @@ import androidx.compose.ui.tooling.preview.PreviewDynamicColors
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import ru.d3rvich.ui.theme.DailyQuizTheme
+import ru.d3rvich.ui.theme.Green50
+import ru.d3rvich.ui.theme.Red50
 
 @Composable
 fun AnswerUiCard(text: String, answerType: AnswerType, modifier: Modifier = Modifier) {
@@ -40,8 +42,8 @@ fun AnswerUiCard(text: String, answerType: AnswerType, modifier: Modifier = Modi
         when (answerType) {
             AnswerType.NotSelected -> Color.Transparent
             AnswerType.Selected -> MaterialTheme.colorScheme.primary
-            AnswerType.Correct -> Color(0xFF00AE3A)
-            AnswerType.Wrong -> Color(0xFFE70000)
+            AnswerType.Correct -> Green50
+            AnswerType.Wrong -> Red50
         }
     )
     Card(

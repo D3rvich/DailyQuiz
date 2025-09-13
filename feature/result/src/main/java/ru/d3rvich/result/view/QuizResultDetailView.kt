@@ -66,6 +66,7 @@ import ru.d3rvich.ui.model.QuizResultUiModel
 import ru.d3rvich.ui.model.correctAnswers
 import ru.d3rvich.ui.model.isCorrectAnswer
 import ru.d3rvich.ui.theme.DailyQuizTheme
+import ru.d3rvich.ui.theme.Grey75
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
@@ -160,7 +161,7 @@ private fun QuestionResultItem(
             ) {
                 Text(
                     stringResource(R.string.question_progress, currentCount, totalCount),
-                    color = Color(0xFFBABABA)
+                    color = Grey75
                 )
                 CorrectCheckIcon(question.isCorrectAnswer)
             }

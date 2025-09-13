@@ -300,6 +300,30 @@ private fun RemoveItemMenu(
 }
 
 @OptIn(ExperimentalTime::class)
+@PreviewLightDark
+@Composable
+private fun QuizHistoryNonDynamicPreview() {
+    DailyQuizTheme(dynamicColor = false) {
+        val answers = List(4) {
+            AnswerUiModel("it?", it == 1)
+        }
+        val questions = List(5) {
+            QuestionUiModel("", "it?", answers, it % 4)
+        }
+        val list = List(8) {
+            QuizResultUiModel(
+                Category.entries[it],
+                Difficult.entries[it % 4],
+                Clock.System.now().toLocalDateTime(TimeZone.UTC),
+                questions,
+                it.toLong()
+            )
+        }
+        QuizHistoryView(list, SortBy.Default(true), { }, {}, {}, {})
+    }
+}
+
+@OptIn(ExperimentalTime::class)
 @PreviewDynamicColors
 @PreviewLightDark
 @Composable
