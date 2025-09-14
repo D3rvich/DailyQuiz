@@ -9,7 +9,7 @@ import ru.d3rvich.domain.entities.QuizResultEntity
 internal fun QuizDBO.toQuizResultEntity(): QuizResultEntity = QuizResultEntity(
     id = id,
     generalCategory = category,
-    difficult = difficult,
+    difficulty = difficulty,
     passedTime = passedTime,
     questions = questions.map(QuestionDBO::toQuestionEntity),
 )
@@ -17,7 +17,7 @@ internal fun QuizDBO.toQuizResultEntity(): QuizResultEntity = QuizResultEntity(
 internal fun QuizDBO.toQuizEntity(disableAnswers: Boolean): QuizEntity =
     QuizEntity(
         generalCategory = category,
-        difficult = difficult,
+        difficulty = difficulty,
         questions = questions.map { quiz ->
             quiz.toQuestionEntity()
                 .let { question -> if (disableAnswers) question.copy(selectedAnswerIndex = null) else question }
@@ -26,7 +26,7 @@ internal fun QuizDBO.toQuizEntity(disableAnswers: Boolean): QuizEntity =
 internal fun QuizResultEntity.toQuizDBO(): QuizDBO = QuizDBO(
     id = id,
     category = generalCategory,
-    difficult = difficult,
+    difficulty = difficulty,
     passedTime = passedTime,
     questions = questions.map(QuestionEntity::toQuestionDBO)
 )

@@ -8,7 +8,7 @@ import ru.d3rvich.ui.model.QuizResultUiModel
 fun QuizResultEntity.toQuizResultUiModel(): QuizResultUiModel =
     QuizResultUiModel(
         generalCategory = generalCategory,
-        difficult = difficult,
+        difficulty = difficulty,
         passedTime = passedTime,
         questions = questions.map(QuestionEntity::toQuestionUiModel),
         id = id
@@ -17,7 +17,7 @@ fun QuizResultEntity.toQuizResultUiModel(): QuizResultUiModel =
 fun QuizResultUiModel.toQuizResultEntity(): QuizResultEntity =
     QuizResultEntity(
         generalCategory = generalCategory,
-        difficult = difficult,
+        difficulty = difficulty,
         passedTime = passedTime,
         questions = questions.map(QuestionUiModel::toQuestionEntity),
         id = id

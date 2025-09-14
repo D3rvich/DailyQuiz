@@ -7,6 +7,6 @@ import ru.d3rvich.ui.model.QuizUiModel
 fun QuizEntity.toQuizUiModel(): QuizUiModel =
     QuizUiModel(
         category = generalCategory,
-        difficult = difficult,
+        difficulty = difficulty,
         questions = questions.map(QuestionEntity::toQuestionUiModel),
     )

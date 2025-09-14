@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import ru.d3rvich.domain.entities.QuizEntity
 import ru.d3rvich.domain.entities.QuizResultEntity
 import ru.d3rvich.domain.model.Category
-import ru.d3rvich.domain.model.Difficult
+import ru.d3rvich.domain.model.Difficulty
 import ru.d3rvich.domain.model.Result
 import ru.d3rvich.domain.model.SortBy
 
@@ -12,7 +12,7 @@ interface DailyQuizRepository {
     fun getExistedOrNewQuiz(
         quizId: Long?,
         category: Category,
-        difficult: Difficult
+        difficulty: Difficulty
     ): Flow<Result<QuizEntity>>
 
     suspend fun saveQuiz(quizResult: QuizResultEntity)

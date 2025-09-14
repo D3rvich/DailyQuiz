@@ -11,7 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import ru.d3rvich.domain.model.Category
-import ru.d3rvich.domain.model.Difficult
+import ru.d3rvich.domain.model.Difficulty
 import ru.d3rvich.quiz.views.FiltersView
 import ru.d3rvich.quiz.views.ResultsView
 import ru.d3rvich.quiz.views.StartView
@@ -79,17 +79,17 @@ private fun NavGraphBuilder.filtersScreen(navController: NavController) {
             }
         }) {
         var category: Category? by rememberSaveable { mutableStateOf(null) }
-        var difficult: Difficult? by rememberSaveable { mutableStateOf(null) }
+        var difficulty: Difficulty? by rememberSaveable { mutableStateOf(null) }
         FiltersView(
             category = category,
-            difficult = difficult,
+            difficulty = difficulty,
             onCategoryChange = { category = it },
-            onDifficultChange = { difficult = it },
+            onDifficultChange = { difficulty = it },
             onStartClick = {
                 navController.navigate(
                     Screens.QuizMain.Quiz(
                         category = category!!,
-                        difficult = difficult!!
+                        difficulty = difficulty!!
                     )
                 ) {
                     popUpTo<Screens.QuizMain.Start>()

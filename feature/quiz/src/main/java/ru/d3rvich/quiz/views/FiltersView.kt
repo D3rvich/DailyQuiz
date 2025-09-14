@@ -41,19 +41,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import ru.d3rvich.domain.model.Category
-import ru.d3rvich.domain.model.Difficult
+import ru.d3rvich.domain.model.Difficulty
 import ru.d3rvich.quiz.R
 import ru.d3rvich.ui.components.DailyQuizButton
 import ru.d3rvich.ui.components.DailyQuizLogo
+import ru.d3rvich.ui.extensions.stringRes
 import ru.d3rvich.ui.theme.DailyQuizTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun FiltersView(
     category: Category?,
-    difficult: Difficult?,
+    difficulty: Difficulty?,
     onCategoryChange: (Category) -> Unit,
-    onDifficultChange: (Difficult) -> Unit,
+    onDifficultChange: (Difficulty) -> Unit,
     onStartClick: () -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -79,7 +80,7 @@ internal fun FiltersView(
             })
         SelectorCard(
             category = category,
-            difficult = difficult,
+            difficulty = difficulty,
             onCategoryChange = onCategoryChange,
             onDifficultChange = onDifficultChange,
             onStartClick = onStartClick,
@@ -94,9 +95,9 @@ internal fun FiltersView(
 @Composable
 private fun SelectorCard(
     category: Category?,
-    difficult: Difficult?,
+    difficulty: Difficulty?,
     onCategoryChange: (Category) -> Unit,
-    onDifficultChange: (Difficult) -> Unit,
+    onDifficultChange: (Difficulty) -> Unit,
     onStartClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -135,16 +136,16 @@ private fun SelectorCard(
                 label = stringResource(R.string.category),
                 onValueSelect = { it?.let { onCategoryChange(it) } })
             DropdownTextField(
-                selectedValue = difficult,
-                values = Difficult.entries,
-                text = { it?.text ?: "" },
+                selectedValue = difficulty,
+                values = Difficulty.entries,
+                text = { it?.run { stringResource(it.stringRes) } ?: "" },
                 label = stringResource(R.string.difficult),
                 onValueSelect = { it?.let { onDifficultChange(it) } })
             DailyQuizButton(
                 modifier = Modifier.padding(top = 32.dp),
                 text = stringResource(R.string.start_quiz),
                 onClick = onStartClick,
-                enabled = category != null && difficult != null
+                enabled = category != null && difficulty != null
             )
         }
     }
@@ -156,7 +157,7 @@ private fun <T> DropdownTextField(
     selectedValue: T,
     values: List<T>,
     label: String,
-    text: (T) -> String,
+    text: @Composable (T) -> String,
     onValueSelect: (T) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -220,6 +221,6 @@ private fun FiltersEmptyPreview() {
 @Composable
 private fun FiltersPreview() {
     DailyQuizTheme {
-        FiltersView(Category.AnyCategory, Difficult.AnyDifficulty, {}, {}, {}, {})
+        FiltersView(Category.AnyCategory, Difficulty.AnyDifficulty, {}, {}, {}, {})
     }
 }

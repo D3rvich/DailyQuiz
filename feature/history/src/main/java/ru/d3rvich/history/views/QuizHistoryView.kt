@@ -55,10 +55,11 @@ import kotlinx.datetime.format.Padding
 import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
 import ru.d3rvich.domain.model.Category
-import ru.d3rvich.domain.model.Difficult
+import ru.d3rvich.domain.model.Difficulty
 import ru.d3rvich.domain.model.SortBy
 import ru.d3rvich.history.R
 import ru.d3rvich.ui.components.DailyQuizStarIcon
+import ru.d3rvich.ui.extensions.stringRes
 import ru.d3rvich.ui.model.AnswerUiModel
 import ru.d3rvich.ui.model.QuestionUiModel
 import ru.d3rvich.ui.model.QuizResultUiModel
@@ -233,7 +234,10 @@ private fun QuizResultItemContent(quizResult: QuizResultUiModel, modifier: Modif
                 style = MaterialTheme.typography.bodyMedium
             )
             Text(
-                stringResource(R.string.difficult_placement, quizResult.difficult.text),
+                stringResource(
+                    R.string.difficult_placement,
+                    stringResource(quizResult.difficulty.stringRes)
+                ),
                 style = MaterialTheme.typography.bodyMedium
             )
         }
@@ -313,7 +317,7 @@ private fun QuizHistoryNonDynamicPreview() {
         val list = List(8) {
             QuizResultUiModel(
                 Category.entries[it],
-                Difficult.entries[it % 4],
+                Difficulty.entries[it % 4],
                 Clock.System.now().toLocalDateTime(TimeZone.UTC),
                 questions,
                 it.toLong()
@@ -338,7 +342,7 @@ private fun QuizHistoryViewPreview() {
         val list = List(8) {
             QuizResultUiModel(
                 Category.entries[it],
-                Difficult.entries[it % 4],
+                Difficulty.entries[it % 4],
                 Clock.System.now().toLocalDateTime(TimeZone.UTC),
                 questions,
                 it.toLong()

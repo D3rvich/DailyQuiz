@@ -55,11 +55,12 @@ import androidx.compose.ui.unit.dp
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import ru.d3rvich.domain.model.Category
-import ru.d3rvich.domain.model.Difficult
+import ru.d3rvich.domain.model.Difficulty
 import ru.d3rvich.result.R
 import ru.d3rvich.ui.components.CorrectCheckIcon
 import ru.d3rvich.ui.components.DailyQuizButton
 import ru.d3rvich.ui.components.QuizResultCard
+import ru.d3rvich.ui.extensions.stringRes
 import ru.d3rvich.ui.model.AnswerUiModel
 import ru.d3rvich.ui.model.QuestionUiModel
 import ru.d3rvich.ui.model.QuizResultUiModel
@@ -85,7 +86,7 @@ internal fun QuizResultDetailView(
         topBar = {
             QuizResultTopAppBar(
                 category = quizResult.generalCategory.text,
-                difficult = quizResult.difficult.text,
+                difficult = stringResource(quizResult.difficulty.stringRes),
                 scrollBehavior = scrollBehavior,
                 onBackClick = onBackClick
             )
@@ -226,7 +227,7 @@ private fun EmptyQuizResultDetailPreview() {
     DailyQuizTheme {
         val quizResult = QuizResultUiModel(
             generalCategory = Category.AnyCategory,
-            difficult = Difficult.AnyDifficulty,
+            difficulty = Difficulty.AnyDifficulty,
             passedTime = Clock.System.now().toLocalDateTime(
                 TimeZone.currentSystemDefault()
             ),
@@ -249,7 +250,7 @@ private fun QuizResultDetailPreview() {
         }
         val quizResult = QuizResultUiModel(
             generalCategory = Category.AnyCategory,
-            difficult = Difficult.AnyDifficulty,
+            difficulty = Difficulty.AnyDifficulty,
             passedTime = Clock.System.now().toLocalDateTime(
                 TimeZone.currentSystemDefault()
             ),

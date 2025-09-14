@@ -21,4 +21,9 @@
     <string name="result_st_two">2/5 — не расстраивайтесь, попробуйте ещё раз!</string>
     <string name="result_st_one">1/5 — иногда просто не ваш день. Следующая попытка будет лучше!</string>
     <string name="result_st_zero">0/5 — не отчаивайтесь. Начните заново и удивите себя!</string>
+
+    <string name="difficulty_any">Любая сложность</string>
+    <string name="difficulty_easy">Лёгкая</string>
+    <string name="difficulty_medium">Средняя</string>
+    <string name="difficulty_hard">Сложная</string>
 </resources>
