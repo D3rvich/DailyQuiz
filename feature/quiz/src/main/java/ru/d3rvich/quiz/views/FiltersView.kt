@@ -129,9 +129,14 @@ private fun SelectorCard(
                     .padding(bottom = 8.dp),
                 textAlign = TextAlign.Center
             )
+            val categories = Category.entries.sortedBy { it.name }.toMutableList()
+            categories.apply {
+                remove(Category.AnyCategory)
+                add(0, Category.AnyCategory)
+            }
             DropdownTextField(
                 selectedValue = category,
-                values = Category.entries,
+                values = categories,
                 text = { it?.run { stringResource(stringRes) } ?: "" },
                 label = stringResource(R.string.category),
                 onValueSelect = { it?.let { onCategoryChange(it) } })
