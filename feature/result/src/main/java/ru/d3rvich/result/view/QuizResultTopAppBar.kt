@@ -35,7 +35,7 @@ import ru.d3rvich.ui.theme.DailyQuizTheme
 @Composable
 internal fun QuizResultTopAppBar(
     category: String,
-    difficult: String,
+    difficulty: String,
     scrollBehavior: TopAppBarScrollBehavior,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -76,7 +76,7 @@ internal fun QuizResultTopAppBar(
                 Text(
                     stringResource(
                         R.string.difficult_placement,
-                        difficult
+                        difficulty
                     )
                 )
             }
@@ -95,9 +95,9 @@ internal fun QuizResultTopAppBar(
 private fun QuizResultTopAppBarPreview() {
     DailyQuizTheme {
         QuizResultTopAppBar(
-            Category.AnyCategory.text,
-            difficult = stringResource(Difficulty.AnyDifficulty.stringRes),
-            TopAppBarDefaults.exitUntilCollapsedScrollBehavior(),
-            {})
+            category = stringResource(Category.AnyCategory.stringRes),
+            difficulty = stringResource(Difficulty.AnyDifficulty.stringRes),
+            scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(),
+            onBackClick = {})
     }
 }

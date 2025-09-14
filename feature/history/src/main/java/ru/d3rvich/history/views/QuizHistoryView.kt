@@ -229,7 +229,7 @@ private fun QuizResultItemContent(quizResult: QuizResultUiModel, modifier: Modif
             Text(
                 stringResource(
                     R.string.category_placement,
-                    quizResult.generalCategory.text
+                    stringResource(quizResult.generalCategory.stringRes)
                 ),
                 style = MaterialTheme.typography.bodyMedium
             )

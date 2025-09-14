@@ -132,7 +132,7 @@ private fun SelectorCard(
             DropdownTextField(
                 selectedValue = category,
                 values = Category.entries,
-                text = { it?.text ?: "" },
+                text = { it?.run { stringResource(stringRes) } ?: "" },
                 label = stringResource(R.string.category),
                 onValueSelect = { it?.let { onCategoryChange(it) } })
             DropdownTextField(

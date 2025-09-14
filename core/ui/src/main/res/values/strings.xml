@@ -26,4 +26,30 @@
     <string name="difficulty_easy">Easy</string>
     <string name="difficulty_medium">Medium</string>
     <string name="difficulty_hard">Hard</string>
+
+    <string name="category_any">Any Category</string>
+    <string name="category_general_knowledge">General Knowledge</string>
+    <string name="category_entertainment_books">Entertainment: Books</string>
+    <string name="category_entertainment_film">Entertainment: Film</string>
+    <string name="category_entertainment_music">Entertainment: Music</string>
+    <string name="category_entertainment_musicals_theatres">Entertainment: Musicals &amp; Theatres</string>
+    <string name="category_entertainment_television">Entertainment: Television</string>
+    <string name="category_entertainment_video_games">Entertainment: Video Games</string>
+    <string name="category_entertainment_board_games">Entertainment: Board Games</string>
+    <string name="category_science_nature">Science &amp; Nature</string>
+    <string name="category_science_computers">Science: Computers</string>
+    <string name="category_science_mathematics">Science: Mathematics</string>
+    <string name="category_mythology">Mythology</string>
+    <string name="category_sports">Sports</string>
+    <string name="category_geography">Geography</string>
+    <string name="category_history">History</string>
+    <string name="category_politics">Politics</string>
+    <string name="category_art">Art</string>
+    <string name="category_celebrities">Celebrities</string>
+    <string name="category_animals">Animals</string>
+    <string name="category_vehicles">Vehicles</string>
+    <string name="category_entertainment_comics">Entertainment: Comics</string>
+    <string name="category_science_gadgets">Science: Gadgets</string>
+    <string name="category_entertainment_japanese_anime_manga">Entertainment: Japanese Anime &amp; Manga</string>
+    <string name="category_entertainment_cartoon_animations">Entertainment: Cartoon &amp; Animations</string>
 </resources>

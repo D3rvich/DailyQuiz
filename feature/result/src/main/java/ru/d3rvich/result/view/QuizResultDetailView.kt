@@ -85,8 +85,8 @@ internal fun QuizResultDetailView(
         contentWindowInsets = WindowInsets(0),
         topBar = {
             QuizResultTopAppBar(
-                category = quizResult.generalCategory.text,
-                difficult = stringResource(quizResult.difficulty.stringRes),
+                category = stringResource(quizResult.generalCategory.stringRes),
+                difficulty = stringResource(quizResult.difficulty.stringRes),
                 scrollBehavior = scrollBehavior,
                 onBackClick = onBackClick
             )
