@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="logo">Логотип</string>
+    <string name="selected_item_icon">Иконка выбранного объекта</string>
+    <string name="unselected_item_icon">Иконка невыбранного объекта</string>
+    <string name="star_icon">Иконка звёзчочки</string>
+    <string name="correct_answers">%1$d из %2$d</string>
+    <string name="restart">Начать заново</string>
+    <string name="correct_answer">Correct answer</string>
+    <string name="wrong_answer">Wrong answer</string>
+
+    <string name="result_hl_five">Идеально!</string>
+    <string name="result_hl_four">Почти идеально!</string>
+    <string name="result_hl_three">Хороший результат!</string>
+    <string name="result_hl_two">Есть над чем поработать</string>
+    <string name="result_hl_one">Сложный вопрос?</string>
+    <string name="result_hl_zero">Бывает и так!</string>
+    <string name="result_st_five">5/5 — вы ответили на всё правильно. Это блестящий результат!</string>
+    <string name="result_st_four">4/5 — очень близко к совершенству. Ещё один шаг!</string>
+    <string name="result_st_three">3/5 — вы на верном пути. Продолжайте тренироваться!</string>
+    <string name="result_st_two">2/5 — не расстраивайтесь, попробуйте ещё раз!</string>
+    <string name="result_st_one">1/5 — иногда просто не ваш день. Следующая попытка будет лучше!</string>
+    <string name="result_st_zero">0/5 — не отчаивайтесь. Начните заново и удивите себя!</string>
+
+    <string name="difficulty_any">Любая сложность</string>
+    <string name="difficulty_easy">Лёгкая</string>
+    <string name="difficulty_medium">Средняя</string>
+    <string name="difficulty_hard">Сложная</string>
+
+    <string name="category_any">Любая категория</string>
+    <string name="category_general_knowledge">Общие знания</string>
+    <string name="category_entertainment_books">Развлечение: Книги</string>
+    <string name="category_entertainment_film">Развлечение: Фильмы</string>
+    <string name="category_entertainment_music">Развлечение: Музыка</string>
+    <string name="category_entertainment_musicals_theatres">Развлечение: Мюзиклы и Театры</string>
+    <string name="category_entertainment_television">Развлечение: Телевидение</string>
+    <string name="category_entertainment_video_games">Развлечение: Видеоигры</string>
+    <string name="category_entertainment_board_games">Развлечение: Настольные игры</string>
+    <string name="category_science_nature">Наука и Природа</string>
+    <string name="category_vehicles">Машины</string>
+    <string name="category_entertainment_comics">Развлечение: Комиксы</string>
+    <string name="category_science_gadgets">Наука: Гаджеты</string>
+    <string name="category_entertainment_japanese_anime_manga">Развлечение: Японские Аниме и Манга</string>
+    <string name="category_entertainment_cartoon_animations">Развлечение: Мульфильмы и Анимация</string>
+    <string name="category_science_computers">Наука: Компьютеры</string>
+    <string name="category_science_mathematics">Наука: Математика</string>
+    <string name="category_mythology">Мифология</string>
+    <string name="category_sports">Спорт</string>
+    <string name="category_geography">География</string>
+    <string name="category_history">История</string>
+    <string name="category_politics">Политика</string>
+    <string name="category_art">Искусство</string>
+    <string name="category_celebrities">Знаменитости</string>
+    <string name="category_animals">Животные</string>
+</resources>

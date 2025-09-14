@@ -61,7 +61,7 @@ fun QuizResultCard(
                 style = MaterialTheme.typography.bodyLarge,
             )
             DailyQuizButton(
-                stringResource(id = R.string.retry),
+                stringResource(id = R.string.restart),
                 onClick = onRetryClick,
                 modifier = Modifier.padding(top = 40.dp)
             )

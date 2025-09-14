@@ -2,7 +2,7 @@ package ru.d3rvich.ui.navigation
 
 import kotlinx.serialization.Serializable
 import ru.d3rvich.domain.model.Category
-import ru.d3rvich.domain.model.Difficult
+import ru.d3rvich.domain.model.Difficulty
 
 object Screens {
 
@@ -18,7 +18,7 @@ object Screens {
         @Serializable
         data class Quiz(
             val category: Category = Category.AnyCategory,
-            val difficult: Difficult = Difficult.AnyDifficulty,
+            val difficulty: Difficulty = Difficulty.AnyDifficulty,
             val quizId: Long? = null
         )
 

@@ -4,7 +4,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.resources.get
 import ru.d3rvich.domain.model.Category
-import ru.d3rvich.domain.model.Difficult
+import ru.d3rvich.domain.model.Difficulty
 import ru.d3rvich.network.DailyQuizNetworkDataSource
 import ru.d3rvich.network.model.Question
 import ru.d3rvich.network.model.Quiz
@@ -15,13 +15,13 @@ internal class DailyQuizNetworkClient(private val client: HttpClient) :
     override suspend fun getQuiz(
         questionsCount: Int,
         category: Category,
-        difficult: Difficult
+        difficulty: Difficulty
     ): NetworkResult<List<Question>> = try {
         val response = client.get(
             Routes.Quiz(
                 questionsCount = questionsCount,
                 category = if (category != Category.AnyCategory) category.code else null,
-                difficulty = if (difficult != Difficult.AnyDifficulty) difficult.code else null
+                difficulty = if (difficulty != Difficulty.AnyDifficulty) difficulty.code else null
             )
         )
         when (response.status.value) {

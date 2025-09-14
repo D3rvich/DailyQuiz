@@ -37,7 +37,7 @@ internal class QuizNewViewModel @Inject constructor(
 
     private val args = savedStateHandle.toRoute<Screens.QuizMain.Quiz>().also { args ->
         viewModelScope.launch {
-            getExistedOrNewQuizUseCase.get().invoke(args.quizId, args.category, args.difficult)
+            getExistedOrNewQuizUseCase.get().invoke(args.quizId, args.category, args.difficulty)
                 .collect { result ->
                     when (result) {
                         Result.Loading -> setState(QuizUiState.Loading)
@@ -110,7 +110,7 @@ internal class QuizNewViewModel @Inject constructor(
                 QuizResultEntity(
                     id = args.quizId ?: 0,
                     generalCategory = quiz.category,
-                    difficult = quiz.difficult,
+                    difficulty = quiz.difficulty,
                     passedTime = passedTime,
                     questions = questions.map(QuestionUiModel::toQuestionEntity)
                 )

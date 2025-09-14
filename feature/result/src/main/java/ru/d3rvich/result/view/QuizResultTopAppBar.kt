@@ -24,17 +24,18 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import ru.d3rvich.domain.model.Category
-import ru.d3rvich.domain.model.Difficult
+import ru.d3rvich.domain.model.Difficulty
 import ru.d3rvich.result.R
 import ru.d3rvich.ui.components.appbar.CollapsingTopAppBar
 import ru.d3rvich.ui.components.appbar.CollapsingTopAppBarDefaults
+import ru.d3rvich.ui.extensions.stringRes
 import ru.d3rvich.ui.theme.DailyQuizTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun QuizResultTopAppBar(
     category: String,
-    difficult: String,
+    difficulty: String,
     scrollBehavior: TopAppBarScrollBehavior,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -75,7 +76,7 @@ internal fun QuizResultTopAppBar(
                 Text(
                     stringResource(
                         R.string.difficult_placement,
-                        difficult
+                        difficulty
                     )
                 )
             }
@@ -94,7 +95,9 @@ internal fun QuizResultTopAppBar(
 private fun QuizResultTopAppBarPreview() {
     DailyQuizTheme {
         QuizResultTopAppBar(
-            Category.AnyCategory.text, difficult = Difficult.AnyDifficulty.text,
-            TopAppBarDefaults.exitUntilCollapsedScrollBehavior(), {})
+            category = stringResource(Category.AnyCategory.stringRes),
+            difficulty = stringResource(Difficulty.AnyDifficulty.stringRes),
+            scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(),
+            onBackClick = {})
     }
 }

@@ -14,7 +14,7 @@ import ru.d3rvich.domain.entities.AnswerEntity
 import ru.d3rvich.domain.entities.QuizEntity
 import ru.d3rvich.domain.entities.QuizResultEntity
 import ru.d3rvich.domain.model.Category
-import ru.d3rvich.domain.model.Difficult
+import ru.d3rvich.domain.model.Difficulty
 import ru.d3rvich.domain.model.Result
 import ru.d3rvich.domain.model.SortBy
 import ru.d3rvich.domain.model.asResult
@@ -29,19 +29,19 @@ internal class DailyQuizRepositoryImpl(
     override fun getExistedOrNewQuiz(
         quizId: Long?,
         category: Category,
-        difficult: Difficult
+        difficulty: Difficulty
     ): Flow<Result<QuizEntity>> = flow {
         quizId?.also {
             emit(database.quizDao.getQuizBy(quizId).toQuizEntity(true))
         } ?: when (val result =
-            networkDataSource.getQuiz(DefaultQuestionsAmount, category, difficult)) {
+            networkDataSource.getQuiz(DefaultQuestionsAmount, category, difficulty)) {
             is NetworkResult.Failure -> throw result.exception
             is NetworkResult.Success -> {
                 val questions = result.value.map { it.toQuestionEntity(::combineAnswers) }
                 emit(
                     QuizEntity(
                         generalCategory = category,
-                        difficult = difficult,
+                        difficulty = difficulty,
                         questions = questions
                     )
                 )

@@ -40,6 +40,7 @@ import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -55,10 +56,12 @@ import kotlinx.datetime.format.Padding
 import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
 import ru.d3rvich.domain.model.Category
-import ru.d3rvich.domain.model.Difficult
+import ru.d3rvich.domain.model.Difficulty
 import ru.d3rvich.domain.model.SortBy
 import ru.d3rvich.history.R
+import ru.d3rvich.history.utils.RUSSIAN_FULL
 import ru.d3rvich.ui.components.DailyQuizStarIcon
+import ru.d3rvich.ui.extensions.stringRes
 import ru.d3rvich.ui.model.AnswerUiModel
 import ru.d3rvich.ui.model.QuestionUiModel
 import ru.d3rvich.ui.model.QuizResultUiModel
@@ -228,12 +231,15 @@ private fun QuizResultItemContent(quizResult: QuizResultUiModel, modifier: Modif
             Text(
                 stringResource(
                     R.string.category_placement,
-                    quizResult.generalCategory.text
+                    stringResource(quizResult.generalCategory.stringRes)
                 ),
                 style = MaterialTheme.typography.bodyMedium
             )
             Text(
-                stringResource(R.string.difficult_placement, quizResult.difficult.text),
+                stringResource(
+                    R.string.difficult_placement,
+                    stringResource(quizResult.difficulty.stringRes)
+                ),
                 style = MaterialTheme.typography.bodyMedium
             )
         }
@@ -243,11 +249,17 @@ private fun QuizResultItemContent(quizResult: QuizResultUiModel, modifier: Modif
 @Composable
 private fun TimeRow(dateTime: LocalDateTime, modifier: Modifier = Modifier) {
     Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        val dateFormat = remember {
+        val languageTag = LocalConfiguration.current.locales[0].toLanguageTag()
+        val dateFormat = remember(languageTag) {
             LocalDateTime.Format {
                 day(Padding.NONE)
                 char(' ')
-                monthName(MonthNames.ENGLISH_FULL)
+                monthName(
+                    when (languageTag) {
+                        "ru-RU" -> MonthNames.RUSSIAN_FULL
+                        else -> MonthNames.ENGLISH_FULL
+                    }
+                )
             }
         }
         val formatDate = dateTime.format(dateFormat)
@@ -289,7 +301,7 @@ private fun RemoveItemMenu(
         ) {
             Icon(
                 painterResource(R.drawable.ic_delete),
-                contentDescription = stringResource(R.string.remove_quiz),
+                contentDescription = null,
                 modifier = Modifier
                     .padding(8.dp)
                     .padding(horizontal = 12.dp)
@@ -313,7 +325,7 @@ private fun QuizHistoryNonDynamicPreview() {
         val list = List(8) {
             QuizResultUiModel(
                 Category.entries[it],
-                Difficult.entries[it % 4],
+                Difficulty.entries[it % 4],
                 Clock.System.now().toLocalDateTime(TimeZone.UTC),
                 questions,
                 it.toLong()
@@ -338,7 +350,7 @@ private fun QuizHistoryViewPreview() {
         val list = List(8) {
             QuizResultUiModel(
                 Category.entries[it],
-                Difficult.entries[it % 4],
+                Difficulty.entries[it % 4],
                 Clock.System.now().toLocalDateTime(TimeZone.UTC),
                 questions,
                 it.toLong()

@@ -11,7 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import kotlinx.serialization.json.Json
 import ru.d3rvich.domain.model.Category
-import ru.d3rvich.domain.model.Difficult
+import ru.d3rvich.domain.model.Difficulty
 import ru.d3rvich.history.HistoryScreen
 import ru.d3rvich.quiz.quizRoute
 import ru.d3rvich.result.QuizResultScreen
@@ -58,7 +58,7 @@ private fun NavGraphBuilder.history(navController: NavController) {
                 navController.navigate(
                     Screens.QuizMain.Quiz(
                         Category.AnyCategory,
-                        Difficult.AnyDifficulty
+                        Difficulty.AnyDifficulty
                     )
                 ) {
                     launchSingleTop = true
