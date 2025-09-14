@@ -15,7 +15,7 @@ import ru.d3rvich.ui.theme.DailyQuizTheme
 fun DailyQuizLogo(modifier: Modifier = Modifier) {
     Icon(
         painterResource(R.drawable.logo),
-        contentDescription = stringResource(R.string.dailyquiz_logo),
+        contentDescription = stringResource(R.string.logo),
         modifier = modifier,
     )
 }

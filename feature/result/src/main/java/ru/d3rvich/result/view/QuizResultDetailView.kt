@@ -191,7 +191,7 @@ private fun RetryButton(
     val density = LocalDensity.current
     val backgroundColor = MaterialTheme.colorScheme.background
     DailyQuizButton(
-        text = stringResource(ru.d3rvich.ui.R.string.retry),
+        text = stringResource(ru.d3rvich.ui.R.string.restart),
         onClick = onClick,
         modifier = modifier
             .drawWithCache {

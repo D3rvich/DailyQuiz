@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="results">Результаты</string>
+    <string name="question_progress">Вопрос %1$d из %2$d</string>
+    <string name="correct_answer">Правильный ответ</string>
+    <string name="wrong_answer">Неправильный ответ</string>
+    <string name="unselected_answer">Невыбранный ответ</string>
+    <string name="category_placement">Категория: %1$s</string>
+    <string name="difficult_placement">Сложность: %1$s</string>
+    <string name="navigate_back">Перейти назад</string>
+</resources>

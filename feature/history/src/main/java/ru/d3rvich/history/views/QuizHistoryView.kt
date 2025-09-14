@@ -289,7 +289,7 @@ private fun RemoveItemMenu(
         ) {
             Icon(
                 painterResource(R.drawable.ic_delete),
-                contentDescription = stringResource(R.string.remove_quiz),
+                contentDescription = null,
                 modifier = Modifier
                     .padding(8.dp)
                     .padding(horizontal = 12.dp)

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="logo">Логотип</string>
+    <string name="selected_item_icon">Иконка выбранного объекта</string>
+    <string name="unselected_item_icon">Иконка невыбранного объекта</string>
+    <string name="star_icon">Иконка звёзчочки</string>
+    <string name="correct_answers">%1$d из %2$d</string>
+    <string name="restart">Начать заново</string>
+    <string name="correct_answer">Correct answer</string>
+    <string name="wrong_answer">Wrong answer</string>
+
+    <string name="result_hl_five">Идеально!</string>
+    <string name="result_hl_four">Почти идеально!</string>
+    <string name="result_hl_three">Хороший результат!</string>
+    <string name="result_hl_two">Есть над чем поработать</string>
+    <string name="result_hl_one">Сложный вопрос?</string>
+    <string name="result_hl_zero">Бывает и так!</string>
+    <string name="result_st_five">5/5 — вы ответили на всё правильно. Это блестящий результат!</string>
+    <string name="result_st_four">4/5 — очень близко к совершенству. Ещё один шаг!</string>
+    <string name="result_st_three">3/5 — вы на верном пути. Продолжайте тренироваться!</string>
+    <string name="result_st_two">2/5 — не расстраивайтесь, попробуйте ещё раз!</string>
+    <string name="result_st_one">1/5 — иногда просто не ваш день. Следующая попытка будет лучше!</string>
+    <string name="result_st_zero">0/5 — не отчаивайтесь. Начните заново и удивите себя!</string>
+</resources>

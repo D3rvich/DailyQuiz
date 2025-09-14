@@ -46,7 +46,7 @@ internal fun TimeoutMessage(onDismissRequest: () -> Unit, modifier: Modifier = M
             )
         },
         onDismissRequest = onDismissRequest, confirmButton = {
-            DailyQuizButton(text = stringResource(R.string.retry), onDismissRequest)
+            DailyQuizButton(text = stringResource(ru.d3rvich.ui.R.string.restart), onDismissRequest)
         })
 }
 
