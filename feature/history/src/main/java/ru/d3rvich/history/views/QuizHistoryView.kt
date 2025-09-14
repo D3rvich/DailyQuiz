@@ -40,6 +40,7 @@ import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -58,6 +59,7 @@ import ru.d3rvich.domain.model.Category
 import ru.d3rvich.domain.model.Difficulty
 import ru.d3rvich.domain.model.SortBy
 import ru.d3rvich.history.R
+import ru.d3rvich.history.utils.RUSSIAN_FULL
 import ru.d3rvich.ui.components.DailyQuizStarIcon
 import ru.d3rvich.ui.extensions.stringRes
 import ru.d3rvich.ui.model.AnswerUiModel
@@ -247,11 +249,17 @@ private fun QuizResultItemContent(quizResult: QuizResultUiModel, modifier: Modif
 @Composable
 private fun TimeRow(dateTime: LocalDateTime, modifier: Modifier = Modifier) {
     Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        val dateFormat = remember {
+        val languageTag = LocalConfiguration.current.locales[0].toLanguageTag()
+        val dateFormat = remember(languageTag) {
             LocalDateTime.Format {
                 day(Padding.NONE)
                 char(' ')
-                monthName(MonthNames.ENGLISH_FULL)
+                monthName(
+                    when (languageTag) {
+                        "ru-RU" -> MonthNames.RUSSIAN_FULL
+                        else -> MonthNames.ENGLISH_FULL
+                    }
+                )
             }
         }
         val formatDate = dateTime.format(dateFormat)
