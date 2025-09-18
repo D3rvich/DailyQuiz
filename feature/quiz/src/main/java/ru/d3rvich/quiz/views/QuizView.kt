@@ -1,15 +1,21 @@
 package ru.d3rvich.quiz.views
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -23,11 +29,13 @@ import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.AnnotatedString
@@ -56,81 +64,159 @@ import kotlin.time.Instant
 
 @Composable
 internal fun QuestionView(
-    question: QuestionUiModel,
-    progressCount: Int,
-    maxQuestions: Int,
+    questions: List<QuestionUiModel>,
+    currentQuestionIndex: Int,
     selectedAnswerIndex: Int?,
     showCorrectAnswer: Boolean,
     timerCurrentValue: Long,
     timerMaxValue: Long,
     showTimeoutMessage: Boolean,
-    modifier: Modifier = Modifier,
     onAnswerSelect: (index: Int) -> Unit,
     onNextClick: () -> Unit,
     onBackClick: () -> Unit,
     onRetryClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    require(progressCount > 0)
-    require(progressCount <= maxQuestions) { "progressCount can't be more than maxQuestion" }
-    Column(modifier = modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+    QuizLayout(modifier = modifier, topBar = {
         TopBar(onBackClick = onBackClick)
-        Card(
-            modifier = Modifier
-                .padding(horizontal = 24.dp)
-                .fillMaxWidth()
-                .animateContentSize(),
-            shape = RoundedCornerShape(40.dp)
-        ) {
-            Column(
+    }, main = {
+        Column {
+            TimerView(
+                currentValue = timerCurrentValue,
+                maxValue = timerMaxValue,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 32.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                TimerView(
-                    timerCurrentValue,
-                    timerMaxValue,
-                    modifier = Modifier.padding(bottom = 32.dp)
-                )
-                Text(
-                    style = MaterialTheme.typography.labelMedium,
-                    text = stringResource(R.string.question_count, progressCount, maxQuestions),
-                    modifier = Modifier.padding(bottom = 8.dp),
-                    color = MaterialTheme.colorScheme.primary,
-                )
-                Text(
-                    text = AnnotatedString.fromHtml(question.text),
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.labelLarge,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
-                AnswersView(
-                    answers = question.answers,
+                    .padding(bottom = 16.dp)
+                    .padding(horizontal = 24.dp)
+            )
+            val state = rememberPagerState { questions.size }
+            LaunchedEffect(currentQuestionIndex) {
+                state.animateScrollToPage(currentQuestionIndex)
+            }
+            HorizontalPager(state, userScrollEnabled = false) { page ->
+                val question = questions[currentQuestionIndex]
+                QuestionCard(
+                    question = question,
+                    currentQuestion = currentQuestionIndex + 1,
+                    questionsSize = questions.size,
                     selectedAnswerIndex = selectedAnswerIndex,
+                    showCorrectAnswer = showCorrectAnswer,
                     onAnswerSelect = onAnswerSelect,
-                    showCorrectAnswer = showCorrectAnswer
-                )
-                val text = if (progressCount == maxQuestions) {
-                    stringResource(R.string.complete)
-                } else {
-                    stringResource(R.string.next)
-                }
-                DailyQuizButton(
-                    text = text,
-                    onClick = onNextClick,
-                    enabled = selectedAnswerIndex != null,
-                    modifier = Modifier.padding(top = 20.dp)
+                    onNextClick = onNextClick
                 )
             }
         }
+    }, bottom = {
         Text(
             text = stringResource(R.string.warning_massage),
-            modifier = Modifier.padding(top = 20.dp),
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .padding(vertical = 12.dp)
+                .fillMaxWidth()
+                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom)),
             style = MaterialTheme.typography.bodySmall
         )
-    }
+    })
     if (showTimeoutMessage) {
         TimeoutMessage(onDismissRequest = onRetryClick)
+    }
+}
+
+@Composable
+private fun QuizLayout(
+    topBar: @Composable () -> Unit,
+    main: @Composable () -> Unit,
+    bottom: @Composable () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    SubcomposeLayout(modifier = modifier.fillMaxSize()) { constraints ->
+        val topPlaceable = subcompose(QuizSlots.TopBar, topBar)
+            .map { it.measure(constraints.copy(minHeight = 0)) }
+        val bottomPlaceable = subcompose(QuizSlots.Bottom, bottom)
+            .map { it.measure(constraints.copy(minHeight = 0)) }
+        val topHeightPx = topPlaceable.fold(0) { currentMax, placeable ->
+            maxOf(currentMax, placeable.height)
+        }
+        val bottomHeightPx = bottomPlaceable.fold(0) { currentMax, placeable ->
+            maxOf(currentMax, placeable.height)
+        }
+        val questionHeightPx = constraints.maxHeight - bottomHeightPx - topHeightPx
+        layout(constraints.maxWidth, constraints.maxHeight) {
+            topPlaceable.forEach { it.placeRelative(0, 0) }
+            bottomPlaceable.forEach { it.placeRelative(0, constraints.maxHeight - bottomHeightPx) }
+            subcompose(QuizSlots.Main, main).map {
+                it.measure(
+                    constraints.copy(
+                        minHeight = 0,
+                        maxHeight = questionHeightPx
+                    )
+                )
+            }.forEach { it.placeRelative(0, topHeightPx) }
+        }
+    }
+}
+
+private enum class QuizSlots {
+    TopBar, Main, Bottom
+}
+
+@Composable
+private fun QuestionCard(
+    question: QuestionUiModel,
+    currentQuestion: Int,
+    questionsSize: Int,
+    selectedAnswerIndex: Int?,
+    showCorrectAnswer: Boolean,
+    onAnswerSelect: (Int) -> Unit,
+    onNextClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Card(
+        modifier = modifier
+            .padding(horizontal = 24.dp)
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(40.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp, vertical = 32.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                style = MaterialTheme.typography.labelMedium,
+                text = stringResource(
+                    R.string.question_count,
+                    currentQuestion,
+                    questionsSize
+                ),
+                modifier = Modifier.padding(bottom = 8.dp),
+                color = MaterialTheme.colorScheme.primary,
+            )
+            Text(
+                text = AnnotatedString.fromHtml(question.text),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.labelLarge,
+                maxLines = 5,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+            AnswersView(
+                answers = question.answers,
+                selectedAnswerIndex = selectedAnswerIndex,
+                onAnswerSelect = onAnswerSelect,
+                showCorrectAnswer = showCorrectAnswer
+            )
+            val text = if (currentQuestion == questionsSize) {
+                stringResource(R.string.complete)
+            } else {
+                stringResource(R.string.next)
+            }
+            DailyQuizButton(
+                text = text,
+                onClick = onNextClick,
+                enabled = selectedAnswerIndex != null,
+                modifier = Modifier.padding(top = 20.dp)
+            )
+        }
     }
 }
 
@@ -177,18 +263,6 @@ private fun TimerView(currentValue: Long, maxValue: Long, modifier: Modifier = M
                 second(Padding.ZERO)
             }
         }
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text(
-                currentDateTime.format(formater),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.primary,
-            )
-            Text(
-                maxDataTime.format(formater),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.primary,
-            )
-        }
         val progress = currentValue.toFloat() / maxValue
         val animatedProgress by animateFloatAsState(
             targetValue = progress,
@@ -200,6 +274,23 @@ private fun TimerView(currentValue: Long, maxValue: Long, modifier: Modifier = M
                 .fillMaxWidth()
                 .height(4.dp)
         )
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                currentDateTime.format(formater),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.primary,
+            )
+            Text(
+                maxDataTime.format(formater),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.primary,
+            )
+        }
     }
 }
 
@@ -253,9 +344,8 @@ private fun QuestionPreview() {
         )
         Surface(color = MaterialTheme.colorScheme.background) {
             QuestionView(
-                question = entity,
-                progressCount = 1,
-                maxQuestions = 5,
+                questions = listOf(entity),
+                currentQuestionIndex = 0,
                 timerCurrentValue = 20000L,
                 timerMaxValue = TimerMaxValue,
                 selectedAnswerIndex = null,

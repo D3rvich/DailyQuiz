@@ -36,9 +36,8 @@ internal fun QuizScreen(
         is QuizUiState.Quiz -> {
             QuestionView(
                 modifier = modifier,
-                question = state.quiz.questions[state.currentQuestionIndex],
-                progressCount = state.currentQuestionIndex + 1,
-                maxQuestions = state.quiz.questions.size,
+                questions = state.quiz.questions,
+                currentQuestionIndex = state.currentQuestionIndex,
                 selectedAnswerIndex = state.quiz.questions[state.currentQuestionIndex].selectedAnswerIndex,
                 showCorrectAnswer = state.showCorrectAnswer,
                 timerCurrentValue = state.timer,
