@@ -5,15 +5,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.selection.selectable
@@ -26,6 +20,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProgressIndicatorDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,7 +30,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.AnnotatedString
@@ -63,7 +57,7 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 @Composable
-internal fun QuestionView(
+internal fun QuizView(
     questions: List<QuestionUiModel>,
     currentQuestionIndex: Int,
     selectedAnswerIndex: Int?,
@@ -77,10 +71,21 @@ internal fun QuestionView(
     onRetryClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    QuizLayout(modifier = modifier, topBar = {
-        TopBar(onBackClick = onBackClick)
-    }, main = {
-        Column {
+    Scaffold(
+        modifier = modifier,
+        topBar = { TopBar(onBackClick = onBackClick) },
+        bottomBar = {
+            Text(
+                text = stringResource(R.string.warning_massage),
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .padding(vertical = 12.dp)
+                    .fillMaxWidth(),
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
+    ) { innerPadding ->
+        Column(modifier = Modifier.padding(innerPadding)) {
             TimerView(
                 currentValue = timerCurrentValue,
                 maxValue = timerMaxValue,
@@ -105,58 +110,10 @@ internal fun QuestionView(
                 )
             }
         }
-    }, bottom = {
-        Text(
-            text = stringResource(R.string.warning_massage),
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .padding(vertical = 12.dp)
-                .fillMaxWidth()
-                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom)),
-            style = MaterialTheme.typography.bodySmall
-        )
-    })
+    }
     if (showTimeoutMessage) {
         TimeoutMessage(onDismissRequest = onRetryClick)
     }
-}
-
-@Composable
-private fun QuizLayout(
-    topBar: @Composable () -> Unit,
-    main: @Composable () -> Unit,
-    bottom: @Composable () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    SubcomposeLayout(modifier = modifier.fillMaxSize()) { constraints ->
-        val topPlaceable = subcompose(QuizSlots.TopBar, topBar)
-            .map { it.measure(constraints.copy(minHeight = 0)) }
-        val bottomPlaceable = subcompose(QuizSlots.Bottom, bottom)
-            .map { it.measure(constraints.copy(minHeight = 0)) }
-        val topHeightPx = topPlaceable.fold(0) { currentMax, placeable ->
-            maxOf(currentMax, placeable.height)
-        }
-        val bottomHeightPx = bottomPlaceable.fold(0) { currentMax, placeable ->
-            maxOf(currentMax, placeable.height)
-        }
-        val questionHeightPx = constraints.maxHeight - bottomHeightPx - topHeightPx
-        layout(constraints.maxWidth, constraints.maxHeight) {
-            topPlaceable.forEach { it.placeRelative(0, 0) }
-            bottomPlaceable.forEach { it.placeRelative(0, constraints.maxHeight - bottomHeightPx) }
-            subcompose(QuizSlots.Main, main).map {
-                it.measure(
-                    constraints.copy(
-                        minHeight = 0,
-                        maxHeight = questionHeightPx
-                    )
-                )
-            }.forEach { it.placeRelative(0, topHeightPx) }
-        }
-    }
-}
-
-private enum class QuizSlots {
-    TopBar, Main, Bottom
 }
 
 @Composable
@@ -343,7 +300,7 @@ private fun QuestionPreview() {
             0
         )
         Surface(color = MaterialTheme.colorScheme.background) {
-            QuestionView(
+            QuizView(
                 questions = listOf(entity),
                 currentQuestionIndex = 0,
                 timerCurrentValue = 20000L,

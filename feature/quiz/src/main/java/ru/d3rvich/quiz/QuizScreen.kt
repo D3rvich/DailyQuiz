@@ -14,7 +14,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ru.d3rvich.quiz.model.QuizUiAction
 import ru.d3rvich.quiz.model.QuizUiEvent
 import ru.d3rvich.quiz.model.QuizUiState
-import ru.d3rvich.quiz.views.QuestionView
+import ru.d3rvich.quiz.views.QuizView
 
 @Composable
 internal fun QuizScreen(
@@ -34,7 +34,7 @@ internal fun QuizScreen(
         }
 
         is QuizUiState.Quiz -> {
-            QuestionView(
+            QuizView(
                 modifier = modifier,
                 questions = state.quiz.questions,
                 currentQuestionIndex = state.currentQuestionIndex,
