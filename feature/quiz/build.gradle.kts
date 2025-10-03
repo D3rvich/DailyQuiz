@@ -8,6 +8,5 @@ android {
 
 dependencies {
     implementation(libs.androidx.constraintlayout.compose)
-    implementation(libs.androidx.compose.navigation)
     implementation(libs.kotlinx.datetime)
 }

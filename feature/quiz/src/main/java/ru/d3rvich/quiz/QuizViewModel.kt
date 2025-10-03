@@ -1,8 +1,9 @@
 package ru.d3rvich.quiz
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -23,21 +24,20 @@ import ru.d3rvich.ui.model.QuestionUiModel
 import ru.d3rvich.ui.model.correctAnswers
 import ru.d3rvich.ui.mvibase.BaseViewModel
 import ru.d3rvich.ui.navigation.Screens
-import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
-@HiltViewModel
-internal class QuizNewViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
+@HiltViewModel(assistedFactory = QuizViewModel.Factory::class)
+internal class QuizViewModel @AssistedInject constructor(
+    @Assisted private val key: Screens.QuizMain.Quiz,
     private val getExistedOrNewQuizUseCase: Provider<GetExistedOrNewQuizUseCase>,
     private val saveQuizResultUseCase: Provider<SaveQuizUseCase>,
 ) : BaseViewModel<QuizUiState, QuizUiEvent, QuizUiAction>() {
 
-    private val args = savedStateHandle.toRoute<Screens.QuizMain.Quiz>().also { args ->
+    init {
         viewModelScope.launch {
-            getExistedOrNewQuizUseCase.get().invoke(args.quizId, args.category, args.difficulty)
+            getExistedOrNewQuizUseCase.get().invoke(key.quizId, key.category, key.difficulty)
                 .collect { result ->
                     when (result) {
                         Result.Loading -> setState(QuizUiState.Loading)
@@ -108,7 +108,7 @@ internal class QuizNewViewModel @Inject constructor(
             val passedTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
             val result = state.quiz.let { quiz ->
                 QuizResultEntity(
-                    id = args.quizId ?: 0,
+                    id = key.quizId ?: 0,
                     generalCategory = quiz.category,
                     difficulty = quiz.difficulty,
                     passedTime = passedTime,
@@ -157,6 +157,11 @@ internal class QuizNewViewModel @Inject constructor(
                 setState(state.copy(quiz = quiz))
             }
         }
+    }
+
+    @AssistedFactory
+    internal interface Factory {
+        fun create(key: Screens.QuizMain.Quiz): QuizViewModel
     }
 }
 

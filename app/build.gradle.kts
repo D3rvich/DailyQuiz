@@ -27,6 +27,8 @@ dependencies {
     implementation(project(":feature:result"))
 
     implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.compose.navigation)
     implementation(libs.kotlinx.serializationJson)
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
 }

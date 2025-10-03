@@ -19,7 +19,7 @@ import ru.d3rvich.ui.model.QuizResultUiModel
 
 @Composable
 fun HistoryScreen(
-    navigateToQuiz: () -> Unit,
+    navigateToQuizFilters: () -> Unit,
     navigateToQuizResult: (quizResult: QuizResultUiModel) -> Unit,
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier
@@ -33,7 +33,7 @@ fun HistoryScreen(
         onSortChange = { selectedSort ->
             viewModel.obtainEvent(HistoryUiEvent.OnSortChange(selectedSort))
         },
-        onStartQuizClick = { navigateToQuiz() },
+        onStartQuizClick = { navigateToQuizFilters() },
         onQuizClick = { navigateToQuizResult(it) },
         onBackClick = navigateBack
     )
