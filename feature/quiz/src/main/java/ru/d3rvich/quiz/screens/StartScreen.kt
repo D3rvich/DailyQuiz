@@ -1,4 +1,4 @@
-package ru.d3rvich.quiz.views
+package ru.d3rvich.quiz.screens
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
@@ -37,10 +37,10 @@ import ru.d3rvich.ui.components.DailyQuizLogo
 import ru.d3rvich.ui.theme.DailyQuizTheme
 
 @Composable
-internal fun StartView(
+fun StartScreen(
     isLoading: Boolean,
-    onStartClick: () -> Unit,
-    onHistoryClick: () -> Unit,
+    navigateToFilters: () -> Unit,
+    navigateToHistory: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     ConstraintLayout(modifier = modifier.fillMaxSize()) {
@@ -55,11 +55,11 @@ internal fun StartView(
             enter = fadeIn(),
             exit = fadeOut()
         ) {
-            HistoryButton(onHistoryClick)
+            HistoryButton(navigateToHistory)
         }
         MainContent(
             isLoading = isLoading,
-            onStartClick = onStartClick,
+            onStartClick = navigateToFilters,
             modifier = Modifier.constrainAs(main) {
                 top.linkTo(parent.top)
                 bottom.linkTo(parent.bottom)
@@ -148,7 +148,7 @@ private fun MainContent(
 @Composable
 private fun StartPreview() {
     DailyQuizTheme {
-        StartView(false, {}, {})
+        StartScreen(false, {}, {})
     }
 }
 
@@ -156,6 +156,6 @@ private fun StartPreview() {
 @Composable
 private fun StartLoadingPreview() {
     DailyQuizTheme {
-        StartView(true, {}, {})
+        StartScreen(true, {}, {})
     }
 }

@@ -1,4 +1,4 @@
-package ru.d3rvich.quiz.views
+package ru.d3rvich.quiz.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,11 +19,11 @@ import ru.d3rvich.ui.components.QuizResultCard
 import ru.d3rvich.ui.theme.DailyQuizTheme
 
 @Composable
-internal fun ResultsView(
+fun ResultsScreen(
     correctAnswers: Int,
     totalQuestions: Int,
-    modifier: Modifier = Modifier,
-    onRetryClick: () -> Unit
+    navigateToStart: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
@@ -36,7 +36,7 @@ internal fun ResultsView(
         QuizResultCard(
             correctAnswers = correctAnswers,
             totalQuestions = totalQuestions,
-            onRetryClick = onRetryClick
+            onRetryClick = navigateToStart
         )
     }
 }
@@ -45,6 +45,6 @@ internal fun ResultsView(
 @Composable
 private fun ResultsPreview() {
     DailyQuizTheme {
-        ResultsView(correctAnswers = 4, totalQuestions = 5) {}
+        ResultsScreen(correctAnswers = 4, totalQuestions = 5, {})
     }
 }

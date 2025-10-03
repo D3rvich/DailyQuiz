@@ -1,4 +1,4 @@
-package ru.d3rvich.quiz.views
+package ru.d3rvich.quiz.screens
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -50,13 +50,13 @@ import ru.d3rvich.ui.theme.DailyQuizTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun FiltersView(
+fun FiltersScreen(
     category: Category?,
     difficulty: Difficulty?,
     onCategoryChange: (Category) -> Unit,
     onDifficultChange: (Difficulty) -> Unit,
-    onStartClick: () -> Unit,
-    onBackClick: () -> Unit,
+    onStartQuiz: () -> Unit,
+    onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     ConstraintLayout(modifier = modifier.fillMaxSize()) {
@@ -71,7 +71,7 @@ internal fun FiltersView(
                 )
             },
             navigationIcon = {
-                IconButton(onClick = onBackClick) {
+                IconButton(onClick = onBack) {
                     Icon(
                         Icons.AutoMirrored.Default.ArrowBack,
                         contentDescription = stringResource(R.string.navigate_back)
@@ -83,7 +83,7 @@ internal fun FiltersView(
             difficulty = difficulty,
             onCategoryChange = onCategoryChange,
             onDifficultChange = onDifficultChange,
-            onStartClick = onStartClick,
+            onStartClick = onStartQuiz,
             modifier = Modifier.constrainAs(filtersCard) {
                 top.linkTo(parent.top)
                 bottom.linkTo(parent.bottom)
@@ -218,7 +218,7 @@ private fun <T> DropdownTextField(
 @Composable
 private fun FiltersEmptyPreview() {
     DailyQuizTheme {
-        FiltersView(null, null, {}, {}, {}, {})
+        FiltersScreen(null, null, {}, {}, {}, {})
     }
 }
 
@@ -226,6 +226,6 @@ private fun FiltersEmptyPreview() {
 @Composable
 private fun FiltersPreview() {
     DailyQuizTheme {
-        FiltersView(Category.AnyCategory, Difficulty.AnyDifficulty, {}, {}, {}, {})
+        FiltersScreen(Category.AnyCategory, Difficulty.AnyDifficulty, {}, {}, {}, {})
     }
 }
