@@ -1,5 +1,8 @@
 package ru.d3rvich.dailyquiz.navigation
 
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
+import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneStrategy
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -8,10 +11,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
-import androidx.navigation3.runtime.EntryProviderBuilder
+import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.entryProvider
-import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
-import androidx.navigation3.scene.rememberSceneSetupNavEntryDecorator
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import kotlinx.serialization.json.Json
 import ru.d3rvich.domain.model.Category
@@ -26,17 +28,17 @@ import ru.d3rvich.ui.model.QuizResultUiModel
 import ru.d3rvich.ui.navigation.Screen
 import ru.d3rvich.ui.navigation.Screens
 
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 internal fun Nav3Graph(modifier: Modifier = Modifier) {
     val backStack = rememberSaveable { mutableStateListOf<Screen>(Screens.QuizMain.Start) }
-
+    val listDetailStrategy = rememberListDetailSceneStrategy<Screen>()
     NavDisplay(
         backStack,
         onBack = { backStack.removeLastOrNull() },
+        sceneStrategy = listDetailStrategy,
         entryDecorators = listOf(
-            // Add the default decorators for managing scenes and saving state
-            rememberSceneSetupNavEntryDecorator(),
-            rememberSavedStateNavEntryDecorator(),
+            rememberSaveableStateHolderNavEntryDecorator(),
             // Then add the view model store decorator
             rememberViewModelStoreNavEntryDecorator()
         ),
@@ -78,7 +80,7 @@ internal fun Nav3Graph(modifier: Modifier = Modifier) {
     )
 }
 
-private fun EntryProviderBuilder<Screen>.quizEntry(
+private fun EntryProviderScope<Screen>.quizEntry(
     navigateBackToStart: () -> Unit,
     navigateToFilters: () -> Unit,
     navigateToHistory: () -> Unit,
@@ -123,12 +125,15 @@ private fun EntryProviderBuilder<Screen>.quizEntry(
     }
 }
 
-private fun EntryProviderBuilder<Screen>.historyEntry(
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+private fun EntryProviderScope<Screen>.historyEntry(
     navigateToFilters: () -> Unit,
     navigateToQuizResult: (QuizResultUiModel) -> Unit,
     navigateBack: () -> Unit
 ) {
-    entry(Screens.History) {
+    entry<Screens.History>(
+        metadata = ListDetailSceneStrategy.listPane()
+    ) {
         HistoryScreen(
             navigateToQuizFilters = navigateToFilters,
             navigateToQuizResult = navigateToQuizResult,
@@ -137,11 +142,14 @@ private fun EntryProviderBuilder<Screen>.historyEntry(
     }
 }
 
-private fun EntryProviderBuilder<Screen>.quizResultEntry(
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+private fun EntryProviderScope<Screen>.quizResultEntry(
     navigateToQuiz: (quizId: Long) -> Unit,
     navigateBack: () -> Unit
 ) {
-    entry<Screens.QuizResult> { key ->
+    entry<Screens.QuizResult>(
+        metadata = ListDetailSceneStrategy.detailPane()
+    ) { key ->
         val quizResult = Json.decodeFromString<QuizResultUiModel>(key.quizResultJson)
         QuizResultScreen(
             quizResult = quizResult,

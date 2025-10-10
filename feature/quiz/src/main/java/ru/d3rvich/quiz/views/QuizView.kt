@@ -17,8 +17,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.AnnotatedString
@@ -60,6 +59,7 @@ import ru.d3rvich.ui.model.QuestionUiModel
 import ru.d3rvich.ui.theme.DailyQuizTheme
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
+import ru.d3rvich.ui.R as UiR
 
 @Composable
 internal fun QuizView(
@@ -197,7 +197,7 @@ private fun TopBar(modifier: Modifier = Modifier, onBackClick: () -> Unit) {
                 .padding(start = 12.dp)
         ) {
             Icon(
-                Icons.AutoMirrored.Default.ArrowBack,
+                painterResource(UiR.drawable.arrow_back_24px),
                 contentDescription = stringResource(R.string.navigate_back)
             )
         }

@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -17,6 +15,7 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import ru.d3rvich.domain.model.Category
 import ru.d3rvich.domain.model.Difficulty
 import ru.d3rvich.result.R
+import ru.d3rvich.ui.R as UiR
 import ru.d3rvich.ui.components.appbar.CollapsingTopAppBar
 import ru.d3rvich.ui.components.appbar.CollapsingTopAppBarDefaults
 import ru.d3rvich.ui.extensions.stringRes
@@ -47,7 +47,7 @@ internal fun QuizResultTopAppBar(
         navigationIcon = {
             IconButton(onClick = onBackClick) {
                 Icon(
-                    Icons.AutoMirrored.Default.ArrowBack,
+                    painterResource(UiR.drawable.arrow_back_24px),
                     contentDescription = stringResource(R.string.navigate_back)
                 )
             }

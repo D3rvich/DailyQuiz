@@ -5,10 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -43,6 +39,7 @@ import ru.d3rvich.history.model.toDomainSortBy
 import ru.d3rvich.ui.components.appbar.CollapsingTopAppBar
 import ru.d3rvich.ui.components.appbar.CollapsingTopAppBarDefaults
 import ru.d3rvich.ui.theme.DailyQuizTheme
+import ru.d3rvich.ui.R as UiR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,7 +78,7 @@ internal fun QuizHistoryTopAppBar(
         navigationIcon = {
             IconButton(onBackClick) {
                 Icon(
-                    Icons.AutoMirrored.Default.ArrowBack,
+                    painterResource(UiR.drawable.arrow_back_24px),
                     contentDescription = stringResource(R.string.navigate_back)
                 )
             }
@@ -160,12 +157,12 @@ private fun SortingOptionsItem(
             AnimatedVisibility(isSelected) {
                 if (byAscending) {
                     Icon(
-                        Icons.Default.KeyboardArrowDown,
+                        painterResource(UiR.drawable.keyboard_arrow_down_24px),
                         stringResource(R.string.by_ascending)
                     )
                 } else {
                     Icon(
-                        Icons.Default.KeyboardArrowUp,
+                        painterResource(R.drawable.keyboard_arrow_up_24px),
                         stringResource(R.string.by_descending)
                     )
                 }
