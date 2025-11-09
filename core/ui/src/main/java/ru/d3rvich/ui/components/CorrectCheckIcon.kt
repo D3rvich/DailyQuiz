@@ -1,13 +1,9 @@
 package ru.d3rvich.ui.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import ru.d3rvich.ui.R
@@ -27,10 +23,7 @@ fun CorrectCheckIcon(isCorrect: Boolean, modifier: Modifier = Modifier) {
             Icon(
                 painterResource(R.drawable.cancel_24px),
                 contentDescription = stringResource(R.string.wrong_answer),
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .background(Red50),
-                tint = Color.White
+                tint = Red50
             )
         }
     }

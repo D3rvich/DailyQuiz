@@ -10,6 +10,7 @@
     <string name="category_placement">Category: %1$s</string>
     <string name="difficult_placement">Difficulty: %1$s</string>
     <string name="navigate_back">Navigate back</string>
+    <string name="navigate_home">Navigate home</string>
     <string name="by_ascending">By ascending</string>
     <string name="by_descending">By descending</string>
     <string name="open_sorting">Open sorting</string>

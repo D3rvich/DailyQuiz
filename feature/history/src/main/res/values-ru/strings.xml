@@ -10,6 +10,7 @@
     <string name="category_placement">Категория: %1$s</string>
     <string name="difficult_placement">Сложность: %1$s</string>
     <string name="navigate_back">Перейти назад</string>
+    <string name="navigate_home">Перейти на стартовый экран</string>
     <string name="by_ascending">По возрастанию</string>
     <string name="by_descending">По убыванию</string>
     <string name="open_sorting">Открыть сортировку</string>

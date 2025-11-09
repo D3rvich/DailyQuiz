@@ -78,8 +78,8 @@ internal fun QuizHistoryTopAppBar(
         navigationIcon = {
             IconButton(onBackClick) {
                 Icon(
-                    painterResource(UiR.drawable.arrow_back_24px),
-                    contentDescription = stringResource(R.string.navigate_back)
+                    painterResource(R.drawable.home_24px),
+                    contentDescription = stringResource(R.string.navigate_home)
                 )
             }
         },
