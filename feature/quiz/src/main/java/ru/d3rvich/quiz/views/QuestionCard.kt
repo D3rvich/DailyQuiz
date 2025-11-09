@@ -3,18 +3,22 @@ package ru.d3rvich.quiz.views
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridScope
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,6 +30,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.fromHtml
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.window.core.layout.WindowSizeClass
 import ru.d3rvich.quiz.R
 import ru.d3rvich.ui.components.AnswerType
 import ru.d3rvich.ui.components.AnswerUiCard
@@ -47,170 +52,97 @@ internal fun QuestionCard(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    if (isLandscape) {
-        QuestionLandscapeCard(
-            question = question,
-            currentQuestion = currentQuestion,
-            questionsSize = questionsSize,
-            selectedAnswerIndex = selectedAnswerIndex,
-            showCorrectAnswer = showCorrectAnswer,
-            onAnswerSelect = onAnswerSelect,
-            onBackClick = onBackClick,
-            onNextClick = onNextClick,
-            modifier = modifier
-        )
-    } else {
-        QuestionDefaultCard(
-            question = question,
-            currentQuestion = currentQuestion,
-            questionsSize = questionsSize,
-            selectedAnswerIndex = selectedAnswerIndex,
-            showCorrectAnswer = showCorrectAnswer,
-            onAnswerSelect = onAnswerSelect,
-            onNextClick = onNextClick,
-            modifier = modifier
-        )
-    }
-}
-
-@Composable
-private fun QuestionDefaultCard(
-    question: QuestionUiModel,
-    currentQuestion: Int,
-    questionsSize: Int,
-    selectedAnswerIndex: Int?,
-    showCorrectAnswer: Boolean,
-    onAnswerSelect: (Int) -> Unit,
-    onNextClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
     Card(
         modifier = modifier
-            .padding(horizontal = 24.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp),
         shape = RoundedCornerShape(40.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp, vertical = 32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
+        val isCompatWidth = !(currentWindowAdaptiveInfo().windowSizeClass
+            .isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND))
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(if (isCompatWidth) 1 else 2),
+            modifier = Modifier.fillMaxWidth(),
+            contentPadding = PaddingValues(
+                horizontal = 24.dp,
+                vertical = if (isLandscape) 12.dp else 32.dp
+            ),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            QuestionCounter(
-                currentQuestionCount = currentQuestion,
-                maxQuestions = questionsSize,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            QuestionText(text = question.text, modifier = Modifier.padding(bottom = 16.dp))
-            AnswersView(
+            item(span = { GridItemSpan(maxCurrentLineSpan) }) {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        if (isLandscape) {
+                            IconButton(
+                                onBackClick,
+                                modifier = Modifier.align(Alignment.CenterStart)
+                            ) {
+                                Icon(
+                                    painter = painterResource(UiR.drawable.arrow_back_24px),
+                                    contentDescription = stringResource(R.string.navigate_back)
+                                )
+                            }
+                        }
+                        QuestionCounter(
+                            currentQuestionCount = currentQuestion,
+                            maxQuestions = questionsSize,
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .padding(bottom = if (isLandscape) 0.dp else 12.dp)
+                        )
+                    }
+                    QuestionText(text = question.text)
+                }
+            }
+            answersView(
                 answers = question.answers,
                 selectedAnswerIndex = selectedAnswerIndex,
                 onAnswerSelect = onAnswerSelect,
                 showCorrectAnswer = showCorrectAnswer
             )
-            CompleteButton(
-                currentQuestion = currentQuestion,
-                questionsSize = questionsSize,
-                selectedAnswerIndex = selectedAnswerIndex,
-                onNextClick = onNextClick
-            )
-        }
-    }
-}
-
-@Composable
-private fun QuestionLandscapeCard(
-    question: QuestionUiModel,
-    currentQuestion: Int,
-    questionsSize: Int,
-    selectedAnswerIndex: Int?,
-    showCorrectAnswer: Boolean,
-    onAnswerSelect: (Int) -> Unit,
-    onNextClick: () -> Unit,
-    onBackClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 24.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 24.dp, vertical = 12.dp),
-            verticalArrangement = Arrangement.Center
-        ) {
-            Box(modifier = Modifier.fillMaxWidth()) {
-                IconButton(onBackClick, modifier = Modifier.align(Alignment.CenterStart)) {
-                    Icon(
-                        painter = painterResource(UiR.drawable.arrow_back_24px),
-                        contentDescription = stringResource(R.string.navigate_back)
-                    )
-                }
-                QuestionCounter(
-                    currentQuestionCount = currentQuestion,
-                    maxQuestions = questionsSize,
-                    modifier = Modifier.align(Alignment.Center)
+            item(span = { GridItemSpan(maxCurrentLineSpan) }) {
+                CompleteButton(
+                    currentQuestion = currentQuestion,
+                    questionsSize = questionsSize,
+                    selectedAnswerIndex = selectedAnswerIndex,
+                    onNextClick = onNextClick,
+                    modifier = Modifier.padding(top = if (isLandscape) 0.dp else 16.dp)
                 )
             }
-            QuestionText(
-                text = question.text,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp)
-            )
-            AnswersView(
-                answers = question.answers,
-                selectedAnswerIndex = selectedAnswerIndex,
-                showCorrectAnswer = showCorrectAnswer,
-                onAnswerSelect = onAnswerSelect
-            )
-            CompleteButton(
-                currentQuestion = currentQuestion,
-                questionsSize = questionsSize,
-                selectedAnswerIndex = selectedAnswerIndex,
-                onNextClick = onNextClick
-            )
         }
     }
 }
 
-@Composable
-private fun AnswersView(
+private fun LazyGridScope.answersView(
     answers: List<AnswerUiModel>,
     selectedAnswerIndex: Int?,
     showCorrectAnswer: Boolean,
-    modifier: Modifier = Modifier,
     onAnswerSelect: (Int) -> Unit
 ) {
-    Column(
-        modifier = modifier.padding(vertical = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        answers.forEachIndexed { index, answer ->
-            val isSelected = index == selectedAnswerIndex
-            val type = when {
-                isSelected && !showCorrectAnswer -> AnswerType.Selected
-                isSelected && answer.isCorrect -> AnswerType.Correct
-                isSelected && !answer.isCorrect -> AnswerType.Wrong
-                else -> AnswerType.NotSelected
-            }
-            AnswerUiCard(
-                text = answer.text,
-                answerType = type,
-                modifier = Modifier
-                    .clip(RoundedCornerShape(16.dp))
-                    .selectable(
-                        selected = isSelected,
-                        role = Role.RadioButton,
-                        onClick = {
-                            onAnswerSelect(index)
-                        }
-                    ))
-
+    itemsIndexed(answers) { index, answer ->
+        val isSelected = index == selectedAnswerIndex
+        val type = when {
+            isSelected && !showCorrectAnswer -> AnswerType.Selected
+            isSelected && answer.isCorrect -> AnswerType.Correct
+            isSelected && !answer.isCorrect -> AnswerType.Wrong
+            else -> AnswerType.NotSelected
         }
+        AnswerUiCard(
+            text = answer.text,
+            answerType = type,
+            modifier = Modifier
+                .clip(RoundedCornerShape(16.dp))
+                .selectable(
+                    selected = isSelected,
+                    role = Role.RadioButton,
+                    onClick = {
+                        onAnswerSelect(index)
+                    }
+                ))
     }
 }
 
@@ -261,6 +193,6 @@ private fun CompleteButton(
         text = text,
         onClick = onNextClick,
         enabled = selectedAnswerIndex != null,
-        modifier = modifier.padding(top = 20.dp)
+        modifier = modifier
     )
 }

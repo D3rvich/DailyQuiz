@@ -94,7 +94,7 @@ internal fun QuizView(
                 .fillMaxSize(),
             contentAlignment = Alignment.TopCenter
         ) {
-            Column(modifier = Modifier.widthIn(max = if (isLandscape) Dp.Unspecified else 600.dp)) {
+            Column(modifier = Modifier.widthIn(max = if (isLandscape) Dp.Unspecified else 640.dp)) {
                 TimerView(
                     currentValue = timerCurrentValue,
                     maxValue = timerMaxValue,
