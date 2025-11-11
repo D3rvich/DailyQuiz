@@ -18,6 +18,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.EntryProviderScope
@@ -25,6 +26,7 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import kotlinx.serialization.json.Json
+import ru.d3rvich.dailyquiz.R
 import ru.d3rvich.domain.model.Category
 import ru.d3rvich.domain.model.Difficulty
 import ru.d3rvich.history.HistoryScreen
@@ -54,11 +56,9 @@ internal fun Nav3Graph(modifier: Modifier = Modifier) {
         entryProvider = entryProvider {
             quizEntry(
                 navigateBackToStart = {
-                    while (backStack.last() != Screens.QuizMain.Start) {
-                        if (backStack.removeLastOrNull() == null) {
-                            backStack.add(Screens.QuizMain.Start)
-                            break
-                        }
+                    backStack.removeIf { it !is Screens.QuizMain.Start }
+                    if (backStack.isEmpty()) {
+                        backStack.add(Screens.QuizMain.Start)
                     }
                 },
                 navigateToFilters = { backStack.add(Screens.QuizMain.Filters) },
@@ -76,11 +76,9 @@ internal fun Nav3Graph(modifier: Modifier = Modifier) {
                     backStack.removeLastOrNull()
                     backStack.add(Screens.QuizMain.Filters)
                 },
-                navigateToQuizResult = {
-                    if (backStack.last() !is Screens.History) {
-                        backStack.removeLastOrNull()
-                    }
-                    backStack.add(Screens.QuizResult(Json.encodeToString(it)))
+                navigateToQuizResult = { resultUiModel ->
+                    backStack.removeIf { it is Screens.QuizResult }
+                    backStack.add(Screens.QuizResult(Json.encodeToString(resultUiModel)))
                 },
                 navigateBack = {
                     val removeCount = if (backStack.last() is Screens.QuizResult) 2 else 1
@@ -151,13 +149,13 @@ private fun EntryProviderScope<Screen>.historyEntry(
     entry<Screens.History>(
         metadata = ListDetailSceneStrategy.listPane {
             Box(
-                Modifier
+                modifier = Modifier
                     .fillMaxSize()
                     .windowInsetsPadding(WindowInsets.safeDrawing),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    "Choose quiz from the list",
+                    text = stringResource(R.string.detail_placeholder),
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center
                 )
