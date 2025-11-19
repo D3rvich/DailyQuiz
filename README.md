@@ -1,29 +1,40 @@
 DailyQuiz
 =========
+Description
+-----------
+Multi-module android application. UI powered by Jetpack Compose with Material3. Application supports
+adaptive screen size.
+
+Application allow to pass quiz with selected difficulty ad category. Watch, retry or delete passed
+quizzes in history. New quiz takes from [Open Trivia Database](https://opentdb.com/api_config.php) (
+it's free)
+
+Features
+---
+
+- Multi-module Clean Architecture
+- MVI in UI layer
+- Jetpack Compose with Material3
+- Kotlinx Coroutines with Flow
+- Navigation3 with Material Adaptive for adaptive multi scene navigation
+- DI by Hilt
+- Ktor Client
+
 Tech Stack
 ------
+
 - [KotlinX Coroutines](https://github.com/Kotlin/kotlinx.coroutines)
 - [KotlinX Serialization](https://github.com/Kotlin/kotlinx.serialization)
 - [KotlinX Datetime](https://github.com/Kotlin/kotlinx-datetime)
 - [KSP](https://github.com/google/ksp)
-- [Jetpack Compose](https://developer.android.com/compose) + [Material3](https://m3.material.io/)]
-- [Compose Navigation](https://developer.android.com/develop/ui/compose/navigation)
+- [Jetpack Compose](https://developer.android.com/compose) + [Material3](https://m3.material.io/)
+- [Navigation 3](https://developer.android.com/guide/navigation/navigation-3) + [Material Adaptive](https://developer.android.com/jetpack/androidx/releases/compose-material3-adaptive)
 - [Dagger](https://dagger.dev/dev-guide/) + [Hilt](https://dagger.dev/hilt/)
 - [Room](https://developer.android.com/jetpack/androidx/releases/room)
 - [Ktor Client](https://ktor.io/docs/welcome.html)
 
-Описание
------------
-Миногомодульный клин с фиче модулями. На уровне ui используется MVI.
-
-Приложение начиналось разрабатываться с [шаблона](https://github.com/D3rvich/AndroidTemplate)
-
-Структура проекта и convention плагины вдохновены [Now in Android](https://github.com/android/nowinandroid)
-
-Видео
+Video
 ---------
-P. s.: 10 секунд только для демонстрации завершения по таймеру
-P. p. s: Шакалы пожрали почти все видео(
 
 [Screen_recording_20250804_012451.webm](https://github.com/user-attachments/assets/8e715d2b-3f48-4c2d-ba19-4932bf7aa41c)
 
