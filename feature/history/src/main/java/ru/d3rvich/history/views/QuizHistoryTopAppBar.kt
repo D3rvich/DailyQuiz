@@ -2,12 +2,16 @@ package ru.d3rvich.history.views
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -39,7 +43,6 @@ import ru.d3rvich.history.model.toDomainSortBy
 import ru.d3rvich.ui.components.appbar.CollapsingTopAppBar
 import ru.d3rvich.ui.components.appbar.CollapsingTopAppBarDefaults
 import ru.d3rvich.ui.theme.DailyQuizTheme
-import ru.d3rvich.ui.R as UiR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -105,69 +108,91 @@ private fun Actions(
         Icon(painterResource(R.drawable.outline_sort_24), stringResource(R.string.open_sorting))
     }
     DropdownMenu(showMenu, { showMenu = false }) {
-        SortByEnum.entries.forEach { item ->
-            val isSelected = selectedSort.asSortByEnum() == item
-            SortingOptionsItem(
-                item = item,
-                byAscending = selectedSort.byAscending,
-                isSelected = isSelected,
-                onSortChange = { sortByEnum ->
-                    onSortChange(
-                        sortByEnum.toDomainSortBy(
-                            if (isSelected) {
-                                !selectedSort.byAscending
-                            } else {
-                                selectedSort.byAscending
-                            }
-                        )
-                    )
-                })
+        SortingOptions(selectedSort = selectedSort, onSortChange = onSortChange)
+    }
+}
+
+@Composable
+private fun ColumnScope.SortingOptions(
+    selectedSort: SortBy,
+    onSortChange: (selectedSort: SortBy) -> Unit,
+) {
+    val selectedSortByEnum = selectedSort.asSortByEnum()
+    SortByEnum.entries.forEach { item ->
+        val isSelected = selectedSortByEnum == item
+        DropdownMenuItem(
+            text = stringResource(item.labelTextId),
+            isSelected = isSelected,
+            onClick = { onSortChange(item.toDomainSortBy(selectedSort.byAscending)) })
+    }
+    HorizontalDivider(modifier = Modifier.padding(vertical = 2.dp))
+    selectedSortByEnum.AscendingOptions(byAscending = selectedSort.byAscending) { byAscending ->
+        onSortChange(selectedSortByEnum.toDomainSortBy(byAscending))
+    }
+}
+
+@Composable
+context(scope: ColumnScope)
+private fun SortByEnum.AscendingOptions(
+    byAscending: Boolean,
+    onAscendingChange: (byAscending: Boolean) -> Unit,
+) {
+    when (this) {
+        SortByEnum.Default -> {
+            listOf(true, false).forEach {
+                scope.apply {
+                    DropdownMenuItem(
+                        text = if (it) "By ascending" else "By descending",
+                        isSelected = byAscending == it,
+                        onClick = { onAscendingChange(it) })
+                }
+            }
+        }
+
+        SortByEnum.PassedTime -> {
+            listOf(true, false).forEach {
+                scope.apply {
+                    DropdownMenuItem(
+                        text = if (it) "Earlier first" else "Older first",
+                        isSelected = byAscending == it,
+                        onClick = { onAscendingChange(it) })
+                }
+            }
         }
     }
 }
 
 @Composable
-private fun SortingOptionsItem(
-    item: SortByEnum,
-    byAscending: Boolean,
+private fun ColumnScope.DropdownMenuItem(
+    text: String,
     isSelected: Boolean,
-    onSortChange: (SortByEnum) -> Unit,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val selectedColor = MaterialTheme.colorScheme.primary
-    val itemColors = if (isSelected) {
-        MenuDefaults.itemColors().copy(
-            textColor = selectedColor,
-            trailingIconColor = selectedColor
-        )
-    } else {
-        MenuDefaults.itemColors()
-    }
+    val colors = MenuDefaults.itemColors().copy(
+        textColor = if (isSelected) MaterialTheme.colorScheme.primary else MenuDefaults.itemColors().textColor,
+        trailingIconColor = if (isSelected) MaterialTheme.colorScheme.primary else MenuDefaults.itemColors().trailingIconColor
+    )
     DropdownMenuItem(
         modifier = modifier,
-        colors = itemColors,
+        colors = colors,
         text = {
             Text(
-                stringResource(item.labelTextId),
+                text = text,
                 style = MaterialTheme.typography.bodyLarge
             )
         },
-        onClick = { onSortChange(item) },
-        trailingIcon = {
-            AnimatedVisibility(isSelected) {
-                if (byAscending) {
-                    Icon(
-                        painterResource(UiR.drawable.keyboard_arrow_down_24px),
-                        stringResource(R.string.by_ascending)
-                    )
-                } else {
-                    Icon(
-                        painterResource(R.drawable.keyboard_arrow_up_24px),
-                        stringResource(R.string.by_descending)
-                    )
-                }
+        onClick = onClick,
+        leadingIcon = {
+            AnimatedVisibility(visible = isSelected) {
+                Icon(
+                    painterResource(R.drawable.check_24px),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
             }
-        })
+        }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -180,5 +205,15 @@ private fun QuizHistoryTopAppBarPreview() {
             TopAppBarDefaults.exitUntilCollapsedScrollBehavior(),
             {},
             {})
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun SortingOptionsPreview() {
+    DailyQuizTheme {
+        Column {
+            SortingOptions(SortBy.Default(true)) { }
+        }
     }
 }
