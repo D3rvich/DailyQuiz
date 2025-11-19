@@ -1,7 +1,5 @@
 package ru.d3rvich.ui.components
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -15,7 +13,7 @@ import ru.d3rvich.ui.R
 fun DailyQuizRadioButtonIcon(isSelected: Boolean, modifier: Modifier = Modifier) {
     if (isSelected) {
         Icon(
-            Icons.Default.CheckCircle,
+            painterResource(R.drawable.check_circle_24px),
             contentDescription = stringResource(R.string.selected_item_icon),
             tint = MaterialTheme.colorScheme.primary,
             modifier = modifier,

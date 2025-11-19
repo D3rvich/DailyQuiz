@@ -1,25 +1,30 @@
-package ru.d3rvich.quiz.views
+package ru.d3rvich.quiz.screens
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationRail
+import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,41 +34,65 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.window.core.layout.WindowSizeClass
 import ru.d3rvich.quiz.R
 import ru.d3rvich.ui.components.DailyQuizButton
 import ru.d3rvich.ui.components.DailyQuizLogo
 import ru.d3rvich.ui.theme.DailyQuizTheme
 
 @Composable
-internal fun StartView(
+fun StartScreen(
     isLoading: Boolean,
-    onStartClick: () -> Unit,
-    onHistoryClick: () -> Unit,
+    navigateToFilters: () -> Unit,
+    navigateToHistory: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    ConstraintLayout(modifier = modifier.fillMaxSize()) {
-        val (historyButton, main) = createRefs()
-        AnimatedVisibility(
-            !isLoading, modifier = Modifier.constrainAs(historyButton) {
-                top.linkTo(parent.top)
-                bottom.linkTo(main.top)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            },
-            enter = fadeIn(),
-            exit = fadeOut()
-        ) {
-            HistoryButton(onHistoryClick)
+    val showNavRail = !(currentWindowAdaptiveInfo().windowSizeClass
+        .isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_MEDIUM_LOWER_BOUND))
+    Row(Modifier.fillMaxSize()) {
+        if (showNavRail) {
+            NavigationRail(Modifier.fillMaxHeight()) {
+                NavigationRailItem(
+                    selected = false,
+                    onClick = navigateToHistory,
+                    icon = {
+                        Icon(
+                            painterResource(R.drawable.ic_outline_history_2_24),
+                            contentDescription = stringResource(R.string.history),
+                        )
+                    },
+                    label = {
+                        Text(stringResource(R.string.history))
+                    }
+                )
+            }
         }
-        MainContent(
-            isLoading = isLoading,
-            onStartClick = onStartClick,
-            modifier = Modifier.constrainAs(main) {
-                top.linkTo(parent.top)
-                bottom.linkTo(parent.bottom)
-            })
+        ConstraintLayout(modifier = modifier.fillMaxSize()) {
+            val (historyButton, main) = createRefs()
+            if (!showNavRail) {
+                HistoryButton(navigateToHistory, modifier = Modifier.constrainAs(historyButton) {
+                    top.linkTo(parent.top)
+                    bottom.linkTo(main.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                })
+            }
+            MainContent(
+                isLoading = isLoading,
+                showLogo = !showNavRail,
+                onStartClick = navigateToFilters,
+                modifier = Modifier
+                    .widthIn(max = 600.dp)
+                    .constrainAs(main) {
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    })
+        }
     }
 }
 
@@ -87,6 +116,7 @@ private fun HistoryButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
 @Composable
 private fun MainContent(
     isLoading: Boolean,
+    showLogo: Boolean,
     onStartClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -95,8 +125,10 @@ private fun MainContent(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        DailyQuizLogo()
-        Spacer(Modifier.height(40.dp))
+        if (showLogo) {
+            DailyQuizLogo()
+            Spacer(Modifier.height(40.dp))
+        }
         Box(
             Modifier
                 .fillMaxWidth()
@@ -144,11 +176,11 @@ private fun MainContent(
     }
 }
 
-@Preview(showBackground = true, apiLevel = 35)
+@PreviewScreenSizes
 @Composable
 private fun StartPreview() {
     DailyQuizTheme {
-        StartView(false, {}, {})
+        StartScreen(false, {}, {})
     }
 }
 
@@ -156,6 +188,6 @@ private fun StartPreview() {
 @Composable
 private fun StartLoadingPreview() {
     DailyQuizTheme {
-        StartView(true, {}, {})
+        StartScreen(true, {}, {})
     }
 }

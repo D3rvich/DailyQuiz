@@ -1,4 +1,4 @@
-package ru.d3rvich.quiz.views
+package ru.d3rvich.quiz.screens
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -8,20 +8,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,10 +31,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -47,16 +47,17 @@ import ru.d3rvich.ui.components.DailyQuizButton
 import ru.d3rvich.ui.components.DailyQuizLogo
 import ru.d3rvich.ui.extensions.stringRes
 import ru.d3rvich.ui.theme.DailyQuizTheme
+import ru.d3rvich.ui.R as UiR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun FiltersView(
+fun FiltersScreen(
     category: Category?,
     difficulty: Difficulty?,
     onCategoryChange: (Category) -> Unit,
     onDifficultChange: (Difficulty) -> Unit,
-    onStartClick: () -> Unit,
-    onBackClick: () -> Unit,
+    onStartQuiz: () -> Unit,
+    onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     ConstraintLayout(modifier = modifier.fillMaxSize()) {
@@ -64,6 +65,8 @@ internal fun FiltersView(
         CenterAlignedTopAppBar(
             modifier = Modifier.constrainAs(topBar) {
                 top.linkTo(parent.top)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
             },
             title = {
                 DailyQuizLogo(
@@ -71,9 +74,9 @@ internal fun FiltersView(
                 )
             },
             navigationIcon = {
-                IconButton(onClick = onBackClick) {
+                IconButton(onClick = onBack) {
                     Icon(
-                        Icons.AutoMirrored.Default.ArrowBack,
+                        painterResource(UiR.drawable.arrow_back_24px),
                         contentDescription = stringResource(R.string.navigate_back)
                     )
                 }
@@ -83,11 +86,13 @@ internal fun FiltersView(
             difficulty = difficulty,
             onCategoryChange = onCategoryChange,
             onDifficultChange = onDifficultChange,
-            onStartClick = onStartClick,
+            onStartClick = onStartQuiz,
             modifier = Modifier.constrainAs(filtersCard) {
                 top.linkTo(parent.top)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
                 bottom.linkTo(parent.bottom)
-            })
+            }.widthIn(max = 600.dp))
     }
 }
 
@@ -186,12 +191,12 @@ private fun <T> DropdownTextField(
                 )
             },
             modifier = Modifier
-                .menuAnchor(MenuAnchorType.PrimaryEditable)
+                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryEditable)
                 .fillMaxWidth(),
             readOnly = true,
             trailingIcon = {
                 Icon(
-                    imageVector = Icons.Default.KeyboardArrowDown,
+                    painter = painterResource(UiR.drawable.keyboard_arrow_down_24px),
                     contentDescription = null,
                     modifier = modifier.graphicsLayer(rotationZ = rotate)
                 )
@@ -214,11 +219,11 @@ private fun <T> DropdownTextField(
     }
 }
 
-@Preview(showBackground = true, apiLevel = 35)
+@PreviewScreenSizes
 @Composable
 private fun FiltersEmptyPreview() {
     DailyQuizTheme {
-        FiltersView(null, null, {}, {}, {}, {})
+        FiltersScreen(null, null, {}, {}, {}, {})
     }
 }
 
@@ -226,6 +231,6 @@ private fun FiltersEmptyPreview() {
 @Composable
 private fun FiltersPreview() {
     DailyQuizTheme {
-        FiltersView(Category.AnyCategory, Difficulty.AnyDifficulty, {}, {}, {}, {})
+        FiltersScreen(Category.AnyCategory, Difficulty.AnyDifficulty, {}, {}, {}, {})
     }
 }

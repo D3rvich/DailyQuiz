@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name" translatable="false">DailyQuiz</string>
+    <string name="detail_placeholder">Choose quiz from the list</string>
 </resources>

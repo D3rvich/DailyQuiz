@@ -9,7 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import dagger.hilt.android.AndroidEntryPoint
-import ru.d3rvich.dailyquiz.navigation.NavGraph
+import ru.d3rvich.dailyquiz.navigation.Nav3Graph
 import ru.d3rvich.ui.theme.DailyQuizTheme
 
 @AndroidEntryPoint
@@ -23,7 +23,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    NavGraph()
+                    Nav3Graph()
                 }
             }
         }
