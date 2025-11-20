@@ -1,3 +1,5 @@
+import com.google.devtools.ksp.gradle.KspExtension
+
 plugins {
     alias(libs.plugins.dailyquiz.android.library)
     alias(libs.plugins.dailyquiz.android.hilt)
@@ -11,6 +13,15 @@ android {
     room {
         schemaDirectory("$projectDir/schemas")
     }
+    sourceSets {
+        getByName("androidTest").assets.srcDir("$projectDir/schemas")
+    }
+    extensions.configure<KspExtension> {
+        arg("room.generateKotlin", "true")
+    }
+    defaultConfig {
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
 }
 
 dependencies {
@@ -20,4 +31,8 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.kotlinx.serializationJson)
     implementation(libs.kotlinx.datetime)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.room.testing)
+    androidTestImplementation(libs.androidx.espresso.core)
 }
