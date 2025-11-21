@@ -17,7 +17,8 @@ class DailyQuizDatabase internal constructor(private val database: DailyQuizRoom
     version = 2,
     autoMigrations = [
         AutoMigration(from = 1, to = 2, spec = DatabaseMigrations.Schema1to2::class)
-    ]
+    ],
+    exportSchema = true
 )
 internal abstract class DailyQuizRoomDatabase : RoomDatabase() {
     abstract fun quizDao(): QuizDao
