@@ -75,6 +75,7 @@ private val SortBy.rawValue: String
     get() = when (this) {
         is SortBy.Default -> SortByRaw.DEFAULT
         is SortBy.PassedTime -> SortByRaw.PASSED_TIME
+        is SortBy.CorrectAnswers -> SortByRaw.CORRECT_ANSWERS
     }
 
 private const val DefaultQuestionsAmount = 5

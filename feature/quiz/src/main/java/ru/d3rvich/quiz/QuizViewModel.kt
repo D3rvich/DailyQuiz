@@ -22,6 +22,7 @@ import ru.d3rvich.ui.mappers.toQuestionEntity
 import ru.d3rvich.ui.mappers.toQuizUiModel
 import ru.d3rvich.ui.model.QuestionUiModel
 import ru.d3rvich.ui.model.correctAnswers
+import ru.d3rvich.ui.model.isCorrectAnswer
 import ru.d3rvich.ui.mvibase.BaseViewModel
 import ru.d3rvich.ui.navigation.Screens
 import javax.inject.Provider
@@ -95,6 +96,7 @@ internal class QuizViewModel @AssistedInject constructor(
 
     @OptIn(ExperimentalTime::class)
     private fun saveQuizAndShowResult(state: QuizUiState.Quiz, hasTimeout: Boolean) {
+        require(state.quiz.questions.all { it.selectedAnswerIndex != null })
         viewModelScope.launch {
             val questions = if (hasTimeout) {
                 state.quiz.questions.map { question ->
@@ -112,7 +114,8 @@ internal class QuizViewModel @AssistedInject constructor(
                     generalCategory = quiz.category,
                     difficulty = quiz.difficulty,
                     passedTime = passedTime,
-                    questions = questions.map(QuestionUiModel::toQuestionEntity)
+                    questions = questions.map(QuestionUiModel::toQuestionEntity),
+                    correctAnswers = questions.filter { question -> question.isCorrectAnswer }.size
                 )
             }
             saveQuizResultUseCase.get().invoke(result)

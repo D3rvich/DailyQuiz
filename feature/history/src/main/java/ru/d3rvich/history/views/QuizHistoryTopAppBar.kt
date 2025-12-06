@@ -123,7 +123,7 @@ private fun ColumnScope.SortingOptions(
         DropdownMenuItem(
             text = stringResource(item.labelTextId),
             isSelected = isSelected,
-            onClick = { onSortChange(item.toDomainSortBy(selectedSort.byAscending)) })
+            onClick = { onSortChange(item.toDomainSortBy()) })
     }
     HorizontalDivider(modifier = Modifier.padding(vertical = 2.dp))
     selectedSortByEnum.AscendingOptions(byAscending = selectedSort.byAscending) { byAscending ->
@@ -139,25 +139,50 @@ private fun SortByEnum.AscendingOptions(
 ) {
     when (this) {
         SortByEnum.Default -> {
-            listOf(true, false).forEach {
-                scope.apply {
-                    DropdownMenuItem(
-                        text = if (it) "By ascending" else "By descending",
-                        isSelected = byAscending == it,
-                        onClick = { onAscendingChange(it) })
-                }
-            }
+            AscendingOptionTemplate(
+                text = { if (it) "By ascending" else "By descending" },
+                byAscending = byAscending,
+                onAscendingChange = onAscendingChange
+            )
         }
 
         SortByEnum.PassedTime -> {
-            listOf(true, false).forEach {
-                scope.apply {
-                    DropdownMenuItem(
-                        text = if (it) "Earlier first" else "Older first",
-                        isSelected = byAscending == it,
-                        onClick = { onAscendingChange(it) })
-                }
-            }
+            AscendingOptionTemplate(
+                text = { if (it) "New to old" else "Old to new" },
+                byAscending = byAscending,
+                onAscendingChange = onAscendingChange
+            )
+        }
+
+        SortByEnum.CorrectAnswers -> {
+            AscendingOptionTemplate(
+                text = { if (it) "Worst first" else "Best first" },
+                isReversed = true,
+                byAscending = byAscending,
+                onAscendingChange = onAscendingChange
+            )
+        }
+    }
+}
+
+@Composable
+context(scope: ColumnScope)
+private fun AscendingOptionTemplate(
+    byAscending: Boolean,
+    text: (option: Boolean) -> String,
+    onAscendingChange: (byAscending: Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    isReversed: Boolean = false
+) {
+    listOf(true, false).let {
+        if (isReversed) it.reversed() else it
+    }.forEach {
+        scope.apply {
+            DropdownMenuItem(
+                modifier = modifier,
+                text = text(it),
+                isSelected = byAscending == it,
+                onClick = { onAscendingChange(it) })
         }
     }
 }
@@ -187,7 +212,7 @@ private fun ColumnScope.DropdownMenuItem(
             AnimatedVisibility(visible = isSelected) {
                 Icon(
                     painterResource(R.drawable.check_24px),
-                    contentDescription = null,
+                    contentDescription = "Selected",
                     tint = MaterialTheme.colorScheme.primary
                 )
             }

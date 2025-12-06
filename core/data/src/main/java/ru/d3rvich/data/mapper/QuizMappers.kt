@@ -12,6 +12,7 @@ internal fun QuizDBO.toQuizResultEntity(): QuizResultEntity = QuizResultEntity(
     difficulty = difficulty,
     passedTime = passedTime,
     questions = questions.map(QuestionDBO::toQuestionEntity),
+    correctAnswers = correctAnswers
 )
 
 internal fun QuizDBO.toQuizEntity(disableAnswers: Boolean): QuizEntity =
@@ -29,5 +30,5 @@ internal fun QuizResultEntity.toQuizDBO(): QuizDBO = QuizDBO(
     difficulty = difficulty,
     passedTime = passedTime,
     questions = questions.map(QuestionEntity::toQuestionDBO),
-    correctAnswers = -1,
+    correctAnswers = correctAnswers,
 )

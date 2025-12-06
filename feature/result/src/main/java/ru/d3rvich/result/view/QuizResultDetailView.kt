@@ -64,7 +64,6 @@ import ru.d3rvich.ui.extensions.stringRes
 import ru.d3rvich.ui.model.AnswerUiModel
 import ru.d3rvich.ui.model.QuestionUiModel
 import ru.d3rvich.ui.model.QuizResultUiModel
-import ru.d3rvich.ui.model.correctAnswers
 import ru.d3rvich.ui.model.isCorrectAnswer
 import ru.d3rvich.ui.theme.DailyQuizTheme
 import ru.d3rvich.ui.theme.Grey75
@@ -232,6 +231,7 @@ private fun EmptyQuizResultDetailPreview() {
                 TimeZone.currentSystemDefault()
             ),
             questions = listOf(),
+            correctAnswers = 1
         )
         QuizResultDetailView(quizResult, {}, {})
     }
@@ -255,6 +255,7 @@ private fun QuizResultDetailPreview() {
                 TimeZone.currentSystemDefault()
             ),
             questions = question,
+            correctAnswers = 1
         )
         QuizResultDetailView(quizResult, {}, {})
     }

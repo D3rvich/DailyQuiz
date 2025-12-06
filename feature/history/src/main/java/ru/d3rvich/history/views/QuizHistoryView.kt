@@ -330,6 +330,7 @@ private fun QuizHistoryNonDynamicPreview() {
                 Difficulty.entries[it % 4],
                 Clock.System.now().toLocalDateTime(TimeZone.UTC),
                 questions,
+                1,
                 it.toLong()
             )
         }
@@ -355,6 +356,7 @@ private fun QuizHistoryViewPreview() {
                 Difficulty.entries[it % 4],
                 Clock.System.now().toLocalDateTime(TimeZone.UTC),
                 questions,
+                1,
                 it.toLong()
             )
         }

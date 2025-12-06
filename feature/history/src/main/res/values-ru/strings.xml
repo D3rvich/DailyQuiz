@@ -16,4 +16,5 @@
     <string name="open_sorting">Открыть сортировку</string>
     <string name="sort_by_label_default">По умолчанию</string>
     <string name="sort_by_label_passed_time">Время прохождения</string>
+    <string name="sort_by_label_correct_answers">Правильные ответы</string>
 </resources>

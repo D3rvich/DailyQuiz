@@ -17,6 +17,8 @@ interface QuizDao {
         "SELECT * FROM quiz ORDER BY " +
                 "CASE WHEN (:sortBy LIKE '${SortByRaw.PASSED_TIME}' AND :isAsc = 1) THEN passed_time END ASC, " +
                 "CASE WHEN (:sortBy LIKE '${SortByRaw.PASSED_TIME}' AND :isAsc = 0) THEN passed_time END DESC, " +
+                "CASE WHEN (:sortBy LIKE '${SortByRaw.CORRECT_ANSWERS}' AND :isAsc = 1) THEN correct_answers END ASC, " +
+                "CASE WHEN (:sortBy LIKE '${SortByRaw.CORRECT_ANSWERS}' AND :isAsc = 0) THEN correct_answers END DESC, " +
                 "CASE WHEN (:sortBy LIKE '${SortByRaw.DEFAULT}' AND :isAsc = 1) THEN id END ASC, " +
                 "CASE WHEN (:sortBy LIKE '${SortByRaw.DEFAULT}' AND :isAsc = 0) THEN id END DESC"
     )
@@ -35,4 +37,5 @@ interface QuizDao {
 object SortByRaw {
     const val DEFAULT = "default"
     const val PASSED_TIME = "passed_time"
+    const val CORRECT_ANSWERS = "correct_answers"
 }

@@ -16,4 +16,5 @@
     <string name="open_sorting">Open sorting</string>
     <string name="sort_by_label_default">Default</string>
     <string name="sort_by_label_passed_time">Passed time</string>
+    <string name="sort_by_label_correct_answers">Correct answers</string>
 </resources>
