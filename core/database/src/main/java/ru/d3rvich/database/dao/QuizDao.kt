@@ -7,25 +7,41 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 import ru.d3rvich.database.model.QuizDBO
+import ru.d3rvich.domain.model.SortBy
 
 @Dao
 interface QuizDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveQuiz(value: QuizDBO)
 
+    fun getQuizHistory(sortBy: SortBy): Flow<List<QuizDBO>> = when (sortBy.byAscending) {
+        true -> getQuizHistoryAsc(sortBy.rawValue)
+        false -> getQuizHistoryDesc(sortBy.rawValue)
+    }
+
     @Query(
-        "SELECT * FROM quiz ORDER BY " +
-                "CASE WHEN (:sortBy LIKE '${SortByRaw.PASSED_TIME}' AND :isAsc = 1) THEN passed_time END ASC, " +
-                "CASE WHEN (:sortBy LIKE '${SortByRaw.PASSED_TIME}' AND :isAsc = 0) THEN passed_time END DESC, " +
-                "CASE WHEN (:sortBy LIKE '${SortByRaw.CORRECT_ANSWERS}' AND :isAsc = 1) THEN correct_answers END ASC, " +
-                "CASE WHEN (:sortBy LIKE '${SortByRaw.CORRECT_ANSWERS}' AND :isAsc = 0) THEN correct_answers END DESC, " +
-                "CASE WHEN (:sortBy LIKE '${SortByRaw.DEFAULT}' AND :isAsc = 1) THEN id END ASC, " +
-                "CASE WHEN (:sortBy LIKE '${SortByRaw.DEFAULT}' AND :isAsc = 0) THEN id END DESC"
+        """
+        SELECT * FROM quiz ORDER BY
+        CASE 
+            WHEN (:sortBy LIKE '${SortByRaw.PASSED_TIME}') THEN passed_time
+            WHEN (:sortBy LIKE '${SortByRaw.CORRECT_ANSWERS}') THEN correct_answers 
+            WHEN (:sortBy LIKE '${SortByRaw.DEFAULT}') THEN id
+        END ASC
+    """
     )
-    fun getQuizHistory(
-        sortBy: String = SortByRaw.DEFAULT,
-        isAsc: Boolean = true
-    ): Flow<List<QuizDBO>>
+    fun getQuizHistoryAsc(sortBy: String): Flow<List<QuizDBO>>
+
+    @Query(
+        """
+        SELECT * FROM quiz ORDER BY
+        CASE 
+            WHEN (:sortBy LIKE '${SortByRaw.PASSED_TIME}') THEN passed_time
+            WHEN (:sortBy LIKE '${SortByRaw.CORRECT_ANSWERS}') THEN correct_answers 
+            WHEN (:sortBy LIKE '${SortByRaw.DEFAULT}') THEN id
+        END DESC
+    """
+    )
+    fun getQuizHistoryDesc(sortBy: String): Flow<List<QuizDBO>>
 
     @Query("SELECT * FROM quiz WHERE id LIKE :id")
     suspend fun getQuizBy(id: Long): QuizDBO
@@ -39,3 +55,10 @@ object SortByRaw {
     const val PASSED_TIME = "passed_time"
     const val CORRECT_ANSWERS = "correct_answers"
 }
+
+private val SortBy.rawValue: String
+    get() = when (this) {
+        is SortBy.Default -> SortByRaw.DEFAULT
+        is SortBy.PassedTime -> SortByRaw.PASSED_TIME
+        is SortBy.CorrectAnswers -> SortByRaw.CORRECT_ANSWERS
+    }

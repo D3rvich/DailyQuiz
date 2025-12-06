@@ -8,7 +8,6 @@ import ru.d3rvich.data.mapper.toQuizDBO
 import ru.d3rvich.data.mapper.toQuizEntity
 import ru.d3rvich.data.mapper.toQuizResultEntity
 import ru.d3rvich.database.DailyQuizDatabase
-import ru.d3rvich.database.dao.SortByRaw
 import ru.d3rvich.database.model.QuizDBO
 import ru.d3rvich.domain.entities.AnswerEntity
 import ru.d3rvich.domain.entities.QuizEntity
@@ -52,9 +51,10 @@ internal class DailyQuizRepositoryImpl(
     override suspend fun saveQuiz(quizResult: QuizResultEntity) =
         database.quizDao.saveQuiz(quizResult.toQuizDBO())
 
-    override fun getQuizHistory(sortBy: SortBy): Flow<List<QuizResultEntity>> =
-        database.quizDao.getQuizHistory(sortBy = sortBy.rawValue, isAsc = sortBy.byAscending)
+    override fun getQuizHistory(sortBy: SortBy): Flow<List<QuizResultEntity>> {
+        return database.quizDao.getQuizHistory(sortBy = sortBy)
             .map { list -> list.map(QuizDBO::toQuizResultEntity) }
+    }
 
     override fun getQuizBy(id: Long): Flow<Result<QuizResultEntity>> = flow {
         emit((database.quizDao.getQuizBy(id = id).toQuizResultEntity()))
@@ -70,12 +70,5 @@ internal class DailyQuizRepositoryImpl(
         (otherAnswers.map { AnswerEntity(it, false) }
                 + AnswerEntity(currentAnswer, true)).shuffled()
 }
-
-private val SortBy.rawValue: String
-    get() = when (this) {
-        is SortBy.Default -> SortByRaw.DEFAULT
-        is SortBy.PassedTime -> SortByRaw.PASSED_TIME
-        is SortBy.CorrectAnswers -> SortByRaw.CORRECT_ANSWERS
-    }
 
 private const val DefaultQuestionsAmount = 5
