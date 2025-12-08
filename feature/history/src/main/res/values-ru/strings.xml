@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="no_quiz_message">Вы еще не проходили ни одной викторины</string>
     <string name="start_quiz">Начать викторину</string>
     <string name="history">История</string>
@@ -17,4 +17,9 @@
     <string name="sort_by_label_default">По умолчанию</string>
     <string name="sort_by_label_passed_time">Время прохождения</string>
     <string name="sort_by_label_correct_answers">Правильные ответы</string>
+    <string name="new_to_old">Сначала старые</string>
+    <string name="old_to_new">Сначала новые</string>
+    <string name="best_first">Сначала лучшые</string>
+    <string name="selected" tools:override="true">Выбрано</string>
+    <string name="worst_first">Сначала худшие</string>
 </resources>

@@ -140,7 +140,7 @@ private fun SortByEnum.AscendingOptions(
     when (this) {
         SortByEnum.Default -> {
             AscendingOptionTemplate(
-                text = { if (it) "By ascending" else "By descending" },
+                text = { if (it) stringResource(R.string.by_ascending) else stringResource(R.string.by_descending) },
                 byAscending = byAscending,
                 onAscendingChange = onAscendingChange
             )
@@ -148,7 +148,7 @@ private fun SortByEnum.AscendingOptions(
 
         SortByEnum.PassedTime -> {
             AscendingOptionTemplate(
-                text = { if (it) "New to old" else "Old to new" },
+                text = { if (it) stringResource(R.string.new_to_old) else stringResource(R.string.old_to_new) },
                 byAscending = byAscending,
                 onAscendingChange = onAscendingChange
             )
@@ -156,7 +156,7 @@ private fun SortByEnum.AscendingOptions(
 
         SortByEnum.CorrectAnswers -> {
             AscendingOptionTemplate(
-                text = { if (it) "Worst first" else "Best first" },
+                text = { if (it) stringResource(R.string.worst_first) else stringResource(R.string.best_first) },
                 isReversed = true,
                 byAscending = byAscending,
                 onAscendingChange = onAscendingChange
@@ -169,8 +169,8 @@ private fun SortByEnum.AscendingOptions(
 context(scope: ColumnScope)
 private fun AscendingOptionTemplate(
     byAscending: Boolean,
-    text: (option: Boolean) -> String,
     onAscendingChange: (byAscending: Boolean) -> Unit,
+    text: @Composable (option: Boolean) -> String,
     modifier: Modifier = Modifier,
     isReversed: Boolean = false
 ) {
@@ -212,7 +212,7 @@ private fun ColumnScope.DropdownMenuItem(
             AnimatedVisibility(visible = isSelected) {
                 Icon(
                     painterResource(R.drawable.check_24px),
-                    contentDescription = "Selected",
+                    contentDescription = stringResource(R.string.selected),
                     tint = MaterialTheme.colorScheme.primary
                 )
             }

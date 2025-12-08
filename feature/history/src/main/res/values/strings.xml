@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="no_quiz_message">You haven\'t taken any quiz yet.</string>
     <string name="start_quiz">Start quiz</string>
     <string name="history">History</string>
@@ -17,4 +17,9 @@
     <string name="sort_by_label_default">Default</string>
     <string name="sort_by_label_passed_time">Passed time</string>
     <string name="sort_by_label_correct_answers">Correct answers</string>
+    <string name="new_to_old">New to old</string>
+    <string name="old_to_new">Old to new</string>
+    <string name="worst_first">Worst first</string>
+    <string name="best_first">Best first</string>
+    <string name="selected" tools:override="true">Selected</string>
 </resources>
