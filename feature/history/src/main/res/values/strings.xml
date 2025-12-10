@@ -11,10 +11,8 @@
     <string name="difficult_placement">Difficulty: %1$s</string>
     <string name="navigate_back">Navigate back</string>
     <string name="navigate_home">Navigate home</string>
-    <string name="by_ascending">By ascending</string>
-    <string name="by_descending">By descending</string>
     <string name="open_sorting">Open sorting</string>
-    <string name="sort_by_label_default">Default</string>
+    <string name="sort_by_label_name">Name</string>
     <string name="sort_by_label_passed_time">Passed time</string>
     <string name="sort_by_label_correct_answers">Correct answers</string>
     <string name="new_to_old">New to old</string>
@@ -22,4 +20,6 @@
     <string name="worst_first">Worst first</string>
     <string name="best_first">Best first</string>
     <string name="selected" tools:override="true">Selected</string>
+    <string name="AToZ">A > Z</string>
+    <string name="ZToA">Z > A</string>
 </resources>

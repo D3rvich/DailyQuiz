@@ -138,9 +138,9 @@ private fun SortByEnum.AscendingOptions(
     onAscendingChange: (byAscending: Boolean) -> Unit,
 ) {
     when (this) {
-        SortByEnum.Default -> {
+        SortByEnum.Name -> {
             AscendingOptionTemplate(
-                text = { if (it) stringResource(R.string.by_ascending) else stringResource(R.string.by_descending) },
+                text = { if (it) stringResource(R.string.AToZ) else stringResource(R.string.ZToA) },
                 byAscending = byAscending,
                 onAscendingChange = onAscendingChange
             )
@@ -226,7 +226,7 @@ private fun ColumnScope.DropdownMenuItem(
 private fun QuizHistoryTopAppBarPreview() {
     DailyQuizTheme {
         QuizHistoryTopAppBar(
-            SortBy.Default(true),
+            SortBy.Name(true),
             TopAppBarDefaults.exitUntilCollapsedScrollBehavior(),
             {},
             {})
@@ -238,7 +238,7 @@ private fun QuizHistoryTopAppBarPreview() {
 private fun SortingOptionsPreview() {
     DailyQuizTheme {
         Column {
-            SortingOptions(SortBy.Default(true)) { }
+            SortingOptions(SortBy.Name(true)) { }
         }
     }
 }

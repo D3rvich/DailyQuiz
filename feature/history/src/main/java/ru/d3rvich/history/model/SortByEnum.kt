@@ -6,20 +6,20 @@ import ru.d3rvich.domain.model.SortBy.*
 import ru.d3rvich.history.R
 
 internal enum class SortByEnum(@param:StringRes val labelTextId: Int) {
-    Default(R.string.sort_by_label_default),
+    Name(R.string.sort_by_label_name),
     PassedTime(R.string.sort_by_label_passed_time),
     CorrectAnswers(R.string.sort_by_label_correct_answers)
 }
 
 internal fun SortByEnum.toDomainSortBy(byAscending: Boolean = defaultAscending()): SortBy =
     when (this) {
-        SortByEnum.Default -> Default(byAscending)
+        SortByEnum.Name -> Name(byAscending)
         SortByEnum.PassedTime -> PassedTime(byAscending)
         SortByEnum.CorrectAnswers -> CorrectAnswers(byAscending)
     }
 
 internal fun SortBy.asSortByEnum(): SortByEnum = when (this) {
-    is Default -> SortByEnum.Default
+    is Name -> SortByEnum.Name
     is PassedTime -> SortByEnum.PassedTime
     is CorrectAnswers -> SortByEnum.CorrectAnswers
 }

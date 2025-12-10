@@ -25,7 +25,7 @@ interface QuizDao {
         CASE 
             WHEN (:sortBy LIKE '${SortByRaw.PASSED_TIME}') THEN passed_time
             WHEN (:sortBy LIKE '${SortByRaw.CORRECT_ANSWERS}') THEN correct_answers 
-            WHEN (:sortBy LIKE '${SortByRaw.DEFAULT}') THEN id
+            WHEN (:sortBy LIKE '${SortByRaw.NAME}') THEN id
         END ASC
     """
     )
@@ -37,7 +37,7 @@ interface QuizDao {
         CASE 
             WHEN (:sortBy LIKE '${SortByRaw.PASSED_TIME}') THEN passed_time
             WHEN (:sortBy LIKE '${SortByRaw.CORRECT_ANSWERS}') THEN correct_answers 
-            WHEN (:sortBy LIKE '${SortByRaw.DEFAULT}') THEN id
+            WHEN (:sortBy LIKE '${SortByRaw.NAME}') THEN id
         END DESC
     """
     )
@@ -51,14 +51,14 @@ interface QuizDao {
 }
 
 object SortByRaw {
-    const val DEFAULT = "default"
+    const val NAME = "name"
     const val PASSED_TIME = "passed_time"
     const val CORRECT_ANSWERS = "correct_answers"
 }
 
 private val SortBy.rawValue: String
     get() = when (this) {
-        is SortBy.Default -> SortByRaw.DEFAULT
+        is SortBy.Name -> SortByRaw.NAME
         is SortBy.PassedTime -> SortByRaw.PASSED_TIME
         is SortBy.CorrectAnswers -> SortByRaw.CORRECT_ANSWERS
     }

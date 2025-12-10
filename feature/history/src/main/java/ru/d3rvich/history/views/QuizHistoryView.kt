@@ -333,7 +333,7 @@ private fun QuizHistoryNonDynamicPreview() {
                 it.toLong()
             )
         }
-        QuizHistoryView(list, SortBy.Default(true), { }, {}, {}, {})
+        QuizHistoryView(list, SortBy.Name(true), { }, {}, {}, {})
     }
 }
 
@@ -359,6 +359,6 @@ private fun QuizHistoryViewPreview() {
                 it.toLong()
             )
         }
-        QuizHistoryView(list, SortBy.Default(true), { }, {}, {}, {})
+        QuizHistoryView(list, SortBy.Name(true), { }, {}, {}, {})
     }
 }
