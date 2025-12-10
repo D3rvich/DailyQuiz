@@ -78,6 +78,7 @@ android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", ver
 android-tools-common = { group = "com.android.tools", name = "common", version.ref = "androidTools" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
+room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "androidxRoom" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
@@ -96,4 +97,5 @@ dailyquiz-android-library = { id = "dailyquiz.android.library", version = "unspe
 dailyquiz-android-library-compose = { id = "dailyquiz.android.library.compose", version = "unspecified" }
 dailyquiz-android-feature = { id = "dailyquiz.android.feature", version = "unspecified" }
 dailyquiz-android-hilt = { id = "dailyquiz.android.hilt", version = "unspecified" }
+dailyquiz-android-room = { id = "dailyquiz.android.room", version = "unspecified" }
 dailyquiz-jvm-library = { id = "dailyquiz.jvm.library", version = "unspecified" }
