@@ -50,7 +50,7 @@ interface QuizDao {
     suspend fun removeQuiz(quizDBO: QuizDBO)
 }
 
-object SortByRaw {
+private object SortByRaw {
     const val NAME = "name"
     const val PASSED_TIME = "passed_time"
     const val CORRECT_ANSWERS = "correct_answers"

@@ -5,7 +5,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import ru.d3rvich.data.repositories.DailyQuizRepositoryImpl
-import ru.d3rvich.database.DailyQuizDatabase
+import ru.d3rvich.database.dao.QuizDao
 import ru.d3rvich.domain.repositories.DailyQuizRepository
 import ru.d3rvich.network.DailyQuizNetworkDataSource
 
@@ -16,7 +16,7 @@ internal object DataModule {
     @Provides
     fun provideDailyQuizRepository(
         networkDataSource: DailyQuizNetworkDataSource,
-        database: DailyQuizDatabase
+        quizDao: QuizDao
     ): DailyQuizRepository =
-        DailyQuizRepositoryImpl(networkDataSource = networkDataSource, database = database)
+        DailyQuizRepositoryImpl(networkDataSource = networkDataSource, quizDao = quizDao)
 }

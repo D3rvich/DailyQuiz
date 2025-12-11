@@ -6,12 +6,6 @@ import androidx.room.RoomDatabase
 import ru.d3rvich.database.dao.QuizDao
 import ru.d3rvich.database.model.QuizDBO
 
-class DailyQuizDatabase internal constructor(private val database: DailyQuizRoomDatabase) {
-
-    val quizDao: QuizDao
-        get() = database.quizDao()
-}
-
 @Database(
     entities = [QuizDBO::class],
     version = 2,
@@ -20,6 +14,6 @@ class DailyQuizDatabase internal constructor(private val database: DailyQuizRoom
     ],
     exportSchema = true
 )
-internal abstract class DailyQuizRoomDatabase : RoomDatabase() {
+internal abstract class DailyQuizDatabase : RoomDatabase() {
     abstract fun quizDao(): QuizDao
 }

@@ -23,7 +23,7 @@ class DatabaseTest {
     @get:Rule
     val helper: MigrationTestHelper = MigrationTestHelper(
         InstrumentationRegistry.getInstrumentation(),
-        DailyQuizRoomDatabase::class.java
+        DailyQuizDatabase::class.java
     )
 
     @Test
