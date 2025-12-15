@@ -27,6 +27,7 @@ internal object NetworkModule {
     @Provides
     @Singleton
     fun provideKtorClient(): HttpClient = HttpClient(Android) {
+        expectSuccess = true
         install(Logging) {
             logger = Logger.ANDROID
             level = LogLevel.BODY
@@ -41,7 +42,7 @@ internal object NetworkModule {
         defaultRequest {
             url {
                 protocol = URLProtocol.HTTPS
-                host = "opentdb.com/api.php"
+                host = "opentdb.com"
             }
         }
     }

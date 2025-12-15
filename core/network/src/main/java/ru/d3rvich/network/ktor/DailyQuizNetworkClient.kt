@@ -9,14 +9,14 @@ import ru.d3rvich.network.DailyQuizNetworkDataSource
 import ru.d3rvich.network.model.Question
 import ru.d3rvich.network.model.Quiz
 import ru.d3rvich.network.result.NetworkResult
+import ru.d3rvich.network.utils.safeApiCall
 
-internal class DailyQuizNetworkClient(private val client: HttpClient) :
-    DailyQuizNetworkDataSource {
+internal class DailyQuizNetworkClient(private val client: HttpClient) : DailyQuizNetworkDataSource {
     override suspend fun getQuiz(
         questionsCount: Int,
         category: Category,
         difficulty: Difficulty
-    ): NetworkResult<List<Question>> = try {
+    ): NetworkResult<List<Question>> = safeApiCall {
         val response = client.get(
             Routes.Quiz(
                 questionsCount = questionsCount,
@@ -24,25 +24,6 @@ internal class DailyQuizNetworkClient(private val client: HttpClient) :
                 difficulty = if (difficulty != Difficulty.AnyDifficulty) difficulty.code else null
             )
         )
-        when (response.status.value) {
-            in 200..299 -> {
-                NetworkResult.Success(response.body<Quiz>().questions)
-            }
-
-            in 400..499 -> {
-                NetworkResult.Failure(Exception("4xx error"))
-            }
-
-            in 500..599 -> {
-                NetworkResult.Failure(Exception("Server error"))
-            }
-
-            else -> {
-                NetworkResult.Failure(Exception("Unknown error"))
-            }
-        }
-
-    } catch (e: Exception) {
-        NetworkResult.Failure(e)
+        response.body<Quiz>().questions
     }
 }

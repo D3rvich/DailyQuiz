@@ -14,6 +14,6 @@ data class Question(
     @SerialName("difficulty") val difficulty: String,
     @SerialName("category") val category: String,
     @SerialName("question") val question: String,
-    @SerialName("correct_answer") val currentAnswer: String,
+    @SerialName("correct_answer") val correctAnswer: String,
     @SerialName("incorrect_answers") val incorrectAnswers: List<String>
 )

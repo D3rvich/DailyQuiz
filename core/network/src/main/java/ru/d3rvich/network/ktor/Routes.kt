@@ -6,9 +6,9 @@ import kotlinx.serialization.SerialName
 
 @OptIn(InternalSerializationApi::class)
 @Suppress("Unused")
-object Routes {
+internal object Routes {
 
-    @Resource("")
+    @Resource("api.php")
     class Quiz(
         @SerialName("amount") val questionsCount: Int,
         @SerialName("category") val category: String? = null,

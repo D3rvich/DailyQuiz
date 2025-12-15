@@ -12,7 +12,7 @@ internal inline fun Question.toQuestionEntity(
 ): QuestionEntity = QuestionEntity(
     category = category,
     text = question,
-    answers = answersCombinator(currentAnswer, incorrectAnswers)
+    answers = answersCombinator(correctAnswer, incorrectAnswers)
 )
 
 internal fun QuestionDBO.toQuestionEntity(): QuestionEntity = QuestionEntity(
