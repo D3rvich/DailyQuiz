@@ -2,12 +2,16 @@ package ru.d3rvich.history.views
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -39,7 +43,6 @@ import ru.d3rvich.history.model.toDomainSortBy
 import ru.d3rvich.ui.components.appbar.CollapsingTopAppBar
 import ru.d3rvich.ui.components.appbar.CollapsingTopAppBarDefaults
 import ru.d3rvich.ui.theme.DailyQuizTheme
-import ru.d3rvich.ui.R as UiR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -105,69 +108,116 @@ private fun Actions(
         Icon(painterResource(R.drawable.outline_sort_24), stringResource(R.string.open_sorting))
     }
     DropdownMenu(showMenu, { showMenu = false }) {
-        SortByEnum.entries.forEach { item ->
-            val isSelected = selectedSort.asSortByEnum() == item
-            SortingOptionsItem(
-                item = item,
-                byAscending = selectedSort.byAscending,
-                isSelected = isSelected,
-                onSortChange = { sortByEnum ->
-                    onSortChange(
-                        sortByEnum.toDomainSortBy(
-                            if (isSelected) {
-                                !selectedSort.byAscending
-                            } else {
-                                selectedSort.byAscending
-                            }
-                        )
-                    )
-                })
+        SortingOptions(selectedSort = selectedSort, onSortChange = onSortChange)
+    }
+}
+
+@Composable
+private fun ColumnScope.SortingOptions(
+    selectedSort: SortBy,
+    onSortChange: (selectedSort: SortBy) -> Unit,
+) {
+    val selectedSortByEnum = selectedSort.asSortByEnum()
+    SortByEnum.entries.forEach { item ->
+        val isSelected = selectedSortByEnum == item
+        DropdownMenuItem(
+            text = stringResource(item.labelTextId),
+            isSelected = isSelected,
+            onClick = { onSortChange(item.toDomainSortBy()) })
+    }
+    HorizontalDivider(modifier = Modifier.padding(vertical = 2.dp))
+    selectedSortByEnum.AscendingOptions(byAscending = selectedSort.byAscending) { byAscending ->
+        onSortChange(selectedSortByEnum.toDomainSortBy(byAscending))
+    }
+}
+
+@Composable
+context(scope: ColumnScope)
+private fun SortByEnum.AscendingOptions(
+    byAscending: Boolean,
+    onAscendingChange: (byAscending: Boolean) -> Unit,
+) {
+    when (this) {
+        SortByEnum.Name -> {
+            AscendingOptionTemplate(
+                text = { if (it) stringResource(R.string.AToZ) else stringResource(R.string.ZToA) },
+                byAscending = byAscending,
+                onAscendingChange = onAscendingChange
+            )
+        }
+
+        SortByEnum.PassedTime -> {
+            AscendingOptionTemplate(
+                text = { if (it) stringResource(R.string.new_to_old) else stringResource(R.string.old_to_new) },
+                byAscending = byAscending,
+                onAscendingChange = onAscendingChange
+            )
+        }
+
+        SortByEnum.CorrectAnswers -> {
+            AscendingOptionTemplate(
+                text = { if (it) stringResource(R.string.worst_first) else stringResource(R.string.best_first) },
+                isReversed = true,
+                byAscending = byAscending,
+                onAscendingChange = onAscendingChange
+            )
         }
     }
 }
 
 @Composable
-private fun SortingOptionsItem(
-    item: SortByEnum,
+context(scope: ColumnScope)
+private fun AscendingOptionTemplate(
     byAscending: Boolean,
+    onAscendingChange: (byAscending: Boolean) -> Unit,
+    text: @Composable (option: Boolean) -> String,
+    modifier: Modifier = Modifier,
+    isReversed: Boolean = false
+) {
+    listOf(true, false).let {
+        if (isReversed) it.reversed() else it
+    }.forEach {
+        scope.apply {
+            DropdownMenuItem(
+                modifier = modifier,
+                text = text(it),
+                isSelected = byAscending == it,
+                onClick = { onAscendingChange(it) })
+        }
+    }
+}
+
+@Composable
+private fun ColumnScope.DropdownMenuItem(
+    text: String,
     isSelected: Boolean,
-    onSortChange: (SortByEnum) -> Unit,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val selectedColor = MaterialTheme.colorScheme.primary
-    val itemColors = if (isSelected) {
-        MenuDefaults.itemColors().copy(
-            textColor = selectedColor,
-            trailingIconColor = selectedColor
-        )
-    } else {
-        MenuDefaults.itemColors()
-    }
+    val colors = MenuDefaults.itemColors().copy(
+        textColor = if (isSelected) MaterialTheme.colorScheme.primary else MenuDefaults.itemColors().textColor,
+        trailingIconColor = if (isSelected) MaterialTheme.colorScheme.primary else MenuDefaults.itemColors().trailingIconColor
+    )
     DropdownMenuItem(
         modifier = modifier,
-        colors = itemColors,
+        colors = colors,
         text = {
             Text(
-                stringResource(item.labelTextId),
+                text = text,
                 style = MaterialTheme.typography.bodyLarge
             )
         },
-        onClick = { onSortChange(item) },
-        trailingIcon = {
-            AnimatedVisibility(isSelected) {
-                if (byAscending) {
-                    Icon(
-                        painterResource(UiR.drawable.keyboard_arrow_down_24px),
-                        stringResource(R.string.by_ascending)
-                    )
-                } else {
-                    Icon(
-                        painterResource(R.drawable.keyboard_arrow_up_24px),
-                        stringResource(R.string.by_descending)
-                    )
-                }
+        onClick = onClick,
+        leadingIcon = {
+            AnimatedVisibility(visible = isSelected) {
+                Icon(
+                    painterResource(R.drawable.check_24px),
+                    contentDescription = stringResource(R.string.selected),
+                    tint = MaterialTheme.colorScheme.primary
+                )
             }
-        })
+        }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -176,9 +226,19 @@ private fun SortingOptionsItem(
 private fun QuizHistoryTopAppBarPreview() {
     DailyQuizTheme {
         QuizHistoryTopAppBar(
-            SortBy.Default(true),
+            SortBy.Name(true),
             TopAppBarDefaults.exitUntilCollapsedScrollBehavior(),
             {},
             {})
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun SortingOptionsPreview() {
+    DailyQuizTheme {
+        Column {
+            SortingOptions(SortBy.Name(true)) { }
+        }
     }
 }

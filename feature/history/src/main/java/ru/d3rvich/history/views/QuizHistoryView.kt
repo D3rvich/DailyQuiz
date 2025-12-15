@@ -66,7 +66,6 @@ import ru.d3rvich.ui.extensions.stringRes
 import ru.d3rvich.ui.model.AnswerUiModel
 import ru.d3rvich.ui.model.QuestionUiModel
 import ru.d3rvich.ui.model.QuizResultUiModel
-import ru.d3rvich.ui.model.correctAnswers
 import ru.d3rvich.ui.theme.DailyQuizTheme
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
@@ -330,10 +329,11 @@ private fun QuizHistoryNonDynamicPreview() {
                 Difficulty.entries[it % 4],
                 Clock.System.now().toLocalDateTime(TimeZone.UTC),
                 questions,
+                1,
                 it.toLong()
             )
         }
-        QuizHistoryView(list, SortBy.Default(true), { }, {}, {}, {})
+        QuizHistoryView(list, SortBy.Name(true), { }, {}, {}, {})
     }
 }
 
@@ -355,9 +355,10 @@ private fun QuizHistoryViewPreview() {
                 Difficulty.entries[it % 4],
                 Clock.System.now().toLocalDateTime(TimeZone.UTC),
                 questions,
+                1,
                 it.toLong()
             )
         }
-        QuizHistoryView(list, SortBy.Default(true), { }, {}, {}, {})
+        QuizHistoryView(list, SortBy.Name(true), { }, {}, {}, {})
     }
 }

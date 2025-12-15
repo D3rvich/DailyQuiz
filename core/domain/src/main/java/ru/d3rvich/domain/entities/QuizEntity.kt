@@ -8,6 +8,3 @@ data class QuizEntity(
     val difficulty: Difficulty,
     val questions: List<QuestionEntity>
 )
-
-val QuizEntity.correctAnswers: Int
-    get() = questions.filter { it.isCorrectAnswer }.size

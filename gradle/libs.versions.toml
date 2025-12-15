@@ -1,21 +1,21 @@
 [versions]
-androidGradlePlugin = "8.13.1"
-androidTools = "31.13.1"
+androidGradlePlugin = "8.13.2"
+androidTools = "31.13.2"
 kotlin = "2.2.21"
 ksp = "2.3.2"
 dagger = "2.57.2"
 coreKtx = "1.17.0"
-androidxLifecycle = "2.10.0-rc01"
-activityCompose = "1.11.0"
-composeBom = "2025.11.00"
-androixCompose = "1.9.4"
+androidxLifecycle = "2.10.0"
+activityCompose = "1.12.1"
+composeBom = "2025.12.00"
+androixCompose = "1.10.0"
 androidxComposeMaterial3 = "1.4.0"
-navigation3 = "1.0.0-rc01"
-androidxMaterail3Adaptive = "1.3.0-alpha03"
+navigation3 = "1.0.0"
+androidxMaterail3Adaptive = "1.3.0-alpha05"
 hilt = "1.3.0"
 androidxConstraintLayout = "1.1.1"
-androidxRoom = "2.8.3"
-ktor = "3.3.2"
+androidxRoom = "2.8.4"
+ktor = "3.3.3"
 slf4j = "2.0.17-0"
 kotlinxCoroutines = "1.10.2"
 kotlinxSerializationJson = "1.9.0"
@@ -54,6 +54,7 @@ androidx-lifecycle-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecy
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "androidxRoom" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidxRoom" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "androidxRoom" }
+androidx-room-testing = { group = "androidx.room", name = "room-testing", version.ref = "androidxRoom" }
 androidx-hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "dagger" }
 androidx-hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "dagger" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
@@ -77,6 +78,7 @@ android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", ver
 android-tools-common = { group = "com.android.tools", name = "common", version.ref = "androidTools" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
+room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "androidxRoom" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
@@ -95,4 +97,5 @@ dailyquiz-android-library = { id = "dailyquiz.android.library", version = "unspe
 dailyquiz-android-library-compose = { id = "dailyquiz.android.library.compose", version = "unspecified" }
 dailyquiz-android-feature = { id = "dailyquiz.android.feature", version = "unspecified" }
 dailyquiz-android-hilt = { id = "dailyquiz.android.hilt", version = "unspecified" }
+dailyquiz-android-room = { id = "dailyquiz.android.room", version = "unspecified" }
 dailyquiz-jvm-library = { id = "dailyquiz.jvm.library", version = "unspecified" }

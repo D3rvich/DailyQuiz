@@ -11,6 +11,7 @@ fun QuizResultEntity.toQuizResultUiModel(): QuizResultUiModel =
         difficulty = difficulty,
         passedTime = passedTime,
         questions = questions.map(QuestionEntity::toQuestionUiModel),
+        correctAnswers = correctAnswers,
         id = id
     )
 
@@ -20,5 +21,6 @@ fun QuizResultUiModel.toQuizResultEntity(): QuizResultEntity =
         difficulty = difficulty,
         passedTime = passedTime,
         questions = questions.map(QuestionUiModel::toQuestionEntity),
+        correctAnswers = correctAnswers,
         id = id
     )

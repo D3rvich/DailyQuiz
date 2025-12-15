@@ -25,4 +25,5 @@ data class QuizDBO(
     @ColumnInfo("difficulty") val difficulty: Difficulty,
     @ColumnInfo("passed_time") val passedTime: LocalDateTime,
     @ColumnInfo("questions") val questions: List<QuestionDBO>,
+    @ColumnInfo("correct_answers", defaultValue = "-1") val correctAnswers: Int,
 )

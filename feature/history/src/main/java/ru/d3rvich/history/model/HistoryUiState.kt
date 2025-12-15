@@ -11,6 +11,6 @@ internal sealed interface HistoryUiState : UiState {
 
     data class Content(
         val quizResultEntities: List<QuizResultUiModel>,
-        val selectedSort: SortBy = SortBy.Default(true)
+        val selectedSort: SortBy = SortBy.Name(true)
     ) : HistoryUiState
 }

@@ -22,6 +22,7 @@ dependencies {
     compileOnly(libs.android.tools.common)
     compileOnly(libs.kotlin.gradlePlugin)
     compileOnly(libs.ksp.gradlePlugin)
+    compileOnly(libs.room.gradlePlugin)
 }
 
 tasks {
@@ -48,6 +49,10 @@ gradlePlugin {
         register("androidHilt") {
             id = "dailyquiz.android.hilt"
             implementationClass = "AndroidHiltConventionPlugin"
+        }
+        register("room") {
+            id = "dailyquiz.android.room"
+            implementationClass = "AndroidRoomConventionPlugin"
         }
         register("androidFeature") {
             id = "dailyquiz.android.feature"

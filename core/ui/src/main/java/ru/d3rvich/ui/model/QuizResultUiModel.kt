@@ -13,8 +13,6 @@ data class QuizResultUiModel(
     val difficulty: Difficulty,
     val passedTime: LocalDateTime,
     val questions: List<QuestionUiModel>,
+    val correctAnswers: Int,
     val id: Long = 0,
 )
-
-val QuizResultUiModel.correctAnswers: Int
-    get() = questions.filter { it.isCorrectAnswer }.size

@@ -7,8 +7,7 @@ import ru.d3rvich.data.mapper.toQuestionEntity
 import ru.d3rvich.data.mapper.toQuizDBO
 import ru.d3rvich.data.mapper.toQuizEntity
 import ru.d3rvich.data.mapper.toQuizResultEntity
-import ru.d3rvich.database.DailyQuizDatabase
-import ru.d3rvich.database.dao.SortByRaw
+import ru.d3rvich.database.dao.QuizDao
 import ru.d3rvich.database.model.QuizDBO
 import ru.d3rvich.domain.entities.AnswerEntity
 import ru.d3rvich.domain.entities.QuizEntity
@@ -24,7 +23,7 @@ import ru.d3rvich.network.result.NetworkResult
 
 internal class DailyQuizRepositoryImpl(
     private val networkDataSource: DailyQuizNetworkDataSource,
-    private val database: DailyQuizDatabase
+    private val quizDao: QuizDao
 ) : DailyQuizRepository {
     override fun getExistedOrNewQuiz(
         quizId: Long?,
@@ -32,7 +31,7 @@ internal class DailyQuizRepositoryImpl(
         difficulty: Difficulty
     ): Flow<Result<QuizEntity>> = flow {
         quizId?.also {
-            emit(database.quizDao.getQuizBy(quizId).toQuizEntity(true))
+            emit(quizDao.getQuizBy(quizId).toQuizEntity(true))
         } ?: when (val result =
             networkDataSource.getQuiz(DefaultQuestionsAmount, category, difficulty)) {
             is NetworkResult.Failure -> throw result.exception
@@ -50,18 +49,18 @@ internal class DailyQuizRepositoryImpl(
     }.asResult()
 
     override suspend fun saveQuiz(quizResult: QuizResultEntity) =
-        database.quizDao.saveQuiz(quizResult.toQuizDBO())
+        quizDao.saveQuiz(quizResult.toQuizDBO())
 
     override fun getQuizHistory(sortBy: SortBy): Flow<List<QuizResultEntity>> =
-        database.quizDao.getQuizHistory(sortBy = sortBy.rawValue, isAsc = sortBy.byAscending)
+        quizDao.getQuizHistory(sortBy = sortBy)
             .map { list -> list.map(QuizDBO::toQuizResultEntity) }
 
     override fun getQuizBy(id: Long): Flow<Result<QuizResultEntity>> = flow {
-        emit((database.quizDao.getQuizBy(id = id).toQuizResultEntity()))
+        emit((quizDao.getQuizBy(id = id).toQuizResultEntity()))
     }.asResult()
 
     override suspend fun removeQuiz(quizResult: QuizResultEntity) =
-        database.quizDao.removeQuiz(quizResult.toQuizDBO())
+        quizDao.removeQuiz(quizResult.toQuizDBO())
 
     private fun combineAnswers(
         currentAnswer: String,
@@ -70,11 +69,5 @@ internal class DailyQuizRepositoryImpl(
         (otherAnswers.map { AnswerEntity(it, false) }
                 + AnswerEntity(currentAnswer, true)).shuffled()
 }
-
-private val SortBy.rawValue: String
-    get() = when (this) {
-        is SortBy.Default -> SortByRaw.DEFAULT
-        is SortBy.PassedTime -> SortByRaw.PASSED_TIME
-    }
 
 private const val DefaultQuestionsAmount = 5

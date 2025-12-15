@@ -18,8 +18,8 @@ internal class SortByProvider @Inject constructor(@ApplicationContext context: C
 
     private val _currentSortBy: MutableStateFlow<SortBy> = MutableStateFlow(
         sharedPreferences.run {
-            val sortByEnum = getString(SortByKey, SortByEnum.Default.name)
-                ?.let { SortByEnum.valueOf(it) } ?: SortByEnum.Default
+            val sortByEnum = getString(SortByKey, DefaultSortBy.name)
+                ?.let { SortByEnum.valueOf(it) } ?: DefaultSortBy
             val byAscending = getBoolean(ByAscendingKey, true)
             sortByEnum.toDomainSortBy(byAscending)
         })
@@ -37,3 +37,4 @@ internal class SortByProvider @Inject constructor(@ApplicationContext context: C
 private const val SharedPreferencesKey = "SortByProvider_SharedPreferences"
 private const val SortByKey = "SortBy"
 private const val ByAscendingKey = "ByAscending"
+private val DefaultSortBy = SortByEnum.Name
