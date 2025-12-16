@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -52,18 +51,17 @@ fun AnswerUiCard(text: String, answerType: AnswerType, modifier: Modifier = Modi
         border = BorderStroke(2.dp, color = borderColor),
         colors = CardDefaults.cardColors().copy(containerColor = containerColor)
     ) {
-        val isSelected = answerType != AnswerType.NotSelected
         Row(verticalAlignment = Alignment.CenterVertically) {
-            IconToggleButton(isSelected, onCheckedChange = {}, modifier = Modifier.padding(8.dp)) {
-                AnimatedContent(
-                    answerType,
-                    transitionSpec = { fadeIn() togetherWith fadeOut() }) { type ->
-                    when (type) {
-                        AnswerType.NotSelected -> DailyQuizRadioButtonIcon(false)
-                        AnswerType.Selected -> DailyQuizRadioButtonIcon(true)
-                        AnswerType.Correct -> CorrectCheckIcon(true)
-                        AnswerType.Wrong -> CorrectCheckIcon(false)
-                    }
+            AnimatedContent(
+                answerType,
+                transitionSpec = { fadeIn() togetherWith fadeOut() },
+                modifier = Modifier.padding(16.dp)
+            ) { type ->
+                when (type) {
+                    AnswerType.NotSelected -> DailyQuizRadioButtonIcon(false)
+                    AnswerType.Selected -> DailyQuizRadioButtonIcon(true)
+                    AnswerType.Correct -> CorrectCheckIcon(true)
+                    AnswerType.Wrong -> CorrectCheckIcon(false)
                 }
             }
             Text(text = AnnotatedString.fromHtml(text), modifier = Modifier.padding(end = 4.dp))

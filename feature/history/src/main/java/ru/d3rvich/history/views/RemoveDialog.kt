@@ -10,11 +10,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.d3rvich.history.R
@@ -30,7 +30,6 @@ internal fun RemoveDialog(onDismissRequest: () -> Unit, modifier: Modifier = Mod
         title = {
             Text(
                 stringResource(R.string.attempt_removed),
-                color = Color.Black,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.headlineMedium,
@@ -40,16 +39,15 @@ internal fun RemoveDialog(onDismissRequest: () -> Unit, modifier: Modifier = Mod
         text = {
             Text(
                 stringResource(R.string.retry_message),
-                color = Color.Black,
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodyLarge.copy(lineHeight = 20.sp),
             )
-        },
-        containerColor = Color.White
+        }
     )
 }
 
 @Preview(showBackground = true)
+@PreviewLightDark
 @Composable
 private fun RemoveDialogPreview() {
     DailyQuizTheme {

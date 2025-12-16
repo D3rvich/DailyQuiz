@@ -7,7 +7,7 @@ import ru.d3rvich.ui.R
 @get:StringRes
 val Category.stringRes: Int
     get() = when (this) {
-        Category.AnyCategory -> R.string.difficulty_any
+        Category.AnyCategory -> R.string.category_any
         Category.GeneralKnowledge -> R.string.category_general_knowledge
         Category.EntertainmentBooks -> R.string.category_entertainment_books
         Category.EntertainmentFilm -> R.string.category_entertainment_film
