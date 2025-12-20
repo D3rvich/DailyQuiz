@@ -28,6 +28,9 @@ object Screens {
     }
 
     @Serializable
+    data object HistoryChecker: Screen
+
+    @Serializable
     data object History: Screen
 
     @Serializable

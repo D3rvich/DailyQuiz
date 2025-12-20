@@ -14,4 +14,5 @@ tasks.withType<KotlinCompile>().configureEach {
 }
 
 dependencies {
+    implementation(libs.androidx.material3.adaptive)
 }

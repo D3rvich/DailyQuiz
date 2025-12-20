@@ -14,12 +14,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.entryProvider
@@ -29,7 +32,8 @@ import kotlinx.serialization.json.Json
 import ru.d3rvich.dailyquiz.R
 import ru.d3rvich.domain.model.Category
 import ru.d3rvich.domain.model.Difficulty
-import ru.d3rvich.history.HistoryScreen
+import ru.d3rvich.history.screens.HistoryCheckerScreen
+import ru.d3rvich.history.screens.HistoryScreen
 import ru.d3rvich.quiz.screens.FiltersScreen
 import ru.d3rvich.quiz.screens.QuizScreen
 import ru.d3rvich.quiz.screens.ResultsScreen
@@ -62,7 +66,7 @@ internal fun Nav3Graph(modifier: Modifier = Modifier) {
                     }
                 },
                 navigateToFilters = { backStack.add(Screens.QuizMain.Filters) },
-                navigateToHistory = { backStack.add(Screens.History) },
+                navigateToHistory = { backStack.add(Screens.HistoryChecker) },
                 navigateToQuiz = { category, difficulty ->
                     backStack.add(Screens.QuizMain.Quiz(category, difficulty))
                 },
@@ -71,7 +75,11 @@ internal fun Nav3Graph(modifier: Modifier = Modifier) {
                 },
                 onBack = { backStack.removeLastOrNull() }
             )
-            historyEntry(
+            HistoryEntry(
+                navigateToHistory = {
+                    backStack.removeLastOrNull()
+                    backStack.add(Screens.History)
+                },
                 navigateToFilters = {
                     backStack.removeLastOrNull()
                     backStack.add(Screens.QuizMain.Filters)
@@ -80,11 +88,8 @@ internal fun Nav3Graph(modifier: Modifier = Modifier) {
                     backStack.removeIf { it is Screens.QuizResult }
                     backStack.add(Screens.QuizResult(Json.encodeToString(resultUiModel)))
                 },
-                navigateBack = {
-                    val removeCount = if (backStack.last() is Screens.QuizResult) 2 else 1
-                    repeat(removeCount) {
-                        backStack.removeLastOrNull()
-                    }
+                navigateBackFromHistory = {
+                    backStack.removeIf { it is Screens.History || it is Screens.QuizResult }
                 }
             )
             quizResultEntry(
@@ -141,11 +146,22 @@ private fun EntryProviderScope<Screen>.quizEntry(
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-private fun EntryProviderScope<Screen>.historyEntry(
+@Composable
+private fun EntryProviderScope<Screen>.HistoryEntry(
+    navigateToHistory: () -> Unit,
     navigateToFilters: () -> Unit,
     navigateToQuizResult: (QuizResultUiModel) -> Unit,
-    navigateBack: () -> Unit
+    navigateBackFromHistory: () -> Unit
 ) {
+    var sharedViewModelStoreOwner: ViewModelStoreOwner? by remember { mutableStateOf(null) }
+    entry<Screens.HistoryChecker> {
+        sharedViewModelStoreOwner = LocalViewModelStoreOwner.current
+        HistoryCheckerScreen(
+            navigateToHistory = navigateToHistory,
+            navigateToFilters = navigateToFilters,
+            navigateBack = navigateBackFromHistory
+        )
+    }
     entry<Screens.History>(
         metadata = ListDetailSceneStrategy.listPane {
             Box(
@@ -163,9 +179,9 @@ private fun EntryProviderScope<Screen>.historyEntry(
         }
     ) {
         HistoryScreen(
-            navigateToQuizFilters = navigateToFilters,
             navigateToQuizResult = navigateToQuizResult,
-            navigateBack = navigateBack
+            navigateBack = navigateBackFromHistory,
+            viewModelStoreOwner = checkNotNull(sharedViewModelStoreOwner)
         )
     }
 }
