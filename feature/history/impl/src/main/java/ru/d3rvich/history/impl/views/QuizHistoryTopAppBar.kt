@@ -1,4 +1,4 @@
-package ru.d3rvich.history.views
+package ru.d3rvich.history.impl.views
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
@@ -36,10 +36,10 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import ru.d3rvich.domain.model.SortBy
-import ru.d3rvich.history.R
-import ru.d3rvich.history.model.SortByEnum
-import ru.d3rvich.history.model.asSortByEnum
-import ru.d3rvich.history.model.toDomainSortBy
+import ru.d3rvich.history.impl.R
+import ru.d3rvich.history.impl.model.SortByEnum
+import ru.d3rvich.history.impl.model.asSortByEnum
+import ru.d3rvich.history.impl.model.toDomainSortBy
 import ru.d3rvich.ui.components.appbar.CollapsingTopAppBar
 import ru.d3rvich.ui.components.appbar.CollapsingTopAppBarDefaults
 import ru.d3rvich.ui.theme.DailyQuizTheme

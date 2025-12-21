@@ -1,4 +1,4 @@
-package ru.d3rvich.history.utils
+package ru.d3rvich.history.impl.utils
 
 import kotlinx.datetime.format.MonthNames
 

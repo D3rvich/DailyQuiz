@@ -1,4 +1,4 @@
-package ru.d3rvich.history.views
+package ru.d3rvich.history.impl.views
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.LocalIndication
@@ -59,8 +59,8 @@ import kotlinx.datetime.toLocalDateTime
 import ru.d3rvich.domain.model.Category
 import ru.d3rvich.domain.model.Difficulty
 import ru.d3rvich.domain.model.SortBy
-import ru.d3rvich.history.R
-import ru.d3rvich.history.utils.RUSSIAN_FULL
+import ru.d3rvich.history.impl.R
+import ru.d3rvich.history.impl.utils.RUSSIAN_FULL
 import ru.d3rvich.ui.components.DailyQuizStarIcon
 import ru.d3rvich.ui.extensions.stringRes
 import ru.d3rvich.ui.model.AnswerUiModel
@@ -257,7 +257,7 @@ private fun TimeRow(dateTime: LocalDateTime, modifier: Modifier = Modifier) {
                 char(' ')
                 monthName(
                     when (languageTag) {
-                        "ru-RU" -> MonthNames.RUSSIAN_FULL
+                        "ru-RU" -> MonthNames.Companion.RUSSIAN_FULL
                         else -> MonthNames.ENGLISH_FULL
                     }
                 )

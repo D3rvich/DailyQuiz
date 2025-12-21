@@ -1,9 +1,9 @@
-package ru.d3rvich.history.model
+package ru.d3rvich.history.impl.model
 
 import androidx.annotation.StringRes
 import ru.d3rvich.domain.model.SortBy
 import ru.d3rvich.domain.model.SortBy.*
-import ru.d3rvich.history.R
+import ru.d3rvich.history.impl.R
 
 internal enum class SortByEnum(@param:StringRes val labelTextId: Int) {
     Name(R.string.sort_by_label_name),

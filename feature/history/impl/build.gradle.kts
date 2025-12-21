@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.d3rvich.history"
+    namespace = "ru.d3rvich.history.impl"
 }
 tasks.withType<KotlinCompile>().configureEach {
     compilerOptions {

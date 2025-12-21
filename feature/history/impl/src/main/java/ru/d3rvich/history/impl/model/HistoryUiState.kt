@@ -1,4 +1,4 @@
-package ru.d3rvich.history.model
+package ru.d3rvich.history.impl.model
 
 import androidx.compose.runtime.Immutable
 import ru.d3rvich.domain.model.SortBy

@@ -24,7 +24,7 @@ dependencies {
     implementation(project(":core:network"))
     implementation(project(":core:database"))
     implementation(project(":feature:quiz:impl"))
-    implementation(project(":feature:history"))
+    implementation(project(":feature:history:impl"))
     implementation(project(":feature:result"))
 
     implementation(libs.androidx.activity.compose)

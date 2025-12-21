@@ -1,4 +1,4 @@
-package ru.d3rvich.history.views
+package ru.d3rvich.history.impl.views
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,7 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ru.d3rvich.history.R
+import ru.d3rvich.history.impl.R
 import ru.d3rvich.ui.theme.DailyQuizTheme
 
 @Composable

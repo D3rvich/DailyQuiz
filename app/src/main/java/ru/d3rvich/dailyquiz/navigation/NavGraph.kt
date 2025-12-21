@@ -32,8 +32,8 @@ import kotlinx.serialization.json.Json
 import ru.d3rvich.dailyquiz.R
 import ru.d3rvich.domain.model.Category
 import ru.d3rvich.domain.model.Difficulty
-import ru.d3rvich.history.screens.HistoryCheckerScreen
-import ru.d3rvich.history.screens.HistoryScreen
+import ru.d3rvich.history.impl.screens.HistoryCheckerScreen
+import ru.d3rvich.history.impl.screens.HistoryScreen
 import ru.d3rvich.quiz.impl.screens.FiltersScreen
 import ru.d3rvich.quiz.impl.screens.QuizScreen
 import ru.d3rvich.quiz.impl.screens.ResultsScreen

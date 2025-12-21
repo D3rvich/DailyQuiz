@@ -1,4 +1,4 @@
-package ru.d3rvich.history.views
+package ru.d3rvich.history.impl.views
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.window.core.layout.WindowSizeClass
-import ru.d3rvich.history.R
+import ru.d3rvich.history.impl.R
 import ru.d3rvich.ui.components.DailyQuizButton
 import ru.d3rvich.ui.components.DailyQuizLogo
 import ru.d3rvich.ui.theme.DailyQuizTheme

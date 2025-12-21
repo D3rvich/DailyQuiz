@@ -1,4 +1,4 @@
-package ru.d3rvich.history
+package ru.d3rvich.history.impl
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -7,9 +7,9 @@ import ru.d3rvich.domain.entities.QuizResultEntity
 import ru.d3rvich.domain.model.SortBy
 import ru.d3rvich.domain.usecases.GetQuizHistoryUseCase
 import ru.d3rvich.domain.usecases.RemoveQuizUseCase
-import ru.d3rvich.history.model.HistoryUiEvent
-import ru.d3rvich.history.model.HistoryUiState
-import ru.d3rvich.history.model.SortByProvider
+import ru.d3rvich.history.impl.model.HistoryUiEvent
+import ru.d3rvich.history.impl.model.HistoryUiState
+import ru.d3rvich.history.impl.model.SortByProvider
 import ru.d3rvich.ui.mappers.toQuizResultEntity
 import ru.d3rvich.ui.mappers.toQuizResultUiModel
 import ru.d3rvich.ui.mvibase.BaseViewModel

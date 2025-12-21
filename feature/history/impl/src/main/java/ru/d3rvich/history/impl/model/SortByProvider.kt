@@ -1,4 +1,4 @@
-package ru.d3rvich.history.model
+package ru.d3rvich.history.impl.model
 
 import android.content.Context
 import androidx.compose.runtime.Stable

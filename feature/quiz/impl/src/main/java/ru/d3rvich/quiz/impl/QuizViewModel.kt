@@ -107,7 +107,7 @@ internal class QuizViewModel @AssistedInject constructor(
                     } else question
                 }
             } else state.quiz.questions
-            val passedTime = Clock.System.now().toLocalDateTime(TimeZone.Companion.currentSystemDefault())
+            val passedTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
             val result = state.quiz.let { quiz ->
                 QuizResultEntity(
                     id = key.quizId ?: 0,
