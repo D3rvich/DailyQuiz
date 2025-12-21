@@ -38,7 +38,7 @@ import ru.d3rvich.quiz.impl.screens.FiltersScreen
 import ru.d3rvich.quiz.impl.screens.QuizScreen
 import ru.d3rvich.quiz.impl.screens.ResultsScreen
 import ru.d3rvich.quiz.impl.screens.StartScreen
-import ru.d3rvich.result.QuizResultScreen
+import ru.d3rvich.result.impl.QuizResultScreen
 import ru.d3rvich.ui.model.QuizResultUiModel
 import ru.d3rvich.ui.navigation.Screen
 import ru.d3rvich.ui.navigation.Screens

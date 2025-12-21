@@ -1,8 +1,8 @@
-package ru.d3rvich.result
+package ru.d3rvich.result.impl
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import ru.d3rvich.result.view.QuizResultDetailView
+import ru.d3rvich.result.impl.view.QuizResultDetailView
 import ru.d3rvich.ui.model.QuizResultUiModel
 
 @Composable

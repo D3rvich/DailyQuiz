@@ -1,4 +1,4 @@
-package ru.d3rvich.result.view
+package ru.d3rvich.result.impl.view
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
@@ -56,7 +56,8 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import ru.d3rvich.domain.model.Category
 import ru.d3rvich.domain.model.Difficulty
-import ru.d3rvich.result.R
+import ru.d3rvich.result.impl.R
+import ru.d3rvich.ui.R as UiR
 import ru.d3rvich.ui.components.CorrectCheckIcon
 import ru.d3rvich.ui.components.DailyQuizButton
 import ru.d3rvich.ui.components.QuizResultCard
@@ -191,7 +192,7 @@ private fun RetryButton(
     val density = LocalDensity.current
     val backgroundColor = MaterialTheme.colorScheme.background
     DailyQuizButton(
-        text = stringResource(ru.d3rvich.ui.R.string.restart),
+        text = stringResource(UiR.string.restart),
         onClick = onClick,
         modifier = modifier
             .drawWithCache {

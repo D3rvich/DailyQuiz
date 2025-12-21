@@ -1,4 +1,4 @@
-package ru.d3rvich.result.view
+package ru.d3rvich.result.impl.view
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

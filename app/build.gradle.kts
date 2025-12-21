@@ -25,7 +25,7 @@ dependencies {
     implementation(project(":core:database"))
     implementation(project(":feature:quiz:impl"))
     implementation(project(":feature:history:impl"))
-    implementation(project(":feature:result"))
+    implementation(project(":feature:result:impl"))
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.kotlinx.serializationJson)
