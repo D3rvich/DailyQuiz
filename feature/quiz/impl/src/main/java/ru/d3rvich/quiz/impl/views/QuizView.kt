@@ -1,4 +1,4 @@
-package ru.d3rvich.quiz.views
+package ru.d3rvich.quiz.impl.views
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -44,8 +44,8 @@ import kotlinx.datetime.format
 import kotlinx.datetime.format.Padding
 import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
-import ru.d3rvich.quiz.R
-import ru.d3rvich.quiz.TimerMaxValue
+import ru.d3rvich.quiz.impl.R
+import ru.d3rvich.quiz.impl.TimerMaxValue
 import ru.d3rvich.ui.model.AnswerUiModel
 import ru.d3rvich.ui.model.QuestionUiModel
 import ru.d3rvich.ui.theme.DailyQuizTheme

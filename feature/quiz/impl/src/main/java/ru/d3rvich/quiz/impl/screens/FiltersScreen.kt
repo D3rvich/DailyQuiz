@@ -1,4 +1,4 @@
-package ru.d3rvich.quiz.screens
+package ru.d3rvich.quiz.impl.screens
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -42,7 +42,7 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import ru.d3rvich.domain.model.Category
 import ru.d3rvich.domain.model.Difficulty
-import ru.d3rvich.quiz.R
+import ru.d3rvich.quiz.impl.R
 import ru.d3rvich.ui.components.DailyQuizButton
 import ru.d3rvich.ui.components.DailyQuizLogo
 import ru.d3rvich.ui.extensions.stringRes

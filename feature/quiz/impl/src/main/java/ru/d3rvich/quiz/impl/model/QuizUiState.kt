@@ -1,6 +1,6 @@
-package ru.d3rvich.quiz.model
+package ru.d3rvich.quiz.impl.model
 
-import ru.d3rvich.quiz.TimerMaxValue
+import ru.d3rvich.quiz.impl.TimerMaxValue
 import ru.d3rvich.ui.model.QuizUiModel
 import ru.d3rvich.ui.mvibase.UiState
 

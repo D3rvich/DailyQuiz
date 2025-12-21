@@ -1,4 +1,4 @@
-package ru.d3rvich.quiz.model
+package ru.d3rvich.quiz.impl.model
 
 import ru.d3rvich.ui.mvibase.UiAction
 

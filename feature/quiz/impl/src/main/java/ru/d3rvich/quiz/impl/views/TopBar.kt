@@ -1,4 +1,4 @@
-package ru.d3rvich.quiz.views
+package ru.d3rvich.quiz.impl.views
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import ru.d3rvich.quiz.R
+import ru.d3rvich.quiz.impl.R
 import ru.d3rvich.ui.R as UiR
 import ru.d3rvich.ui.components.DailyQuizLogo
 

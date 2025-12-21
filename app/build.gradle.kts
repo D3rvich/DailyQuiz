@@ -23,7 +23,7 @@ dependencies {
     implementation(project(":core:navigation"))
     implementation(project(":core:network"))
     implementation(project(":core:database"))
-    implementation(project(":feature:quiz"))
+    implementation(project(":feature:quiz:impl"))
     implementation(project(":feature:history"))
     implementation(project(":feature:result"))
 

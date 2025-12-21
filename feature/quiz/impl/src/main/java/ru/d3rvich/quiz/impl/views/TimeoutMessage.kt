@@ -1,4 +1,4 @@
-package ru.d3rvich.quiz.views
+package ru.d3rvich.quiz.impl.views
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,10 +16,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ru.d3rvich.quiz.R
+import ru.d3rvich.quiz.impl.R
+import ru.d3rvich.ui.R as UiR
 import ru.d3rvich.ui.components.DailyQuizButton
 import ru.d3rvich.ui.theme.DailyQuizTheme
-
 
 @Composable
 internal fun TimeoutMessage(onDismissRequest: () -> Unit, modifier: Modifier = Modifier) {
@@ -46,7 +46,7 @@ internal fun TimeoutMessage(onDismissRequest: () -> Unit, modifier: Modifier = M
             )
         },
         onDismissRequest = onDismissRequest, confirmButton = {
-            DailyQuizButton(text = stringResource(ru.d3rvich.ui.R.string.restart), onDismissRequest)
+            DailyQuizButton(text = stringResource(UiR.string.restart), onDismissRequest)
         })
 }
 

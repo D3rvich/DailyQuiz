@@ -34,10 +34,10 @@ import ru.d3rvich.domain.model.Category
 import ru.d3rvich.domain.model.Difficulty
 import ru.d3rvich.history.screens.HistoryCheckerScreen
 import ru.d3rvich.history.screens.HistoryScreen
-import ru.d3rvich.quiz.screens.FiltersScreen
-import ru.d3rvich.quiz.screens.QuizScreen
-import ru.d3rvich.quiz.screens.ResultsScreen
-import ru.d3rvich.quiz.screens.StartScreen
+import ru.d3rvich.quiz.impl.screens.FiltersScreen
+import ru.d3rvich.quiz.impl.screens.QuizScreen
+import ru.d3rvich.quiz.impl.screens.ResultsScreen
+import ru.d3rvich.quiz.impl.screens.StartScreen
 import ru.d3rvich.result.QuizResultScreen
 import ru.d3rvich.ui.model.QuizResultUiModel
 import ru.d3rvich.ui.navigation.Screen

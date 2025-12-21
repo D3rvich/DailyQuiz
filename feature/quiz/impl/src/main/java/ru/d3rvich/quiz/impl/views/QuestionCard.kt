@@ -1,4 +1,4 @@
-package ru.d3rvich.quiz.views
+package ru.d3rvich.quiz.impl.views
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,7 +31,7 @@ import androidx.compose.ui.text.fromHtml
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.window.core.layout.WindowSizeClass
-import ru.d3rvich.quiz.R
+import ru.d3rvich.quiz.impl.R
 import ru.d3rvich.ui.components.AnswerType
 import ru.d3rvich.ui.components.AnswerUiCard
 import ru.d3rvich.ui.components.DailyQuizButton

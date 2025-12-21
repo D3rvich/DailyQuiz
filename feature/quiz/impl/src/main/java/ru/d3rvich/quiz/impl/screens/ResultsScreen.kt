@@ -1,4 +1,4 @@
-package ru.d3rvich.quiz.screens
+package ru.d3rvich.quiz.impl.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.window.core.layout.WindowSizeClass
-import ru.d3rvich.quiz.R
+import ru.d3rvich.quiz.impl.R
 import ru.d3rvich.ui.components.QuizResultCard
 import ru.d3rvich.ui.theme.DailyQuizTheme
 

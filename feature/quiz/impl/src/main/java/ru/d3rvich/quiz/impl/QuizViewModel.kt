@@ -1,4 +1,4 @@
-package ru.d3rvich.quiz
+package ru.d3rvich.quiz.impl
 
 import androidx.lifecycle.viewModelScope
 import dagger.assisted.Assisted
@@ -15,9 +15,9 @@ import ru.d3rvich.domain.entities.QuizResultEntity
 import ru.d3rvich.domain.model.Result
 import ru.d3rvich.domain.usecases.GetExistedOrNewQuizUseCase
 import ru.d3rvich.domain.usecases.SaveQuizUseCase
-import ru.d3rvich.quiz.model.QuizUiAction
-import ru.d3rvich.quiz.model.QuizUiEvent
-import ru.d3rvich.quiz.model.QuizUiState
+import ru.d3rvich.quiz.impl.model.QuizUiAction
+import ru.d3rvich.quiz.impl.model.QuizUiEvent
+import ru.d3rvich.quiz.impl.model.QuizUiState
 import ru.d3rvich.ui.mappers.toQuestionEntity
 import ru.d3rvich.ui.mappers.toQuizUiModel
 import ru.d3rvich.ui.model.QuestionUiModel
@@ -107,7 +107,7 @@ internal class QuizViewModel @AssistedInject constructor(
                     } else question
                 }
             } else state.quiz.questions
-            val passedTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+            val passedTime = Clock.System.now().toLocalDateTime(TimeZone.Companion.currentSystemDefault())
             val result = state.quiz.let { quiz ->
                 QuizResultEntity(
                     id = key.quizId ?: 0,

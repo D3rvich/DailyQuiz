@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.d3rvich.quiz"
+    namespace = "ru.d3rvich.quiz.impl"
 }
 
 dependencies {
