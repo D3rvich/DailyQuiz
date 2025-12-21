@@ -54,6 +54,10 @@ gradlePlugin {
             id = "dailyquiz.android.room"
             implementationClass = "AndroidRoomConventionPlugin"
         }
+        register("androidFeatureApi") {
+            id = "dailyquiz.android.feature.api"
+            implementationClass = "AndroidFeatureApiConventionPlugin"
+        }
         register("androidFeature") {
             id = "dailyquiz.android.feature"
             implementationClass = "AndroidFeatureConventionPlugin"

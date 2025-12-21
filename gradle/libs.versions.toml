@@ -95,6 +95,7 @@ android-library = { id = "com.android.library", version.ref = "androidGradlePlug
 dailyquiz-android-application-compose = { id = "dailyquiz.android.application.compose", version = "unspecified" }
 dailyquiz-android-library = { id = "dailyquiz.android.library", version = "unspecified" }
 dailyquiz-android-library-compose = { id = "dailyquiz.android.library.compose", version = "unspecified" }
+dailyquiz-android-feature-api = { id = "dailyquiz.android.feature.api", version = "unspecified" }
 dailyquiz-android-feature = { id = "dailyquiz.android.feature", version = "unspecified" }
 dailyquiz-android-hilt = { id = "dailyquiz.android.hilt", version = "unspecified" }
 dailyquiz-android-room = { id = "dailyquiz.android.room", version = "unspecified" }
