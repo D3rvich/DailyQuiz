@@ -15,6 +15,7 @@ import ru.d3rvich.domain.entities.QuizResultEntity
 import ru.d3rvich.domain.model.Result
 import ru.d3rvich.domain.usecases.GetExistedOrNewQuizUseCase
 import ru.d3rvich.domain.usecases.SaveQuizUseCase
+import ru.d3rvich.quiz.api.navigation.Quiz
 import ru.d3rvich.quiz.impl.model.QuizUiAction
 import ru.d3rvich.quiz.impl.model.QuizUiEvent
 import ru.d3rvich.quiz.impl.model.QuizUiState
@@ -24,14 +25,13 @@ import ru.d3rvich.ui.model.QuestionUiModel
 import ru.d3rvich.ui.model.correctAnswers
 import ru.d3rvich.ui.model.isCorrectAnswer
 import ru.d3rvich.ui.mvibase.BaseViewModel
-import ru.d3rvich.ui.navigation.Screens
 import javax.inject.Provider
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 @HiltViewModel(assistedFactory = QuizViewModel.Factory::class)
 internal class QuizViewModel @AssistedInject constructor(
-    @Assisted private val key: Screens.QuizMain.Quiz,
+    @Assisted private val key: Quiz.QuizNavKey,
     private val getExistedOrNewQuizUseCase: Provider<GetExistedOrNewQuizUseCase>,
     private val saveQuizResultUseCase: Provider<SaveQuizUseCase>,
 ) : BaseViewModel<QuizUiState, QuizUiEvent, QuizUiAction>() {
@@ -164,7 +164,7 @@ internal class QuizViewModel @AssistedInject constructor(
 
     @AssistedFactory
     internal interface Factory {
-        fun create(key: Screens.QuizMain.Quiz): QuizViewModel
+        fun create(key: Quiz.QuizNavKey): QuizViewModel
     }
 }
 

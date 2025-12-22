@@ -7,8 +7,8 @@ import ru.d3rvich.domain.entities.QuizResultEntity
 import ru.d3rvich.navigation.Navigator
 
 @Serializable
-data class QuizHistoryDetailNavKey(val quizJson: String) : NavKey
+data class HistoryDetailNavKey(val quizResultJson: String) : NavKey
 
 fun Navigator.navigateToResult(quizResult: QuizResultEntity) {
-    navigate(QuizHistoryDetailNavKey(Json.encodeToString(quizResult)))
+    navigate(HistoryDetailNavKey(Json.encodeToString(quizResult)))
 }

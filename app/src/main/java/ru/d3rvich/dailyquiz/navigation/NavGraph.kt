@@ -25,6 +25,7 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
@@ -32,22 +33,23 @@ import kotlinx.serialization.json.Json
 import ru.d3rvich.dailyquiz.R
 import ru.d3rvich.domain.model.Category
 import ru.d3rvich.domain.model.Difficulty
+import ru.d3rvich.history.api.navigation.HistoryNavKey
 import ru.d3rvich.history.impl.screens.HistoryCheckerScreen
 import ru.d3rvich.history.impl.screens.HistoryScreen
+import ru.d3rvich.quiz.api.navigation.Quiz
 import ru.d3rvich.quiz.impl.screens.FiltersScreen
 import ru.d3rvich.quiz.impl.screens.QuizScreen
 import ru.d3rvich.quiz.impl.screens.ResultsScreen
 import ru.d3rvich.quiz.impl.screens.StartScreen
+import ru.d3rvich.result.api.navigation.HistoryDetailNavKey
 import ru.d3rvich.result.impl.QuizResultScreen
 import ru.d3rvich.ui.model.QuizResultUiModel
-import ru.d3rvich.ui.navigation.Screen
-import ru.d3rvich.ui.navigation.Screens
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 internal fun Nav3Graph(modifier: Modifier = Modifier) {
-    val backStack = rememberSaveable { mutableStateListOf<Screen>(Screens.QuizMain.Start) }
-    val listDetailStrategy = rememberListDetailSceneStrategy<Screen>()
+    val backStack = rememberSaveable { mutableStateListOf<NavKey>(Quiz.StartNavKey) }
+    val listDetailStrategy = rememberListDetailSceneStrategy<NavKey>()
     NavDisplay(
         backStack,
         onBack = { backStack.removeLastOrNull() },
@@ -60,47 +62,47 @@ internal fun Nav3Graph(modifier: Modifier = Modifier) {
         entryProvider = entryProvider {
             quizEntry(
                 navigateBackToStart = {
-                    backStack.removeIf { it !is Screens.QuizMain.Start }
+                    backStack.removeIf { it !is Quiz.StartNavKey }
                     if (backStack.isEmpty()) {
-                        backStack.add(Screens.QuizMain.Start)
+                        backStack.add(Quiz.StartNavKey)
                     }
                 },
-                navigateToFilters = { backStack.add(Screens.QuizMain.Filters) },
-                navigateToHistory = { backStack.add(Screens.HistoryChecker) },
+                navigateToFilters = { backStack.add(Quiz.FiltersNavKey) },
+                navigateToHistory = { backStack.add(HistoryNavKey.CheckerNavKey) },
                 navigateToQuiz = { category, difficulty ->
-                    backStack.add(Screens.QuizMain.Quiz(category, difficulty))
+                    backStack.add(Quiz.QuizNavKey(category, difficulty))
                 },
                 navigateToResult = { correctAnswers, totalAnswers ->
-                    backStack.add(Screens.QuizMain.Result(correctAnswers, totalAnswers))
+                    backStack.add(Quiz.ResultNavKey(correctAnswers, totalAnswers))
                 },
                 onBack = { backStack.removeLastOrNull() }
             )
             HistoryEntry(
                 navigateToHistory = {
                     backStack.removeLastOrNull()
-                    backStack.add(Screens.History)
+                    backStack.add(HistoryNavKey.ContentNavKey)
                 },
                 navigateToFilters = {
                     backStack.removeLastOrNull()
-                    backStack.add(Screens.QuizMain.Filters)
+                    backStack.add(Quiz.FiltersNavKey)
                 },
                 navigateToQuizResult = { resultUiModel ->
-                    backStack.removeIf { it is Screens.QuizResult }
-                    backStack.add(Screens.QuizResult(Json.encodeToString(resultUiModel)))
+                    backStack.removeIf { it is HistoryDetailNavKey }
+                    backStack.add(HistoryDetailNavKey(Json.encodeToString(resultUiModel)))
                 },
                 navigateBackFromHistory = {
-                    backStack.removeIf { it is Screens.History || it is Screens.QuizResult }
+                    backStack.removeIf { it is HistoryNavKey.ContentNavKey || it is HistoryDetailNavKey }
                 }
             )
             quizResultEntry(
-                navigateToQuiz = { backStack.add(Screens.QuizMain.Quiz(quizId = it)) },
+                navigateToQuiz = { backStack.add(Quiz.QuizNavKey(quizId = it)) },
                 navigateBack = { backStack.removeLastOrNull() })
         },
         modifier = modifier
     )
 }
 
-private fun EntryProviderScope<Screen>.quizEntry(
+private fun EntryProviderScope<NavKey>.quizEntry(
     navigateBackToStart: () -> Unit,
     navigateToFilters: () -> Unit,
     navigateToHistory: () -> Unit,
@@ -108,14 +110,14 @@ private fun EntryProviderScope<Screen>.quizEntry(
     navigateToResult: (correctAnswers: Int, totalAnswers: Int) -> Unit,
     onBack: () -> Unit,
 ) {
-    entry<Screens.QuizMain.Start> {
+    entry<Quiz.StartNavKey> {
         StartScreen(
             isLoading = false,
             navigateToFilters = navigateToFilters,
             navigateToHistory = navigateToHistory
         )
     }
-    entry<Screens.QuizMain.Filters> {
+    entry<Quiz.FiltersNavKey> {
         var category: Category? by rememberSaveable { mutableStateOf(null) }
         var difficulty: Difficulty? by rememberSaveable { mutableStateOf(null) }
         FiltersScreen(
@@ -127,7 +129,7 @@ private fun EntryProviderScope<Screen>.quizEntry(
             onBack = onBack
         )
     }
-    entry<Screens.QuizMain.Quiz> { key ->
+    entry<Quiz.QuizNavKey> { key ->
         QuizScreen(
             key = key,
             navigateToStart = navigateBackToStart,
@@ -135,7 +137,7 @@ private fun EntryProviderScope<Screen>.quizEntry(
             onBack = onBack
         )
     }
-    entry<Screens.QuizMain.Result> {
+    entry<Quiz.ResultNavKey> {
         val (correctAnswers, totalAnswers) = it
         ResultsScreen(
             correctAnswers = correctAnswers,
@@ -147,14 +149,14 @@ private fun EntryProviderScope<Screen>.quizEntry(
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-private fun EntryProviderScope<Screen>.HistoryEntry(
+private fun EntryProviderScope<NavKey>.HistoryEntry(
     navigateToHistory: () -> Unit,
     navigateToFilters: () -> Unit,
     navigateToQuizResult: (QuizResultUiModel) -> Unit,
     navigateBackFromHistory: () -> Unit
 ) {
     var sharedViewModelStoreOwner: ViewModelStoreOwner? by remember { mutableStateOf(null) }
-    entry<Screens.HistoryChecker> {
+    entry<HistoryNavKey.CheckerNavKey> {
         sharedViewModelStoreOwner = LocalViewModelStoreOwner.current
         HistoryCheckerScreen(
             navigateToHistory = navigateToHistory,
@@ -162,7 +164,7 @@ private fun EntryProviderScope<Screen>.HistoryEntry(
             navigateBack = navigateBackFromHistory
         )
     }
-    entry<Screens.History>(
+    entry<HistoryNavKey.ContentNavKey>(
         metadata = ListDetailSceneStrategy.listPane {
             Box(
                 modifier = Modifier
@@ -187,11 +189,11 @@ private fun EntryProviderScope<Screen>.HistoryEntry(
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-private fun EntryProviderScope<Screen>.quizResultEntry(
+private fun EntryProviderScope<NavKey>.quizResultEntry(
     navigateToQuiz: (quizId: Long) -> Unit,
     navigateBack: () -> Unit
 ) {
-    entry<Screens.QuizResult>(
+    entry<HistoryDetailNavKey>(
         metadata = ListDetailSceneStrategy.detailPane()
     ) { key ->
         val quizResult = Json.decodeFromString<QuizResultUiModel>(key.quizResultJson)

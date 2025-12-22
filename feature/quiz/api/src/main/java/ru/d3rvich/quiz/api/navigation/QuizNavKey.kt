@@ -22,7 +22,7 @@ object Quiz {
     ) : NavKey
 
     @Serializable
-    data class Result(val correctAnswers: Int, val totalAnswers: Int) : NavKey
+    data class ResultNavKey(val correctAnswers: Int, val totalAnswers: Int) : NavKey
 }
 
 fun Navigator.navigateToFilters() {
@@ -38,5 +38,5 @@ fun Navigator.navigateToQuiz(
 }
 
 fun Navigator.navigateToResult(correctAnswers: Int, totalAnswers: Int) {
-    navigate(Quiz.Result(correctAnswers, totalAnswers))
+    navigate(Quiz.ResultNavKey(correctAnswers, totalAnswers))
 }

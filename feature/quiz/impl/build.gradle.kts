@@ -7,6 +7,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":feature:quiz:api"))
+
     implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.androidx.material3.adaptive)
     implementation(libs.kotlinx.datetime)

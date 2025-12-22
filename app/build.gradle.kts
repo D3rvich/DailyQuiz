@@ -23,8 +23,11 @@ dependencies {
     implementation(project(":core:navigation"))
     implementation(project(":core:network"))
     implementation(project(":core:database"))
+    implementation(project(":feature:quiz:api"))
     implementation(project(":feature:quiz:impl"))
+    implementation(project(":feature:history:api"))
     implementation(project(":feature:history:impl"))
+    implementation(project(":feature:result:api"))
     implementation(project(":feature:result:impl"))
 
     implementation(libs.androidx.activity.compose)

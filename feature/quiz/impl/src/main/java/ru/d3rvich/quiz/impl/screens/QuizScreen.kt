@@ -11,17 +11,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import ru.d3rvich.quiz.api.navigation.Quiz
 import ru.d3rvich.quiz.impl.QuizViewModel
 import ru.d3rvich.quiz.impl.R
 import ru.d3rvich.quiz.impl.model.QuizUiAction
 import ru.d3rvich.quiz.impl.model.QuizUiEvent
 import ru.d3rvich.quiz.impl.model.QuizUiState
 import ru.d3rvich.quiz.impl.views.QuizView
-import ru.d3rvich.ui.navigation.Screens
 
 @Composable
 fun QuizScreen(
-    key: Screens.QuizMain.Quiz,
+    key: Quiz.QuizNavKey,
     navigateToStart: () -> Unit,
     navigateToResult: (correctAnswers: Int, totalAnswers: Int) -> Unit,
     onBack: () -> Unit,
