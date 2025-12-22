@@ -7,9 +7,10 @@ import androidx.navigation3.runtime.NavKey
 typealias EntryProviderInstaller = EntryProviderScope<NavKey>.() -> Unit
 
 class Navigator(startDestination: NavKey) {
-    val backStack = mutableStateListOf<NavKey>()
+    private val backStack = mutableStateListOf(startDestination)
+    val currentDestination = backStack.last()
 
-    fun goTo(destination: NavKey) {
+    fun navigate(destination: NavKey) {
         backStack.add(destination)
     }
 
