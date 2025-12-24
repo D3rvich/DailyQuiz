@@ -22,4 +22,5 @@
     <string name="selected" tools:override="true">Selected</string>
     <string name="AToZ">A > Z</string>
     <string name="ZToA">Z > A</string>
+    <string name="detail_placeholder">Choose quiz from the list</string>
 </resources>

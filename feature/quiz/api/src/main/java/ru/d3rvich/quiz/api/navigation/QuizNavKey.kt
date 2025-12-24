@@ -25,6 +25,10 @@ object Quiz {
     data class ResultNavKey(val correctAnswers: Int, val totalAnswers: Int) : NavKey
 }
 
+fun Navigator.navigateToStart() {
+    navigate(Quiz.StartNavKey)
+}
+
 fun Navigator.navigateToFilters() {
     navigate(Quiz.FiltersNavKey)
 }

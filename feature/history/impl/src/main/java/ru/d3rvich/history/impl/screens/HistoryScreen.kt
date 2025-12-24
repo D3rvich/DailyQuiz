@@ -9,9 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import ru.d3rvich.domain.model.SortBy
 import ru.d3rvich.history.impl.HistoryViewModel
 import ru.d3rvich.history.impl.model.HistoryUiEvent
@@ -20,13 +18,13 @@ import ru.d3rvich.history.impl.views.QuizHistoryView
 import ru.d3rvich.ui.model.QuizResultUiModel
 
 @Composable
-fun HistoryScreen(
+internal fun HistoryScreen(
+    navigateToEmptyHistory: () -> Unit,
     navigateToQuizResult: (quizResult: QuizResultUiModel) -> Unit,
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModelStoreOwner: ViewModelStoreOwner = checkNotNull(LocalViewModelStoreOwner.current)
 ) {
-    val viewModel: HistoryViewModel = hiltViewModel(viewModelStoreOwner)
+    val viewModel: HistoryViewModel = hiltViewModel()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     HistoryScreen(
         state = state,
@@ -36,6 +34,7 @@ fun HistoryScreen(
             viewModel.obtainEvent(HistoryUiEvent.OnSortChange(selectedSort))
         },
         onQuizClick = { navigateToQuizResult(it) },
+        onEmptyHistory = navigateToEmptyHistory,
         onBackClick = navigateBack
     )
 }
@@ -47,6 +46,7 @@ internal fun HistoryScreen(
     onSortChange: (selectedSort: SortBy) -> Unit,
     onQuizClick: (quizResult: QuizResultUiModel) -> Unit,
     onRemoveQuiz: (quizResult: QuizResultUiModel) -> Unit,
+    onEmptyHistory: () -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -57,8 +57,8 @@ internal fun HistoryScreen(
             }
 
             is HistoryUiState.Content -> {
-                check(state.quizResultEntities.isNotEmpty()) {
-                    "Got empty list! To check empty list use HistoryCheckerScreen BEFORE this screen."
+                if (state.quizResultEntities.isEmpty()) {
+                    onEmptyHistory()
                 }
                 QuizHistoryView(
                     quizList = state.quizResultEntities,

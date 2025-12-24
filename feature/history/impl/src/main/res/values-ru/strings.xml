@@ -22,4 +22,5 @@
     <string name="worst_first">Сначала худшие</string>
     <string name="AToZ">А > Я</string>
     <string name="ZToA">Я > А</string>
+    <string name="detail_placeholder">Выберите векторину из списка</string>
 </resources>

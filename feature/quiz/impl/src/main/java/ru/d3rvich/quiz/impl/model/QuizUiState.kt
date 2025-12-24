@@ -4,7 +4,7 @@ import ru.d3rvich.quiz.impl.TimerMaxValue
 import ru.d3rvich.ui.model.QuizUiModel
 import ru.d3rvich.ui.mvibase.UiState
 
-sealed interface QuizUiState : UiState {
+internal sealed interface QuizUiState : UiState {
     data object Loading : QuizUiState
     data class Quiz(
         val quiz: QuizUiModel,

@@ -51,7 +51,7 @@ import ru.d3rvich.ui.R as UiR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FiltersScreen(
+internal fun FiltersScreen(
     category: Category?,
     difficulty: Difficulty?,
     onCategoryChange: (Category) -> Unit,

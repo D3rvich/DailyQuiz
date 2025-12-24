@@ -6,7 +6,7 @@ import ru.d3rvich.result.impl.view.QuizResultDetailView
 import ru.d3rvich.ui.model.QuizResultUiModel
 
 @Composable
-fun QuizResultScreen(
+internal fun QuizResultScreen(
     quizResult: QuizResultUiModel,
     navigateToQuiz: (quizId: Long) -> Unit,
     navigateBack: () -> Unit,

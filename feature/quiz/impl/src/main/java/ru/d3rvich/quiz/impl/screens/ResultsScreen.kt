@@ -27,7 +27,7 @@ import ru.d3rvich.ui.components.QuizResultCard
 import ru.d3rvich.ui.theme.DailyQuizTheme
 
 @Composable
-fun ResultsScreen(
+internal fun ResultsScreen(
     correctAnswers: Int,
     totalQuestions: Int,
     navigateToStart: () -> Unit,

@@ -1,4 +1,4 @@
-package ru.d3rvich.history.impl.views
+package ru.d3rvich.history.impl.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -40,7 +42,7 @@ import ru.d3rvich.ui.theme.DailyQuizTheme
 import ru.d3rvich.ui.R as UiR
 
 @Composable
-internal fun EmptyHistoryView(
+internal fun EmptyHistoryScreen(
     onStartQuizClick: () -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -81,31 +83,28 @@ internal fun EmptyHistoryView(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TopBar(onBackClick: () -> Unit, modifier: Modifier = Modifier) {
-    Box(modifier.fillMaxWidth()) {
-        IconButton(
-            onClick = onBackClick,
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(top = 52.dp)
-        ) {
-            Icon(
-                painterResource(UiR.drawable.arrow_back_24px),
-                contentDescription = stringResource(R.string.navigate_back)
+    CenterAlignedTopAppBar(
+        title = {
+            Text(
+                text = stringResource(R.string.history),
+                style = MaterialTheme.typography.displaySmall,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = TextUnit(0f, TextUnitType.Sp),
             )
-        }
-        Text(
-            text = stringResource(R.string.history),
-            style = MaterialTheme.typography.displaySmall,
-            fontWeight = FontWeight.Bold,
-            letterSpacing = TextUnit(0f, TextUnitType.Sp),
-            modifier = Modifier
-                .padding(top = 52.dp)
-                .fillMaxWidth(),
-            textAlign = TextAlign.Center
-        )
-    }
+        },
+        navigationIcon = {
+            IconButton(onClick = onBackClick) {
+                Icon(
+                    painterResource(UiR.drawable.arrow_back_24px),
+                    contentDescription = stringResource(R.string.navigate_back)
+                )
+            }
+        },
+        modifier = modifier
+    )
 }
 
 @Composable
@@ -142,8 +141,8 @@ private fun EmptyHistoryCard(onStartQuizClick: () -> Unit, modifier: Modifier = 
 
 @PreviewScreenSizes
 @Composable
-private fun EmptyHistoryPreview() {
+private fun EmptyHistoryScreenPreview() {
     DailyQuizTheme {
-        EmptyHistoryView({}, {})
+        EmptyHistoryScreen({}, {})
     }
 }

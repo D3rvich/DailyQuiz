@@ -44,7 +44,7 @@ import ru.d3rvich.ui.components.DailyQuizLogo
 import ru.d3rvich.ui.theme.DailyQuizTheme
 
 @Composable
-fun StartScreen(
+internal fun StartScreen(
     isLoading: Boolean,
     navigateToFilters: () -> Unit,
     navigateToHistory: () -> Unit,

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -20,7 +21,7 @@ import ru.d3rvich.quiz.impl.model.QuizUiState
 import ru.d3rvich.quiz.impl.views.QuizView
 
 @Composable
-fun QuizScreen(
+internal fun QuizScreen(
     key: Quiz.QuizNavKey,
     navigateToStart: () -> Unit,
     navigateToResult: (correctAnswers: Int, totalAnswers: Int) -> Unit,
@@ -29,9 +30,9 @@ fun QuizScreen(
 ) {
     val viewModel =
         hiltViewModel<QuizViewModel, QuizViewModel.Factory> { factory -> factory.create(key) }
-    val state = viewModel.uiState.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    when (val state = state.value) {
+    when (val state = state) {
         QuizUiState.Loading -> {
             Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()

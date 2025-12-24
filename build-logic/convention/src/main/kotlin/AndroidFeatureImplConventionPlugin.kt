@@ -6,7 +6,7 @@ import org.gradle.kotlin.dsl.dependencies
 import ru.d3rvich.dailyquiz.implementation
 import ru.d3rvich.dailyquiz.libs
 
-class AndroidFeatureConventionPlugin : Plugin<Project> {
+class AndroidFeatureImplConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             with(pluginManager) {
@@ -24,6 +24,7 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
 
                 implementation(libs.findLibrary("androidx-hilt-navigation-compose").get())
                 implementation(libs.findLibrary("androidx-lifecycle-runtime-compose").get())
+                implementation(libs.findLibrary("androidx-navigation3-runtime").get())
                 implementation(libs.findLibrary("androidx-lifecycle-viewmodel-compose").get())
                 implementation(libs.findLibrary("androidx-lifecycle-viewmodel-ktx").get())
             }

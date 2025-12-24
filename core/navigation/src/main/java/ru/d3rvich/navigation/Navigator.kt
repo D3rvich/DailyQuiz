@@ -7,8 +7,7 @@ import androidx.navigation3.runtime.NavKey
 typealias EntryProviderInstaller = EntryProviderScope<NavKey>.() -> Unit
 
 class Navigator(startDestination: NavKey) {
-    private val backStack = mutableStateListOf(startDestination)
-    val currentDestination = backStack.last()
+    val backStack = mutableStateListOf(startDestination)
 
     fun navigate(destination: NavKey) {
         backStack.add(destination)
@@ -18,7 +17,7 @@ class Navigator(startDestination: NavKey) {
         backStack.removeLastOrNull()
     }
 
-    fun remove(vararg destinations: NavKey) {
-        backStack.removeIf { it in destinations }
+    fun clear() {
+        backStack.clear()
     }
 }
