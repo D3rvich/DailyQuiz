@@ -30,7 +30,7 @@ internal object HistoryDetailModule {
             QuizResultScreen(
                 quizResult = quizResult,
                 navigateToQuiz = { quizId -> navigator.navigateToQuiz(quizId = quizId) },
-                navigateBack = { navigator.goBack() }
+                navigateBack = { navigator.backStack.removeIf { it is HistoryDetailNavKey } }
             )
         }
     }

@@ -47,7 +47,7 @@ internal object QuizModule {
                 onCategoryChange = { category = it },
                 onDifficultChange = { difficulty = it },
                 onStartQuiz = { navigator.navigateToQuiz(category!!, difficulty!!) },
-                onBack = { navigator.goBack() }
+                onBack = { navigator.backStack.remove(Quiz.FiltersNavKey) }
             )
         }
         entry<Quiz.QuizNavKey> { key ->
@@ -61,7 +61,7 @@ internal object QuizModule {
                     navigator.backStack.removeIf { it is Quiz.FiltersNavKey || it is Quiz.QuizNavKey }
                     navigator.navigateToResult(correctAnswers, totalAnswers)
                 },
-                onBack = { navigator.goBack() }
+                onBack = { navigator.backStack.removeIf { it is Quiz.QuizNavKey } }
             )
         }
         entry<Quiz.ResultNavKey> { key ->
@@ -69,9 +69,8 @@ internal object QuizModule {
             ResultsScreen(
                 correctAnswers = correctAnswers,
                 totalQuestions = totalAnswers,
-                navigateToStart = {
-                    navigator.clear()
-                    navigator.navigateToStart()
+                navigateToSource = {
+                    navigator.backStack.removeIf { it is Quiz.ResultNavKey }
                 }
             )
         }

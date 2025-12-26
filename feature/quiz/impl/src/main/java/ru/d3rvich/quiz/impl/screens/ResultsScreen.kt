@@ -30,7 +30,7 @@ import ru.d3rvich.ui.theme.DailyQuizTheme
 internal fun ResultsScreen(
     correctAnswers: Int,
     totalQuestions: Int,
-    navigateToStart: () -> Unit,
+    navigateToSource: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val isLandscape = !(currentWindowAdaptiveInfo().windowSizeClass
@@ -53,7 +53,7 @@ internal fun ResultsScreen(
         QuizResultCard(
             correctAnswers = correctAnswers,
             totalQuestions = totalQuestions,
-            onRetryClick = navigateToStart,
+            onRetryClick = navigateToSource,
             modifier = Modifier.widthIn(max = 600.dp)
         )
     }

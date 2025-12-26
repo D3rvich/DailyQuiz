@@ -27,6 +27,7 @@ import ru.d3rvich.history.impl.screens.EmptyHistoryScreen
 import ru.d3rvich.navigation.EntryProviderInstaller
 import ru.d3rvich.navigation.Navigator
 import ru.d3rvich.quiz.api.navigation.Quiz
+import ru.d3rvich.result.api.navigation.HistoryDetailNavKey
 import ru.d3rvich.result.api.navigation.navigateToHistoryDetail
 
 @Module
@@ -61,7 +62,9 @@ internal object HistoryModule {
                 navigateToQuizResult = { quizResultUiModel ->
                     navigator.navigateToHistoryDetail(Json.encodeToString(quizResultUiModel))
                 },
-                navigateBack = { navigator.goBack() },
+                navigateBack = {
+                    navigator.backStack.removeIf { it is History.HistoryNavKey || it is HistoryDetailNavKey }
+                },
             )
         }
         entry<History.EmptyHistoryNavKey> {
@@ -70,7 +73,7 @@ internal object HistoryModule {
                     navigator.backStack.remove(History.EmptyHistoryNavKey)
                     navigator.navigate(Quiz.FiltersNavKey)
                 },
-                onBackClick = { navigator.goBack() }
+                onBackClick = { navigator.backStack.remove(History.EmptyHistoryNavKey) }
             )
         }
     }
