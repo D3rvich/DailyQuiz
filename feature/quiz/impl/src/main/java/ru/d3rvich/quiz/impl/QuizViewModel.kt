@@ -12,10 +12,11 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import ru.d3rvich.domain.entities.QuizEntity
 import ru.d3rvich.domain.entities.QuizResultEntity
+import ru.d3rvich.domain.model.Category
+import ru.d3rvich.domain.model.Difficulty
 import ru.d3rvich.domain.model.Result
 import ru.d3rvich.domain.usecases.GetExistedOrNewQuizUseCase
 import ru.d3rvich.domain.usecases.SaveQuizUseCase
-import ru.d3rvich.quiz.api.navigation.Quiz
 import ru.d3rvich.quiz.impl.model.QuizUiAction
 import ru.d3rvich.quiz.impl.model.QuizUiEvent
 import ru.d3rvich.quiz.impl.model.QuizUiState
@@ -31,14 +32,16 @@ import kotlin.time.ExperimentalTime
 
 @HiltViewModel(assistedFactory = QuizViewModel.Factory::class)
 internal class QuizViewModel @AssistedInject constructor(
-    @Assisted private val key: Quiz.QuizNavKey,
+    @Assisted private val quizId: Long?,
+    @Assisted private val category: Category,
+    @Assisted private val difficulty: Difficulty,
     private val getExistedOrNewQuizUseCase: Provider<GetExistedOrNewQuizUseCase>,
     private val saveQuizResultUseCase: Provider<SaveQuizUseCase>,
 ) : BaseViewModel<QuizUiState, QuizUiEvent, QuizUiAction>() {
 
     init {
         viewModelScope.launch {
-            getExistedOrNewQuizUseCase.get().invoke(key.quizId, key.category, key.difficulty)
+            getExistedOrNewQuizUseCase.get().invoke(quizId, category, difficulty)
                 .collect { result ->
                     when (result) {
                         Result.Loading -> setState(QuizUiState.Loading)
@@ -110,7 +113,7 @@ internal class QuizViewModel @AssistedInject constructor(
             val passedTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
             val result = state.quiz.let { quiz ->
                 QuizResultEntity(
-                    id = key.quizId ?: 0,
+                    id = quizId ?: 0,
                     generalCategory = quiz.category,
                     difficulty = quiz.difficulty,
                     passedTime = passedTime,
@@ -164,7 +167,11 @@ internal class QuizViewModel @AssistedInject constructor(
 
     @AssistedFactory
     internal interface Factory {
-        fun create(key: Quiz.QuizNavKey): QuizViewModel
+        fun create(
+            quizId: Long?,
+            category: Category,
+            difficulty: Difficulty
+        ): QuizViewModel
     }
 }
 

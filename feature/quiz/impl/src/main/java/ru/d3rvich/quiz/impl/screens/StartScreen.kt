@@ -1,9 +1,5 @@
 package ru.d3rvich.quiz.impl.screens
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,7 +14,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationRail
@@ -28,12 +23,10 @@ import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -45,7 +38,6 @@ import ru.d3rvich.ui.theme.DailyQuizTheme
 
 @Composable
 internal fun StartScreen(
-    isLoading: Boolean,
     navigateToFilters: () -> Unit,
     navigateToHistory: () -> Unit,
     modifier: Modifier = Modifier,
@@ -81,7 +73,6 @@ internal fun StartScreen(
                 })
             }
             MainContent(
-                isLoading = isLoading,
                 showLogo = !showNavRail,
                 onStartClick = navigateToFilters,
                 modifier = Modifier
@@ -115,7 +106,6 @@ private fun HistoryButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
 
 @Composable
 private fun MainContent(
-    isLoading: Boolean,
     showLogo: Boolean,
     onStartClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -134,42 +124,30 @@ private fun MainContent(
                 .fillMaxWidth()
                 .height(220.dp), contentAlignment = Alignment.Center
         ) {
-            AnimatedContent(
-                isLoading,
-                contentAlignment = Alignment.Center,
-                transitionSpec = { fadeIn() togetherWith fadeOut() }) { value ->
-                if (value) {
-                    CircularProgressIndicator(
-                        color = Color(0xFFBCB7FF),
-                        trackColor = Color.White,
+            Card(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 20.dp),
+                shape = RoundedCornerShape(40.dp)
+            ) {
+                Column(
+                    verticalArrangement = Arrangement.SpaceAround,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(20.dp)
+                ) {
+                    Text(
+                        stringResource(R.string.welcome_message),
+                        style = MaterialTheme.typography.displaySmall,
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.fillMaxWidth()
                     )
-                } else {
-                    Card(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 20.dp),
-                        shape = RoundedCornerShape(40.dp)
-                    ) {
-                        Column(
-                            verticalArrangement = Arrangement.SpaceAround,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(20.dp)
-                        ) {
-                            Text(
-                                stringResource(R.string.welcome_message),
-                                style = MaterialTheme.typography.displaySmall,
-                                textAlign = TextAlign.Center,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.fillMaxWidth()
-                            )
-                            DailyQuizButton(
-                                stringResource(R.string.start_quiz),
-                                modifier = Modifier.align(Alignment.CenterHorizontally),
-                                onClick = onStartClick
-                            )
-                        }
-                    }
+                    DailyQuizButton(
+                        stringResource(R.string.start_quiz),
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                        onClick = onStartClick
+                    )
                 }
             }
         }
@@ -178,16 +156,8 @@ private fun MainContent(
 
 @PreviewScreenSizes
 @Composable
-private fun StartPreview() {
+private fun StartScreenPreview() {
     DailyQuizTheme {
-        StartScreen(false, {}, {})
-    }
-}
-
-@Preview(showBackground = true, apiLevel = 35)
-@Composable
-private fun StartLoadingPreview() {
-    DailyQuizTheme {
-        StartScreen(true, {}, {})
+        StartScreen( {}, {})
     }
 }

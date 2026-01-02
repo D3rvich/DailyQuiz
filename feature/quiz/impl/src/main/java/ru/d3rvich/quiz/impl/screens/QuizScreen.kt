@@ -12,7 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import ru.d3rvich.quiz.api.navigation.Quiz
+import ru.d3rvich.domain.model.Category
+import ru.d3rvich.domain.model.Difficulty
 import ru.d3rvich.quiz.impl.QuizViewModel
 import ru.d3rvich.quiz.impl.R
 import ru.d3rvich.quiz.impl.model.QuizUiAction
@@ -22,14 +23,17 @@ import ru.d3rvich.quiz.impl.views.QuizView
 
 @Composable
 internal fun QuizScreen(
-    key: Quiz.QuizNavKey,
+    quizId: Long?,
+    category: Category,
+    difficulty: Difficulty,
     navigateToStart: () -> Unit,
     navigateToResult: (correctAnswers: Int, totalAnswers: Int) -> Unit,
     onBack: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-    val viewModel =
-        hiltViewModel<QuizViewModel, QuizViewModel.Factory> { factory -> factory.create(key) }
+    val viewModel = hiltViewModel<QuizViewModel, QuizViewModel.Factory> { factory ->
+        factory.create(quizId = quizId, category = category, difficulty = difficulty)
+    }
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     when (val state = state) {

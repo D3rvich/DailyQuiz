@@ -87,12 +87,14 @@ internal fun FiltersScreen(
             onCategoryChange = onCategoryChange,
             onDifficultChange = onDifficultChange,
             onStartClick = onStartQuiz,
-            modifier = Modifier.constrainAs(filtersCard) {
-                top.linkTo(parent.top)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                bottom.linkTo(parent.bottom)
-            }.widthIn(max = 600.dp))
+            modifier = Modifier
+                .constrainAs(filtersCard) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    bottom.linkTo(parent.bottom)
+                }
+                .widthIn(max = 600.dp))
     }
 }
 

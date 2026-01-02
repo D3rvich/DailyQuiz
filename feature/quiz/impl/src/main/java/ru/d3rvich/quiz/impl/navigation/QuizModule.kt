@@ -33,7 +33,6 @@ internal object QuizModule {
     fun provideEntryProviderInstaller(navigator: Navigator): EntryProviderInstaller = {
         entry<Quiz.StartNavKey> {
             StartScreen(
-                isLoading = false,
                 navigateToFilters = { navigator.navigateToFilters() },
                 navigateToHistory = { navigator.navigateToHistoryContent() }
             )
@@ -52,7 +51,9 @@ internal object QuizModule {
         }
         entry<Quiz.QuizNavKey> { key ->
             QuizScreen(
-                key = key,
+                quizId = key.quizId,
+                category = key.category,
+                difficulty = key.difficulty,
                 navigateToStart = {
                     navigator.clear()
                     navigator.navigateToStart()
