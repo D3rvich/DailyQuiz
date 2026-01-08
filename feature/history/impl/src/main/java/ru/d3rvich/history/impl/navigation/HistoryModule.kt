@@ -22,7 +22,7 @@ import kotlinx.serialization.json.Json
 import ru.d3rvich.history.api.navigation.History
 import ru.d3rvich.history.api.navigation.navigateToEmptyHistory
 import ru.d3rvich.history.impl.R
-import ru.d3rvich.history.impl.screens.HistoryScreen
+import ru.d3rvich.history.impl.screens.history.HistoryScreen
 import ru.d3rvich.history.impl.screens.EmptyHistoryScreen
 import ru.d3rvich.navigation.EntryProviderInstaller
 import ru.d3rvich.navigation.Navigator

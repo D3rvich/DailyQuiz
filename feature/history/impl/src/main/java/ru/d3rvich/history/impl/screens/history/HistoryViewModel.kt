@@ -1,17 +1,19 @@
-package ru.d3rvich.history.impl
+package ru.d3rvich.history.impl.screens.history
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
 import ru.d3rvich.domain.entities.QuizResultEntity
-import ru.d3rvich.domain.model.SortBy
 import ru.d3rvich.domain.usecases.GetQuizHistoryUseCase
 import ru.d3rvich.domain.usecases.RemoveQuizUseCase
-import ru.d3rvich.history.impl.model.HistoryUiEvent
-import ru.d3rvich.history.impl.model.HistoryUiState
-import ru.d3rvich.history.impl.model.SortByProvider
+import ru.d3rvich.history.impl.screens.history.model.HistoryUiEvent
+import ru.d3rvich.history.impl.screens.history.model.HistoryUiState
+import ru.d3rvich.history.impl.screens.history.model.SortByProvider
 import ru.d3rvich.ui.mappers.toQuizResultEntity
 import ru.d3rvich.ui.mappers.toQuizResultUiModel
+import ru.d3rvich.ui.model.SortByUiModel
+import ru.d3rvich.ui.model.toDomain
 import ru.d3rvich.ui.mvibase.BaseViewModel
 import ru.d3rvich.ui.mvibase.UiAction
 import javax.inject.Inject
@@ -47,12 +49,13 @@ internal class HistoryViewModel @Inject constructor(
         }
     }
 
-    private fun setUpHistory(sortBy: SortBy) {
+    private fun setUpHistory(sortBy: SortByUiModel) {
         viewModelScope.launch {
-            getQuizHistoryUseCase.get().invoke(sortBy = sortBy).collect { quizResults ->
+            getQuizHistoryUseCase.get().invoke(sortBy = sortBy.toDomain()).collect { quizResults ->
                 setState(
                     HistoryUiState.Content(
-                        quizResultEntities = quizResults.map(QuizResultEntity::toQuizResultUiModel),
+                        quizResultEntities = quizResults.map(QuizResultEntity::toQuizResultUiModel)
+                            .toPersistentList(),
                         selectedSort = sortBy
                     )
                 )

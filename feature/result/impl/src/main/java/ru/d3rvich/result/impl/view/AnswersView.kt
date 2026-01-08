@@ -9,6 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewDynamicColors
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toPersistentList
 import ru.d3rvich.ui.components.AnswerType
 import ru.d3rvich.ui.components.AnswerUiCard
 import ru.d3rvich.ui.model.AnswerUiModel
@@ -16,7 +18,7 @@ import ru.d3rvich.ui.theme.DailyQuizTheme
 
 @Composable
 internal fun AnswersView(
-    answers: List<AnswerUiModel>,
+    answers: ImmutableList<AnswerUiModel>,
     selectedAnswerIndex: Int,
     modifier: Modifier = Modifier
 ) {
@@ -43,7 +45,7 @@ private fun QuestionCardPreview() {
         }
         Surface(color = MaterialTheme.colorScheme.background) {
             AnswersView(
-                answers = answers,
+                answers = answers.toPersistentList(),
                 selectedAnswerIndex = 1
             )
         }

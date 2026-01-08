@@ -1,4 +1,4 @@
-package ru.d3rvich.history.impl.screens
+package ru.d3rvich.history.impl.screens.history
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,11 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ru.d3rvich.domain.model.SortBy
-import ru.d3rvich.history.impl.HistoryViewModel
-import ru.d3rvich.history.impl.model.HistoryUiEvent
-import ru.d3rvich.history.impl.model.HistoryUiState
+import ru.d3rvich.history.impl.screens.history.model.HistoryUiEvent
+import ru.d3rvich.history.impl.screens.history.model.HistoryUiState
 import ru.d3rvich.history.impl.views.QuizHistoryView
 import ru.d3rvich.ui.model.QuizResultUiModel
+import ru.d3rvich.ui.model.SortByUiModel
+import ru.d3rvich.ui.model.toUiModel
 
 @Composable
 internal fun HistoryScreen(
@@ -43,7 +44,7 @@ internal fun HistoryScreen(
 @Composable
 internal fun HistoryScreen(
     state: HistoryUiState,
-    onSortChange: (selectedSort: SortBy) -> Unit,
+    onSortChange: (selectedSort: SortByUiModel) -> Unit,
     onQuizClick: (quizResult: QuizResultUiModel) -> Unit,
     onRemoveQuiz: (quizResult: QuizResultUiModel) -> Unit,
     onEmptyHistory: () -> Unit,

@@ -27,6 +27,7 @@ class AndroidFeatureImplConventionPlugin : Plugin<Project> {
                 implementation(libs.findLibrary("androidx-navigation3-runtime").get())
                 implementation(libs.findLibrary("androidx-lifecycle-viewmodel-compose").get())
                 implementation(libs.findLibrary("androidx-lifecycle-viewmodel-ktx").get())
+                implementation(libs.findLibrary("kotlinx-collections-immutable").get())
             }
         }
     }

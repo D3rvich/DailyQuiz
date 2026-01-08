@@ -1,4 +1,4 @@
-package ru.d3rvich.history.impl.model
+package ru.d3rvich.history.impl.screens.history.model
 
 import android.content.Context
 import androidx.compose.runtime.Stable
@@ -7,6 +7,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import ru.d3rvich.domain.model.SortBy
+import ru.d3rvich.ui.model.SortByUiModel
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -16,19 +17,19 @@ internal class SortByProvider @Inject constructor(@ApplicationContext context: C
     private val sharedPreferences =
         context.getSharedPreferences(SharedPreferencesKey, Context.MODE_PRIVATE)
 
-    private val _currentSortBy: MutableStateFlow<SortBy> = MutableStateFlow(
+    private val _currentSortBy: MutableStateFlow<SortByUiModel> = MutableStateFlow(
         sharedPreferences.run {
             val sortByEnum = getString(SortByKey, DefaultSortBy.name)
                 ?.let { SortByEnum.valueOf(it) } ?: DefaultSortBy
             val byAscending = getBoolean(ByAscendingKey, true)
-            sortByEnum.toDomainSortBy(byAscending)
+            sortByEnum.toUiModel(byAscending)
         })
     val currentValue = _currentSortBy.asStateFlow()
 
-    fun setSortBy(sortBy: SortBy) {
+    fun setSortBy(sortBy: SortByUiModel) {
         _currentSortBy.value = sortBy
         sharedPreferences.edit {
-            putString(SortByKey, sortBy.asSortByEnum().name)
+            putString(SortByKey, sortBy.toSortByEnum().name)
             putBoolean(ByAscendingKey, sortBy.byAscending)
         }
     }

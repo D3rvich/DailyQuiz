@@ -1,5 +1,6 @@
 package ru.d3rvich.ui.mappers
 
+import kotlinx.collections.immutable.toPersistentList
 import ru.d3rvich.domain.entities.AnswerEntity
 import ru.d3rvich.domain.entities.QuestionEntity
 import ru.d3rvich.ui.model.AnswerUiModel
@@ -9,7 +10,7 @@ fun QuestionEntity.toQuestionUiModel(): QuestionUiModel =
     QuestionUiModel(
         category = category,
         text = text,
-        answers = answers.map(AnswerEntity::toAnswerUiModel),
+        answers = answers.map(AnswerEntity::toAnswerUiModel).toPersistentList(),
         selectedAnswerIndex = selectedAnswerIndex
     )
 

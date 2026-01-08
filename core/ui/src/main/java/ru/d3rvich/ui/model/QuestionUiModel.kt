@@ -1,6 +1,7 @@
 package ru.d3rvich.ui.model
 
 import androidx.compose.runtime.Immutable
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.serialization.Serializable
 
 @Immutable
@@ -8,7 +9,7 @@ import kotlinx.serialization.Serializable
 data class QuestionUiModel(
     val category: String,
     val text: String,
-    val answers: List<AnswerUiModel>,
+    val answers: ImmutableList<AnswerUiModel>,
     val selectedAnswerIndex: Int? = null,
 )
 

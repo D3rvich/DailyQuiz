@@ -49,6 +49,8 @@ import androidx.compose.ui.tooling.preview.PreviewDynamicColors
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format
@@ -66,6 +68,7 @@ import ru.d3rvich.ui.extensions.stringRes
 import ru.d3rvich.ui.model.AnswerUiModel
 import ru.d3rvich.ui.model.QuestionUiModel
 import ru.d3rvich.ui.model.QuizResultUiModel
+import ru.d3rvich.ui.model.SortByUiModel
 import ru.d3rvich.ui.theme.DailyQuizTheme
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
@@ -73,9 +76,9 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun QuizHistoryView(
-    quizList: List<QuizResultUiModel>,
-    selectedSort: SortBy,
-    onSortChange: (selectedSort: SortBy) -> Unit,
+    quizList: ImmutableList<QuizResultUiModel>,
+    selectedSort: SortByUiModel,
+    onSortChange: (selectedSort: SortByUiModel) -> Unit,
     onQuizCLick: (quizResult: QuizResultUiModel) -> Unit,
     onRemoveQuiz: (quizResult: QuizResultUiModel) -> Unit,
     onBackClick: () -> Unit,
@@ -257,7 +260,7 @@ private fun TimeRow(dateTime: LocalDateTime, modifier: Modifier = Modifier) {
                 char(' ')
                 monthName(
                     when (languageTag) {
-                        "ru-RU" -> MonthNames.Companion.RUSSIAN_FULL
+                        "ru-RU" -> MonthNames.RUSSIAN_FULL
                         else -> MonthNames.ENGLISH_FULL
                     }
                 )
@@ -319,10 +322,10 @@ private fun QuizHistoryNonDynamicPreview() {
     DailyQuizTheme(dynamicColor = false) {
         val answers = List(4) {
             AnswerUiModel("it?", it == 1)
-        }
+        }.toPersistentList()
         val questions = List(5) {
             QuestionUiModel("", "it?", answers, it % 4)
-        }
+        }.toPersistentList()
         val list = List(8) {
             QuizResultUiModel(
                 Category.entries[it],
@@ -333,7 +336,7 @@ private fun QuizHistoryNonDynamicPreview() {
                 it.toLong()
             )
         }
-        QuizHistoryView(list, SortBy.Name(true), { }, {}, {}, {})
+        QuizHistoryView(list.toPersistentList(), SortByUiModel.Name(true), { }, {}, {}, {})
     }
 }
 
@@ -345,10 +348,10 @@ private fun QuizHistoryViewPreview() {
     DailyQuizTheme {
         val answers = List(4) {
             AnswerUiModel("it?", it == 1)
-        }
+        }.toPersistentList()
         val questions = List(5) {
             QuestionUiModel("", "it?", answers, it % 4)
-        }
+        }.toPersistentList()
         val list = List(8) {
             QuizResultUiModel(
                 Category.entries[it],
@@ -359,6 +362,6 @@ private fun QuizHistoryViewPreview() {
                 it.toLong()
             )
         }
-        QuizHistoryView(list, SortBy.Name(true), { }, {}, {}, {})
+        QuizHistoryView(list.toPersistentList(), SortByUiModel.Name(true), { }, {}, {}, {})
     }
 }

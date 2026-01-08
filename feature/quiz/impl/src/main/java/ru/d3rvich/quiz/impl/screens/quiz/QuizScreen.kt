@@ -1,4 +1,4 @@
-package ru.d3rvich.quiz.impl.screens
+package ru.d3rvich.quiz.impl.screens.quiz
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
@@ -14,11 +14,10 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ru.d3rvich.domain.model.Category
 import ru.d3rvich.domain.model.Difficulty
-import ru.d3rvich.quiz.impl.QuizViewModel
 import ru.d3rvich.quiz.impl.R
-import ru.d3rvich.quiz.impl.model.QuizUiAction
-import ru.d3rvich.quiz.impl.model.QuizUiEvent
-import ru.d3rvich.quiz.impl.model.QuizUiState
+import ru.d3rvich.quiz.impl.screens.quiz.model.QuizUiAction
+import ru.d3rvich.quiz.impl.screens.quiz.model.QuizUiEvent
+import ru.d3rvich.quiz.impl.screens.quiz.model.QuizUiState
 import ru.d3rvich.quiz.impl.views.QuizView
 
 @Composable

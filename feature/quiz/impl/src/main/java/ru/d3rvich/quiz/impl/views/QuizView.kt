@@ -38,6 +38,9 @@ import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.window.core.layout.WindowSizeClass
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format
@@ -45,7 +48,7 @@ import kotlinx.datetime.format.Padding
 import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
 import ru.d3rvich.quiz.impl.R
-import ru.d3rvich.quiz.impl.TimerMaxValue
+import ru.d3rvich.quiz.impl.screens.quiz.TimerMaxValue
 import ru.d3rvich.ui.model.AnswerUiModel
 import ru.d3rvich.ui.model.QuestionUiModel
 import ru.d3rvich.ui.theme.DailyQuizTheme
@@ -54,7 +57,7 @@ import kotlin.time.Instant
 
 @Composable
 internal fun QuizView(
-    questions: List<QuestionUiModel>,
+    questions: ImmutableList<QuestionUiModel>,
     currentQuestionIndex: Int,
     selectedAnswerIndex: Int?,
     showCorrectAnswer: Boolean,
@@ -182,7 +185,7 @@ private fun TimerView(currentValue: Long, maxValue: Long, modifier: Modifier = M
 @Composable
 private fun QuestionPreview() {
     DailyQuizTheme {
-        val answers = List(4) { AnswerUiModel("Answer #${it + 1}", it == 1) }
+        val answers = List(4) { AnswerUiModel("Answer #${it + 1}", it == 1) }.toPersistentList()
         val entity = QuestionUiModel(
             "",
             "Lorem ipsum dolor sit amet consectetur adipiscing elit. Dolor sit amet consectetur adipiscing elit quisque faucibus.",
@@ -191,7 +194,7 @@ private fun QuestionPreview() {
         )
         Surface(color = MaterialTheme.colorScheme.background) {
             QuizView(
-                questions = listOf(entity),
+                questions = persistentListOf(entity),
                 currentQuestionIndex = 0,
                 timerCurrentValue = 20000L,
                 timerMaxValue = TimerMaxValue,

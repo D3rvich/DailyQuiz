@@ -40,6 +40,8 @@ import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toPersistentList
 import ru.d3rvich.domain.model.Category
 import ru.d3rvich.domain.model.Difficulty
 import ru.d3rvich.quiz.impl.R
@@ -139,17 +141,17 @@ private fun SelectorCard(
             val categories = Category.entries.sortedBy { it.name }.toMutableList()
             categories.apply {
                 remove(Category.AnyCategory)
-                add(0, Category.AnyCategory)
+                addFirst(Category.AnyCategory)
             }
             DropdownTextField(
                 selectedValue = category,
-                values = categories,
+                values = categories.toPersistentList(),
                 text = { it?.run { stringResource(stringRes) } ?: "" },
                 label = stringResource(R.string.category),
                 onValueSelect = { it?.let { onCategoryChange(it) } })
             DropdownTextField(
                 selectedValue = difficulty,
-                values = Difficulty.entries,
+                values = Difficulty.entries.toPersistentList(),
                 text = { it?.run { stringResource(it.stringRes) } ?: "" },
                 label = stringResource(R.string.difficult),
                 onValueSelect = { it?.let { onDifficultChange(it) } })
@@ -167,7 +169,7 @@ private fun SelectorCard(
 @Composable
 private fun <T> DropdownTextField(
     selectedValue: T,
-    values: List<T>,
+    values: ImmutableList<T>,
     label: String,
     text: @Composable (T) -> String,
     onValueSelect: (T) -> Unit,

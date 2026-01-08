@@ -52,6 +52,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewDynamicColors
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import ru.d3rvich.domain.model.Category
@@ -231,7 +233,7 @@ private fun EmptyQuizResultDetailPreview() {
             passedTime = Clock.System.now().toLocalDateTime(
                 TimeZone.currentSystemDefault()
             ),
-            questions = listOf(),
+            questions = persistentListOf(),
             correctAnswers = 1
         )
         QuizResultDetailView(quizResult, {}, {})
@@ -245,10 +247,10 @@ private fun QuizResultDetailPreview() {
     DailyQuizTheme {
         val answers = List(4) {
             AnswerUiModel("Answer $it", it == 1)
-        }
+        }.toPersistentList()
         val question = List(5) {
             QuestionUiModel("Category", "Question $it", answers, (it + 1) % 4)
-        }
+        }.toPersistentList()
         val quizResult = QuizResultUiModel(
             generalCategory = Category.AnyCategory,
             difficulty = Difficulty.AnyDifficulty,
@@ -269,7 +271,7 @@ private fun QuestionCardPreview() {
     DailyQuizTheme {
         val answers = List(4) {
             AnswerUiModel("Answer $it", it == 1)
-        }
+        }.toPersistentList()
         val question = QuestionUiModel("Category", "Question", answers, 1)
         Surface(color = MaterialTheme.colorScheme.background) {
             QuestionResultItem(

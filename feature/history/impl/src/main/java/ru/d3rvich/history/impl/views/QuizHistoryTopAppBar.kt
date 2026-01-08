@@ -35,21 +35,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import ru.d3rvich.domain.model.SortBy
 import ru.d3rvich.history.impl.R
-import ru.d3rvich.history.impl.model.SortByEnum
-import ru.d3rvich.history.impl.model.asSortByEnum
-import ru.d3rvich.history.impl.model.toDomainSortBy
+import ru.d3rvich.history.impl.screens.history.model.SortByEnum
+import ru.d3rvich.history.impl.screens.history.model.toSortByEnum
+import ru.d3rvich.history.impl.screens.history.model.toUiModel
 import ru.d3rvich.ui.components.appbar.CollapsingTopAppBar
 import ru.d3rvich.ui.components.appbar.CollapsingTopAppBarDefaults
+import ru.d3rvich.ui.model.SortByUiModel
 import ru.d3rvich.ui.theme.DailyQuizTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun QuizHistoryTopAppBar(
-    selectedSort: SortBy,
+    selectedSort: SortByUiModel,
     scrollBehavior: TopAppBarScrollBehavior,
-    onSortChange: (selectedSort: SortBy) -> Unit,
+    onSortChange: (selectedSort: SortByUiModel) -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -99,8 +99,8 @@ internal fun QuizHistoryTopAppBar(
 
 @Composable
 private fun Actions(
-    selectedSort: SortBy,
-    onSortChange: (selectedSort: SortBy) -> Unit,
+    selectedSort: SortByUiModel,
+    onSortChange: (selectedSort: SortByUiModel) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var showMenu by rememberSaveable { mutableStateOf(false) }
@@ -114,20 +114,20 @@ private fun Actions(
 
 @Composable
 private fun ColumnScope.SortingOptions(
-    selectedSort: SortBy,
-    onSortChange: (selectedSort: SortBy) -> Unit,
+    selectedSort: SortByUiModel,
+    onSortChange: (selectedSort: SortByUiModel) -> Unit,
 ) {
-    val selectedSortByEnum = selectedSort.asSortByEnum()
+    val selectedSortByEnum = selectedSort.toSortByEnum()
     SortByEnum.entries.forEach { item ->
         val isSelected = selectedSortByEnum == item
         DropdownMenuItem(
             text = stringResource(item.labelTextId),
             isSelected = isSelected,
-            onClick = { onSortChange(item.toDomainSortBy()) })
+            onClick = { onSortChange(item.toUiModel()) })
     }
     HorizontalDivider(modifier = Modifier.padding(vertical = 2.dp))
     selectedSortByEnum.AscendingOptions(byAscending = selectedSort.byAscending) { byAscending ->
-        onSortChange(selectedSortByEnum.toDomainSortBy(byAscending))
+        onSortChange(selectedSortByEnum.toUiModel(byAscending))
     }
 }
 
@@ -226,7 +226,7 @@ private fun ColumnScope.DropdownMenuItem(
 private fun QuizHistoryTopAppBarPreview() {
     DailyQuizTheme {
         QuizHistoryTopAppBar(
-            SortBy.Name(true),
+            SortByUiModel.Name(true),
             TopAppBarDefaults.exitUntilCollapsedScrollBehavior(),
             {},
             {})
@@ -238,7 +238,7 @@ private fun QuizHistoryTopAppBarPreview() {
 private fun SortingOptionsPreview() {
     DailyQuizTheme {
         Column {
-            SortingOptions(SortBy.Name(true)) { }
+            SortingOptions(SortByUiModel.Name(true)) { }
         }
     }
 }

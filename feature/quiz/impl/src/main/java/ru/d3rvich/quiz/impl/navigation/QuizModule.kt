@@ -20,7 +20,7 @@ import ru.d3rvich.quiz.api.navigation.navigateToQuiz
 import ru.d3rvich.quiz.api.navigation.navigateToResult
 import ru.d3rvich.quiz.api.navigation.navigateToStart
 import ru.d3rvich.quiz.impl.screens.FiltersScreen
-import ru.d3rvich.quiz.impl.screens.QuizScreen
+import ru.d3rvich.quiz.impl.screens.quiz.QuizScreen
 import ru.d3rvich.quiz.impl.screens.ResultsScreen
 import ru.d3rvich.quiz.impl.screens.StartScreen
 

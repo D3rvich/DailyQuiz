@@ -1,10 +1,11 @@
-package ru.d3rvich.quiz.impl
+package ru.d3rvich.quiz.impl.screens.quiz
 
 import androidx.lifecycle.viewModelScope
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -17,9 +18,9 @@ import ru.d3rvich.domain.model.Difficulty
 import ru.d3rvich.domain.model.Result
 import ru.d3rvich.domain.usecases.GetExistedOrNewQuizUseCase
 import ru.d3rvich.domain.usecases.SaveQuizUseCase
-import ru.d3rvich.quiz.impl.model.QuizUiAction
-import ru.d3rvich.quiz.impl.model.QuizUiEvent
-import ru.d3rvich.quiz.impl.model.QuizUiState
+import ru.d3rvich.quiz.impl.screens.quiz.model.QuizUiAction
+import ru.d3rvich.quiz.impl.screens.quiz.model.QuizUiEvent
+import ru.d3rvich.quiz.impl.screens.quiz.model.QuizUiState
 import ru.d3rvich.ui.mappers.toQuestionEntity
 import ru.d3rvich.ui.mappers.toQuizUiModel
 import ru.d3rvich.ui.model.QuestionUiModel
@@ -158,7 +159,7 @@ internal class QuizViewModel @AssistedInject constructor(
                     state.quiz.questions[state.currentQuestionIndex].copy(selectedAnswerIndex = event.index)
                 val questions = state.quiz.questions.toMutableList().apply {
                     set(state.currentQuestionIndex, question)
-                }.toList()
+                }.toPersistentList()
                 val quiz = state.quiz.copy(questions = questions)
                 setState(state.copy(quiz = quiz))
             }

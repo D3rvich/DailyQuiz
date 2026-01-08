@@ -1,6 +1,7 @@
 package ru.d3rvich.ui.model
 
 import androidx.compose.runtime.Immutable
+import kotlinx.collections.immutable.ImmutableList
 import ru.d3rvich.domain.model.Category
 import ru.d3rvich.domain.model.Difficulty
 
@@ -8,7 +9,7 @@ import ru.d3rvich.domain.model.Difficulty
 data class QuizUiModel(
     val category: Category,
     val difficulty: Difficulty,
-    val questions: List<QuestionUiModel>
+    val questions: ImmutableList<QuestionUiModel>
 )
 
 inline val QuizUiModel.correctAnswers: Int

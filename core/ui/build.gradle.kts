@@ -11,4 +11,5 @@ dependencies {
     implementation(project(":core:domain"))
 
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.kotlinx.collections.immutable)
 }
