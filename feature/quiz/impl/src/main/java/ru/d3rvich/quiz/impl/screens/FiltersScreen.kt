@@ -3,6 +3,7 @@ package ru.d3rvich.quiz.impl.screens
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,6 +22,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -39,7 +41,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toPersistentList
 import ru.d3rvich.domain.model.Category
@@ -62,14 +63,8 @@ internal fun FiltersScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    ConstraintLayout(modifier = modifier.fillMaxSize()) {
-        val (topBar, filtersCard) = createRefs()
+    Scaffold(modifier.fillMaxSize(), topBar = {
         CenterAlignedTopAppBar(
-            modifier = Modifier.constrainAs(topBar) {
-                top.linkTo(parent.top)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            },
             title = {
                 DailyQuizLogo(
                     modifier = Modifier.height(40.dp)
@@ -83,20 +78,22 @@ internal fun FiltersScreen(
                     )
                 }
             })
-        SelectorCard(
-            category = category,
-            difficulty = difficulty,
-            onCategoryChange = onCategoryChange,
-            onDifficultChange = onDifficultChange,
-            onStartClick = onStartQuiz,
+    }) { paddingValues ->
+        Box(
             modifier = Modifier
-                .constrainAs(filtersCard) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    bottom.linkTo(parent.bottom)
-                }
-                .widthIn(max = 600.dp))
+                .padding(paddingValues)
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            SelectorCard(
+                category = category,
+                difficulty = difficulty,
+                onCategoryChange = onCategoryChange,
+                onDifficultChange = onDifficultChange,
+                onStartClick = onStartQuiz,
+                modifier = Modifier.widthIn(max = 600.dp)
+            )
+        }
     }
 }
 
@@ -141,7 +138,7 @@ private fun SelectorCard(
             val categories = Category.entries.sortedBy { it.name }.toMutableList()
             categories.apply {
                 remove(Category.AnyCategory)
-                addFirst(Category.AnyCategory)
+                add(0, Category.AnyCategory)
             }
             DropdownTextField(
                 selectedValue = category,

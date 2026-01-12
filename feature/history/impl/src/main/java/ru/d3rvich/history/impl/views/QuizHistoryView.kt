@@ -60,7 +60,6 @@ import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
 import ru.d3rvich.domain.model.Category
 import ru.d3rvich.domain.model.Difficulty
-import ru.d3rvich.domain.model.SortBy
 import ru.d3rvich.history.impl.R
 import ru.d3rvich.history.impl.utils.RUSSIAN_FULL
 import ru.d3rvich.ui.components.DailyQuizStarIcon
@@ -79,7 +78,7 @@ internal fun QuizHistoryView(
     quizList: ImmutableList<QuizResultUiModel>,
     selectedSort: SortByUiModel,
     onSortChange: (selectedSort: SortByUiModel) -> Unit,
-    onQuizCLick: (quizResult: QuizResultUiModel) -> Unit,
+    onQuizCLick: (quizId: Long) -> Unit,
     onRemoveQuiz: (quizResult: QuizResultUiModel) -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -120,7 +119,7 @@ internal fun QuizHistoryView(
                             }
                         },
                     quizResult = item,
-                    onQuizCLick = { onQuizCLick(item) },
+                    onQuizCLick = { onQuizCLick(item.id) },
                     onRemoveQuiz = {
                         showDialog = true
                         onRemoveQuiz(item)

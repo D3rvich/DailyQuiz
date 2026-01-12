@@ -2,10 +2,8 @@ package ru.d3rvich.ui.model
 
 import androidx.compose.runtime.Immutable
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.serialization.Serializable
 
 @Immutable
-@Serializable
 data class QuestionUiModel(
     val category: String,
     val text: String,

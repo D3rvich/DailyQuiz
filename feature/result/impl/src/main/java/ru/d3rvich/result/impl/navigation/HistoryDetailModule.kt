@@ -7,13 +7,11 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityRetainedComponent
 import dagger.multibindings.IntoSet
-import kotlinx.serialization.json.Json
 import ru.d3rvich.navigation.EntryProviderInstaller
 import ru.d3rvich.navigation.Navigator
 import ru.d3rvich.quiz.api.navigation.navigateToQuiz
 import ru.d3rvich.result.api.navigation.HistoryDetailNavKey
-import ru.d3rvich.result.impl.QuizResultScreen
-import ru.d3rvich.ui.model.QuizResultUiModel
+import ru.d3rvich.result.impl.HistoryDetailScreen
 
 @Module
 @InstallIn(ActivityRetainedComponent::class)
@@ -26,9 +24,8 @@ internal object HistoryDetailModule {
         entry<HistoryDetailNavKey>(
             metadata = ListDetailSceneStrategy.detailPane()
         ) { key ->
-            val quizResult = Json.decodeFromString<QuizResultUiModel>(key.quizResultJson)
-            QuizResultScreen(
-                quizResult = quizResult,
+            HistoryDetailScreen(
+                quizId = key.quizId,
                 navigateToQuiz = { quizId -> navigator.navigateToQuiz(quizId = quizId) },
                 navigateBack = { navigator.backStack.removeIf { it is HistoryDetailNavKey } }
             )

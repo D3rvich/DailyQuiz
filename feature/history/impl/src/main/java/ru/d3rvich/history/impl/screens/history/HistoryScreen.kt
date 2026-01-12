@@ -10,18 +10,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import ru.d3rvich.domain.model.SortBy
 import ru.d3rvich.history.impl.screens.history.model.HistoryUiEvent
 import ru.d3rvich.history.impl.screens.history.model.HistoryUiState
 import ru.d3rvich.history.impl.views.QuizHistoryView
 import ru.d3rvich.ui.model.QuizResultUiModel
 import ru.d3rvich.ui.model.SortByUiModel
-import ru.d3rvich.ui.model.toUiModel
 
 @Composable
 internal fun HistoryScreen(
     navigateToEmptyHistory: () -> Unit,
-    navigateToQuizResult: (quizResult: QuizResultUiModel) -> Unit,
+    navigateToQuizResult: (quizId: Long) -> Unit,
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -45,7 +43,7 @@ internal fun HistoryScreen(
 internal fun HistoryScreen(
     state: HistoryUiState,
     onSortChange: (selectedSort: SortByUiModel) -> Unit,
-    onQuizClick: (quizResult: QuizResultUiModel) -> Unit,
+    onQuizClick: (quizId: Long) -> Unit,
     onRemoveQuiz: (quizResult: QuizResultUiModel) -> Unit,
     onEmptyHistory: () -> Unit,
     onBackClick: () -> Unit,

@@ -6,7 +6,6 @@ import androidx.core.content.edit
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import ru.d3rvich.domain.model.SortBy
 import ru.d3rvich.ui.model.SortByUiModel
 import javax.inject.Inject
 import javax.inject.Singleton

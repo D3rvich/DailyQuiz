@@ -18,12 +18,11 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityRetainedComponent
 import dagger.multibindings.IntoSet
-import kotlinx.serialization.json.Json
 import ru.d3rvich.history.api.navigation.History
 import ru.d3rvich.history.api.navigation.navigateToEmptyHistory
 import ru.d3rvich.history.impl.R
-import ru.d3rvich.history.impl.screens.history.HistoryScreen
 import ru.d3rvich.history.impl.screens.EmptyHistoryScreen
+import ru.d3rvich.history.impl.screens.history.HistoryScreen
 import ru.d3rvich.navigation.EntryProviderInstaller
 import ru.d3rvich.navigation.Navigator
 import ru.d3rvich.quiz.api.navigation.Quiz
@@ -59,8 +58,8 @@ internal object HistoryModule {
                     navigator.backStack.remove(History.HistoryNavKey)
                     navigator.navigateToEmptyHistory()
                 },
-                navigateToQuizResult = { quizResultUiModel ->
-                    navigator.navigateToHistoryDetail(Json.encodeToString(quizResultUiModel))
+                navigateToQuizResult = { quizId ->
+                    navigator.navigateToHistoryDetail(quizId = quizId)
                 },
                 navigateBack = {
                     navigator.backStack.removeIf { it is History.HistoryNavKey || it is HistoryDetailNavKey }

@@ -1,7 +1,6 @@
 package ru.d3rvich.history.impl.screens.history.model
 
 import androidx.annotation.StringRes
-import ru.d3rvich.domain.model.SortBy
 import ru.d3rvich.history.impl.R
 import ru.d3rvich.ui.model.SortByUiModel
 
@@ -22,12 +21,6 @@ internal fun SortByUiModel.toSortByEnum(): SortByEnum = when (this) {
     is SortByUiModel.Name -> SortByEnum.Name
     is SortByUiModel.PassedTime -> SortByEnum.PassedTime
     is SortByUiModel.CorrectAnswers -> SortByEnum.CorrectAnswers
-}
-
-internal fun SortBy.toSortByEnum(): SortByEnum = when (this) {
-    is SortBy.Name -> SortByEnum.Name
-    is SortBy.PassedTime -> SortByEnum.PassedTime
-    is SortBy.CorrectAnswers -> SortByEnum.CorrectAnswers
 }
 
 private fun SortByEnum.defaultAscending(): Boolean = when (this) {

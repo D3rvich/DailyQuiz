@@ -5,8 +5,8 @@ import kotlinx.serialization.Serializable
 import ru.d3rvich.navigation.Navigator
 
 @Serializable
-data class HistoryDetailNavKey(val quizResultJson: String) : NavKey
+data class HistoryDetailNavKey(val quizId: Long) : NavKey
 
-fun Navigator.navigateToHistoryDetail(quizResultJson: String) {
-    navigate(HistoryDetailNavKey(quizResultJson))
+fun Navigator.navigateToHistoryDetail(quizId: Long) {
+    navigate(HistoryDetailNavKey(quizId))
 }

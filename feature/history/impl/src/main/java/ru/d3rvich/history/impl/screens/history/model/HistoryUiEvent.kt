@@ -1,6 +1,5 @@
 package ru.d3rvich.history.impl.screens.history.model
 
-import ru.d3rvich.domain.model.SortBy
 import ru.d3rvich.ui.model.QuizResultUiModel
 import ru.d3rvich.ui.model.SortByUiModel
 import ru.d3rvich.ui.mvibase.UiEvent
