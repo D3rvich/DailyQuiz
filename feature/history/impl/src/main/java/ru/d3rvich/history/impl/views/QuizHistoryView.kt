@@ -10,9 +10,14 @@ import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,13 +25,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,7 +41,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
@@ -67,77 +69,65 @@ import ru.d3rvich.ui.extensions.stringRes
 import ru.d3rvich.ui.model.AnswerUiModel
 import ru.d3rvich.ui.model.QuestionUiModel
 import ru.d3rvich.ui.model.QuizResultUiModel
-import ru.d3rvich.ui.model.SortByUiModel
 import ru.d3rvich.ui.theme.DailyQuizTheme
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun QuizHistoryView(
     quizList: ImmutableList<QuizResultUiModel>,
-    selectedSort: SortByUiModel,
-    onSortChange: (selectedSort: SortByUiModel) -> Unit,
     onQuizCLick: (quizId: Long) -> Unit,
     onRemoveQuiz: (quizResult: QuizResultUiModel) -> Unit,
-    onBackClick: () -> Unit,
+    onSelectionChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     var selectedItem: QuizResultUiModel? by remember { mutableStateOf(null) }
     val animateColor = animateColor(selectedItem != null)
-    Scaffold(modifier = modifier, topBar = {
-        QuizHistoryTopAppBar(
-            selectedSort = selectedSort,
-            scrollBehavior = scrollBehavior,
-            onSortChange = onSortChange,
-            onBackClick = onBackClick,
-            modifier = Modifier.drawWithContent {
-                drawContent()
-                drawRect(animateColor)
-            }
-        )
-    }) { innerPadding ->
-        var showDialog by rememberSaveable { mutableStateOf(false) }
-        LazyColumn(
-            modifier = Modifier
-                .drawBehind { drawRect(animateColor) }
-                .fillMaxSize()
-                .nestedScroll(scrollBehavior.nestedScrollConnection),
-            contentPadding = innerPadding,
-            verticalArrangement = Arrangement.spacedBy(20.dp)
-        ) {
-            items(quizList, key = { it.id }) { item ->
-                val animateItemColor = animateColor(selectedItem != null && selectedItem != item)
-                QuizResultItem(
-                    modifier = Modifier
-                        .animateItem()
-                        .drawWithContent {
-                            drawContent()
-                            if (selectedItem != null) {
-                                drawRect(animateItemColor)
-                            }
-                        },
-                    quizResult = item,
-                    onQuizCLick = { onQuizCLick(item.id) },
-                    onRemoveQuiz = {
-                        showDialog = true
-                        onRemoveQuiz(item)
+    var showDialog by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(selectedItem) {
+        onSelectionChange(selectedItem != null)
+    }
+
+    LazyColumn(
+        modifier = modifier
+            .drawBehind { drawRect(animateColor) }
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(20.dp),
+        contentPadding = WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal)
+            .asPaddingValues()
+    ) {
+        items(quizList, key = { it.id }) { item ->
+            val animateItemColor = animateColor(selectedItem != null && selectedItem != item)
+            QuizResultItem(
+                modifier = Modifier
+                    .animateItem()
+                    .drawWithContent {
+                        drawContent()
+                        if (selectedItem != null) {
+                            drawRect(animateItemColor)
+                        }
                     },
-                    onItemSelectChange = { selected ->
-                        selectedItem = selected
-                    },
-                )
-            }
+                quizResult = item,
+                onQuizCLick = { onQuizCLick(item.id) },
+                onRemoveQuiz = {
+                    showDialog = true
+                    onRemoveQuiz(item)
+                },
+                onItemSelectChange = { selected ->
+                    selectedItem = selected
+                },
+            )
         }
-        if (showDialog) {
-            RemoveDialog({ showDialog = false })
-        }
+    }
+
+    if (showDialog) {
+        RemoveDialog({ showDialog = false })
     }
 }
 
 @Composable
-private fun animateColor(target: Boolean): Color =
+internal fun animateColor(target: Boolean): Color =
     animateColorAsState(
         if (target) {
             Color.Black.copy(0.3f)
@@ -335,7 +325,7 @@ private fun QuizHistoryNonDynamicPreview() {
                 it.toLong()
             )
         }
-        QuizHistoryView(list.toPersistentList(), SortByUiModel.Name(true), { }, {}, {}, {})
+        QuizHistoryView(list.toPersistentList(), {}, {}, {})
     }
 }
 
@@ -361,6 +351,6 @@ private fun QuizHistoryViewPreview() {
                 it.toLong()
             )
         }
-        QuizHistoryView(list.toPersistentList(), SortByUiModel.Name(true), { }, {}, {}, {})
+        QuizHistoryView(list.toPersistentList(), {}, {}, {})
     }
 }

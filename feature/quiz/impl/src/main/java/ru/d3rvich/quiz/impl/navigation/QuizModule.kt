@@ -1,9 +1,13 @@
 package ru.d3rvich.quiz.impl.navigation
 
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.navigation3.ui.NavDisplay
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,9 +24,9 @@ import ru.d3rvich.quiz.api.navigation.navigateToQuiz
 import ru.d3rvich.quiz.api.navigation.navigateToResult
 import ru.d3rvich.quiz.api.navigation.navigateToStart
 import ru.d3rvich.quiz.impl.screens.FiltersScreen
-import ru.d3rvich.quiz.impl.screens.quiz.QuizScreen
 import ru.d3rvich.quiz.impl.screens.ResultsScreen
 import ru.d3rvich.quiz.impl.screens.StartScreen
+import ru.d3rvich.quiz.impl.screens.quiz.QuizScreen
 
 @Module
 @InstallIn(ActivityRetainedComponent::class)
@@ -37,7 +41,15 @@ internal object QuizModule {
                 navigateToHistory = { navigator.navigateToHistoryContent() }
             )
         }
-        entry<Quiz.FiltersNavKey> {
+        val transitionSpec =
+            NavDisplay.transitionSpec { slideInHorizontally { it } togetherWith slideOutHorizontally { -it } }
+        val popTransitionSpec =
+            NavDisplay.popTransitionSpec { slideInHorizontally { -it } togetherWith slideOutHorizontally { it } }
+        val predictivePopTransitionSpec =
+            NavDisplay.predictivePopTransitionSpec { slideInHorizontally { -it } togetherWith slideOutHorizontally { it } }
+        entry<Quiz.FiltersNavKey>(
+            metadata = transitionSpec + popTransitionSpec + predictivePopTransitionSpec
+        ) {
             var category: Category? by rememberSaveable { mutableStateOf(null) }
             var difficulty: Difficulty? by rememberSaveable { mutableStateOf(null) }
             FiltersScreen(
@@ -49,7 +61,9 @@ internal object QuizModule {
                 onBack = { navigator.backStack.remove(Quiz.FiltersNavKey) }
             )
         }
-        entry<Quiz.QuizNavKey> { key ->
+        entry<Quiz.QuizNavKey>(
+            metadata = transitionSpec + popTransitionSpec + predictivePopTransitionSpec
+        ) { key ->
             QuizScreen(
                 quizId = key.quizId,
                 category = key.category,
@@ -65,7 +79,9 @@ internal object QuizModule {
                 onBack = { navigator.backStack.removeIf { it is Quiz.QuizNavKey } }
             )
         }
-        entry<Quiz.ResultNavKey> { key ->
+        entry<Quiz.ResultNavKey>(
+            metadata = transitionSpec
+        ) { key ->
             val (correctAnswers, totalAnswers) = key
             ResultsScreen(
                 correctAnswers = correctAnswers,

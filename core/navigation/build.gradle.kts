@@ -1,7 +1,5 @@
 plugins {
     alias(libs.plugins.dailyquiz.android.library)
-    alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.kotlin.compose)
 }
 
 android {

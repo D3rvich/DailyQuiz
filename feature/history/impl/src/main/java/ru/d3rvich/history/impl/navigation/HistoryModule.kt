@@ -1,11 +1,21 @@
 package ru.d3rvich.history.impl.navigation
 
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
@@ -13,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.navigation3.ui.NavDisplay
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -37,21 +48,40 @@ internal object HistoryModule {
     @IntoSet
     @OptIn(ExperimentalMaterial3AdaptiveApi::class)
     fun provideEntryProviderInstaller(navigator: Navigator): EntryProviderInstaller = {
+        val popTransitionSpec = NavDisplay.popTransitionSpec {
+            fadeIn() + scaleIn(initialScale = 0.9f) togetherWith slideOutVertically(
+                targetOffsetY = { it },
+                animationSpec = tween(500)
+            )
+        }
+        val predictivePopTransitionSpec = NavDisplay.predictivePopTransitionSpec {
+            fadeIn() + scaleIn(initialScale = 0.9f) togetherWith slideOutVertically(
+                targetOffsetY = { it }, animationSpec = tween(500)
+            )
+        }
         entry<History.HistoryNavKey>(
             metadata = ListDetailSceneStrategy.listPane {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .windowInsetsPadding(WindowInsets.safeDrawing),
-                    contentAlignment = Alignment.Center
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
                 ) {
-                    Text(
-                        text = stringResource(R.string.detail_placeholder),
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
-                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .windowInsetsPadding(WindowInsets.safeDrawing),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = stringResource(R.string.detail_placeholder),
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
-            }
+            } + NavDisplay.transitionSpec {
+                slideInVertically(initialOffsetY = { it }, animationSpec = tween(500)) togetherWith
+                        ExitTransition.KeepUntilTransitionsFinished
+            } + popTransitionSpec + predictivePopTransitionSpec
         ) {
             HistoryScreen(
                 navigateToEmptyHistory = {
@@ -66,7 +96,10 @@ internal object HistoryModule {
                 },
             )
         }
-        entry<History.EmptyHistoryNavKey> {
+        entry<History.EmptyHistoryNavKey>(
+            metadata = NavDisplay.transitionSpec { fadeIn() togetherWith fadeOut() } +
+                    popTransitionSpec + predictivePopTransitionSpec
+        ) {
             EmptyHistoryScreen(
                 onStartQuizClick = {
                     navigator.backStack.remove(History.EmptyHistoryNavKey)
