@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
@@ -68,16 +69,18 @@ internal fun QuizResultTopAppBar(
                     modifier = modifier.padding(bottom = 12.dp)
                 )
                 Text(
-                    stringResource(
-                        R.string.category_placement,
-                        category
-                    )
+                    text = stringResource(R.string.category_placement, category),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp),
+                    textAlign = TextAlign.Center
                 )
                 Text(
-                    stringResource(
-                        R.string.difficult_placement,
-                        difficulty
-                    )
+                    text = stringResource(R.string.difficult_placement, difficulty),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp),
+                    textAlign = TextAlign.Center
                 )
             }
         },

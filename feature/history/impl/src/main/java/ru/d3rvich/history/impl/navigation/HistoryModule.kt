@@ -1,7 +1,8 @@
 package ru.d3rvich.history.impl.navigation
 
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
@@ -19,6 +20,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -51,36 +53,22 @@ internal object HistoryModule {
         val popTransitionSpec = NavDisplay.popTransitionSpec {
             fadeIn() + scaleIn(initialScale = 0.9f) togetherWith slideOutVertically(
                 targetOffsetY = { it },
-                animationSpec = tween(500)
+                animationSpec = spring(stiffness = Spring.StiffnessLow)
             )
         }
         val predictivePopTransitionSpec = NavDisplay.predictivePopTransitionSpec {
             fadeIn() + scaleIn(initialScale = 0.9f) togetherWith slideOutVertically(
-                targetOffsetY = { it }, animationSpec = tween(500)
+                targetOffsetY = { it }, animationSpec = spring(stiffness = Spring.StiffnessLow)
             )
         }
         entry<History.HistoryNavKey>(
             metadata = ListDetailSceneStrategy.listPane {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .windowInsetsPadding(WindowInsets.safeDrawing),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = stringResource(R.string.detail_placeholder),
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
+                DetailPlaceholder()
             } + NavDisplay.transitionSpec {
-                slideInVertically(initialOffsetY = { it }, animationSpec = tween(500)) togetherWith
-                        ExitTransition.KeepUntilTransitionsFinished
+                slideInVertically(
+                    initialOffsetY = { it },
+                    animationSpec = spring(stiffness = Spring.StiffnessLow)
+                ) togetherWith ExitTransition.KeepUntilTransitionsFinished
             } + popTransitionSpec + predictivePopTransitionSpec
         ) {
             HistoryScreen(
@@ -89,6 +77,7 @@ internal object HistoryModule {
                     navigator.navigateToEmptyHistory()
                 },
                 navigateToQuizResult = { quizId ->
+                    navigator.backStack.removeIf { it is HistoryDetailNavKey }
                     navigator.navigateToHistoryDetail(quizId = quizId)
                 },
                 navigateBack = {
@@ -106,6 +95,27 @@ internal object HistoryModule {
                     navigator.navigate(Quiz.FiltersNavKey)
                 },
                 onBackClick = { navigator.backStack.remove(History.EmptyHistoryNavKey) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun DetailPlaceholder(modifier: Modifier = Modifier) {
+    Surface(
+        modifier = modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .windowInsetsPadding(WindowInsets.safeDrawing),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = stringResource(R.string.detail_placeholder),
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center
             )
         }
     }

@@ -1,5 +1,7 @@
 package ru.d3rvich.quiz.impl.navigation
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
@@ -42,11 +44,32 @@ internal object QuizModule {
             )
         }
         val transitionSpec =
-            NavDisplay.transitionSpec { slideInHorizontally { it } togetherWith slideOutHorizontally { -it } }
+            NavDisplay.transitionSpec {
+                slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = spring(stiffness = Spring.StiffnessLow)
+                ) togetherWith slideOutHorizontally(
+                    targetOffsetX = { -it }, animationSpec = spring(stiffness = Spring.StiffnessLow)
+                )
+            }
         val popTransitionSpec =
-            NavDisplay.popTransitionSpec { slideInHorizontally { -it } togetherWith slideOutHorizontally { it } }
+            NavDisplay.popTransitionSpec {
+                slideInHorizontally(
+                    initialOffsetX = { -it },
+                    animationSpec = spring(stiffness = Spring.StiffnessLow)
+                ) togetherWith slideOutHorizontally(
+                    targetOffsetX = { it }, animationSpec = spring(stiffness = Spring.StiffnessLow)
+                )
+            }
         val predictivePopTransitionSpec =
-            NavDisplay.predictivePopTransitionSpec { slideInHorizontally { -it } togetherWith slideOutHorizontally { it } }
+            NavDisplay.predictivePopTransitionSpec {
+                slideInHorizontally(
+                    initialOffsetX = { -it },
+                    animationSpec = spring(stiffness = Spring.StiffnessLow)
+                ) togetherWith slideOutHorizontally(
+                    targetOffsetX = { it }, animationSpec = spring(stiffness = Spring.StiffnessLow)
+                )
+            }
         entry<Quiz.FiltersNavKey>(
             metadata = transitionSpec + popTransitionSpec + predictivePopTransitionSpec
         ) {
@@ -80,7 +103,7 @@ internal object QuizModule {
             )
         }
         entry<Quiz.ResultNavKey>(
-            metadata = transitionSpec
+            metadata = transitionSpec + popTransitionSpec + predictivePopTransitionSpec
         ) { key ->
             val (correctAnswers, totalAnswers) = key
             ResultsScreen(

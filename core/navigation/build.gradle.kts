@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.dailyquiz.android.library)
+    alias(libs.plugins.dailyquiz.android.library.compose)
 }
 
 android {

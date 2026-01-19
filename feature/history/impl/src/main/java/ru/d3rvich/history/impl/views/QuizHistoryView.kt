@@ -1,6 +1,8 @@
 package ru.d3rvich.history.impl.views
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
@@ -31,6 +33,8 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneStrategy
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -54,6 +58,8 @@ import androidx.compose.ui.tooling.preview.PreviewDynamicColors
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.datetime.LocalDateTime
@@ -67,6 +73,7 @@ import ru.d3rvich.domain.model.Category
 import ru.d3rvich.domain.model.Difficulty
 import ru.d3rvich.history.impl.R
 import ru.d3rvich.history.impl.utils.RUSSIAN_FULL
+import ru.d3rvich.navigation.LocalSharedTransitionScope
 import ru.d3rvich.ui.components.DailyQuizStarIcon
 import ru.d3rvich.ui.extensions.stringRes
 import ru.d3rvich.ui.model.AnswerUiModel
@@ -76,7 +83,7 @@ import ru.d3rvich.ui.theme.DailyQuizTheme
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 internal fun QuizHistoryView(
     quizList: ImmutableList<QuizResultUiModel>,
@@ -142,6 +149,7 @@ internal fun animateColor(target: Boolean): Color =
         }
     ).value
 
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 private fun QuizResultItem(
     quizResult: QuizResultUiModel,
@@ -153,10 +161,27 @@ private fun QuizResultItem(
     var showMenu by remember { mutableStateOf(false) }
     var pressOffset by remember { mutableStateOf(DpOffset.Zero) }
     val interactionSource = remember { MutableInteractionSource() }
+    val listDetailStrategy = rememberListDetailSceneStrategy<NavKey>()
+    val sharedModifier =
+        if (listDetailStrategy.directive.maxHorizontalPartitions == 1) {
+            with(LocalSharedTransitionScope.current) {
+                Modifier.sharedBounds(
+                    rememberSharedContentState(key = "quiz:${quizResult.id}"),
+                    animatedVisibilityScope = LocalNavAnimatedContentScope.current,
+                    clipInOverlayDuringTransition = OverlayClip(RoundedCornerShape(40.dp)),
+                    boundsTransform = { _, _ ->
+                        spring(stiffness = Spring.StiffnessLow)
+                    }
+                )
+            }
+        } else {
+            Modifier
+        }
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
+            .then(sharedModifier)
             .clip(RoundedCornerShape(40.dp))
             .then(modifier)
     ) {

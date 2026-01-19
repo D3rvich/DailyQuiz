@@ -10,6 +10,7 @@ dependencies {
     implementation(project(":feature:quiz:api"))
     implementation(project(":feature:result:api"))
 
+    implementation(libs.androidx.navigation3.ui)
     implementation(libs.androidx.material3.adaptive.navigation3)
     implementation(libs.kotlinx.serializationJson)
 }
