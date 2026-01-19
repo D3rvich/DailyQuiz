@@ -7,8 +7,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import ru.d3rvich.ui.R
-import ru.d3rvich.ui.theme.Green50
-import ru.d3rvich.ui.theme.Red50
+import ru.d3rvich.ui.theme.Success
+import ru.d3rvich.ui.theme.Error
 
 @Composable
 fun CorrectCheckIcon(isCorrect: Boolean, modifier: Modifier = Modifier) {
@@ -17,13 +17,13 @@ fun CorrectCheckIcon(isCorrect: Boolean, modifier: Modifier = Modifier) {
             Icon(
                 painterResource(R.drawable.check_circle_24px),
                 contentDescription = stringResource(R.string.correct_answer),
-                tint = Green50
+                tint = Success
             )
         } else {
             Icon(
                 painterResource(R.drawable.cancel_24px),
                 contentDescription = stringResource(R.string.wrong_answer),
-                tint = Red50
+                tint = Error
             )
         }
     }

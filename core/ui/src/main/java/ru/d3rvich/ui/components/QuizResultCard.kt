@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import ru.d3rvich.ui.R
 import ru.d3rvich.ui.model.ResultMessage
 import ru.d3rvich.ui.theme.DailyQuizTheme
-import ru.d3rvich.ui.theme.Yellow80
+import ru.d3rvich.ui.theme.FilledStarColor
 
 @Composable
 fun QuizResultCard(
@@ -45,7 +45,7 @@ fun QuizResultCard(
             ProgressStars(correctCount = correctAnswers, totalCount = totalQuestions)
             Text(
                 stringResource(R.string.correct_answers, correctAnswers, totalQuestions),
-                color = Yellow80,
+                color = FilledStarColor,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(vertical = 20.dp)
             )

@@ -3,6 +3,7 @@ package ru.d3rvich.result.impl.view
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +21,7 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.layout.LazyLayoutCacheWindow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -52,14 +54,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewDynamicColors
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import ru.d3rvich.domain.model.Category
 import ru.d3rvich.domain.model.Difficulty
 import ru.d3rvich.result.impl.R
-import ru.d3rvich.ui.R as UiR
 import ru.d3rvich.ui.components.CorrectCheckIcon
 import ru.d3rvich.ui.components.DailyQuizButton
 import ru.d3rvich.ui.components.QuizResultCard
@@ -69,11 +69,11 @@ import ru.d3rvich.ui.model.QuestionUiModel
 import ru.d3rvich.ui.model.QuizResultUiModel
 import ru.d3rvich.ui.model.isCorrectAnswer
 import ru.d3rvich.ui.theme.DailyQuizTheme
-import ru.d3rvich.ui.theme.Grey75
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
+import ru.d3rvich.ui.R as UiR
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 internal fun QuizResultDetailView(
     quizResult: QuizResultUiModel,
@@ -95,7 +95,8 @@ internal fun QuizResultDetailView(
         }) { innerPadding ->
         Box(modifier = Modifier.fillMaxSize()) {
             var buttonPadding by remember { mutableStateOf(0.dp) }
-            val state = rememberLazyListState()
+            val cacheWindow = remember { LazyLayoutCacheWindow(1.0f, 1.0f) }
+            val state = rememberLazyListState(cacheWindow = cacheWindow)
             LazyColumn(
                 state = state,
                 modifier = Modifier
@@ -164,7 +165,7 @@ private fun QuestionResultItem(
             ) {
                 Text(
                     stringResource(R.string.question_progress, currentCount, totalCount),
-                    color = Grey75
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 CorrectCheckIcon(question.isCorrectAnswer)
             }
@@ -220,24 +221,6 @@ private fun RetryButton(
             }
             .offset(y = animateDpOffset)
     )
-}
-
-@OptIn(ExperimentalTime::class)
-@Preview(showBackground = true)
-@Composable
-private fun EmptyQuizResultDetailPreview() {
-    DailyQuizTheme {
-        val quizResult = QuizResultUiModel(
-            generalCategory = Category.AnyCategory,
-            difficulty = Difficulty.AnyDifficulty,
-            passedTime = Clock.System.now().toLocalDateTime(
-                TimeZone.currentSystemDefault()
-            ),
-            questions = persistentListOf(),
-            correctAnswers = 1
-        )
-        QuizResultDetailView(quizResult, {}, {})
-    }
 }
 
 @OptIn(ExperimentalTime::class)

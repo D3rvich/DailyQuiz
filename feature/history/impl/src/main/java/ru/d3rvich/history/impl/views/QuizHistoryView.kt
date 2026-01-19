@@ -1,6 +1,7 @@
 package ru.d3rvich.history.impl.views
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -22,6 +23,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.layout.LazyLayoutCacheWindow
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
@@ -73,6 +76,7 @@ import ru.d3rvich.ui.theme.DailyQuizTheme
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun QuizHistoryView(
     quizList: ImmutableList<QuizResultUiModel>,
@@ -88,8 +92,10 @@ internal fun QuizHistoryView(
     LaunchedEffect(selectedItem) {
         onSelectionChange(selectedItem != null)
     }
-
+    val cacheWindow = remember { LazyLayoutCacheWindow(0.5f, 0.5f) }
+    val state = rememberLazyListState(cacheWindow = cacheWindow)
     LazyColumn(
+        state = state,
         modifier = modifier
             .drawBehind { drawRect(animateColor) }
             .fillMaxSize(),

@@ -109,8 +109,8 @@ internal fun QuizView(
                 LaunchedEffect(currentQuestionIndex) {
                     state.animateScrollToPage(currentQuestionIndex)
                 }
-                HorizontalPager(state, userScrollEnabled = false) { _ ->
-                    val question = questions[currentQuestionIndex]
+                HorizontalPager(state, userScrollEnabled = false) { currentIndex ->
+                    val question = questions[currentIndex]
                     QuestionCard(
                         isLandscape = isLandscape,
                         question = question,
