@@ -6,15 +6,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import ru.d3rvich.ui.R
-import ru.d3rvich.ui.theme.Grey75
-import ru.d3rvich.ui.theme.Yellow80
+import ru.d3rvich.ui.theme.OnSurfaceContainerLight
+import ru.d3rvich.ui.theme.FilledStarColor
 
 @Composable
 fun DailyQuizStarIcon(isActive: Boolean, modifier: Modifier = Modifier) {
     val tintColor = if (isActive) {
-        Yellow80
+        FilledStarColor
     } else {
-        Grey75
+        OnSurfaceContainerLight
     }
     Icon(
         painterResource(R.drawable.ic_star),

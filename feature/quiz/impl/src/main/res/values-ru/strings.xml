@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="welcome_message">Добро пожаловать в DailyQuiz!</string>
+    <string name="start_quiz">Начать векторину</string>
+    <string name="navigate_back">Вернуться назад</string>
+    <string name="question_count">Вопрос %1$d из %2$d</string>
+    <string name="next">Далее</string>
+    <string name="complete">Завершить</string>
+    <string name="warning_massage">Вернуться к предыдущим вопросам нельзя</string>
+    <string name="results">Результаты</string>
+    <string name="error_message">Ошибка! Попробуйте ещё раз</string>
+    <string name="history">История</string>
+    <string name="category">Категория</string>
+    <string name="difficult">Сложность</string>
+    <string name="almost_ready">Почти готовы</string>
+    <string name="filters_message">Осталось выбрать категорию и сложность викторины.</string>
+    <string name="timeout_title">Время вышло!</string>
+    <string name="timeout_message">Вы не успели завершить викторину. Попробуйте еще раз!</string>
+</resources>

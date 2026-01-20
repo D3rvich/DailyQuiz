@@ -13,6 +13,10 @@ internal fun DependencyHandlerScope.implementation(dependencyNotation: Any) {
     add("implementation", dependencyNotation)
 }
 
+internal fun DependencyHandlerScope.api(dependencyNotation: Any) {
+    add("api", dependencyNotation)
+}
+
 internal fun DependencyHandlerScope.testImplementation(dependencyNotation: Any) {
     add("testImplementation", dependencyNotation)
 }

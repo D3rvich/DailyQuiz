@@ -1,0 +1,118 @@
+package ru.d3rvich.quiz.impl.navigation
+
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.navigation3.ui.NavDisplay
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ActivityRetainedComponent
+import dagger.multibindings.IntoSet
+import ru.d3rvich.domain.model.Category
+import ru.d3rvich.domain.model.Difficulty
+import ru.d3rvich.history.api.navigation.navigateToHistoryContent
+import ru.d3rvich.navigation.EntryProviderInstaller
+import ru.d3rvich.navigation.Navigator
+import ru.d3rvich.quiz.api.navigation.Quiz
+import ru.d3rvich.quiz.api.navigation.navigateToFilters
+import ru.d3rvich.quiz.api.navigation.navigateToQuiz
+import ru.d3rvich.quiz.api.navigation.navigateToResult
+import ru.d3rvich.quiz.api.navigation.navigateToStart
+import ru.d3rvich.quiz.impl.screens.FiltersScreen
+import ru.d3rvich.quiz.impl.screens.ResultsScreen
+import ru.d3rvich.quiz.impl.screens.StartScreen
+import ru.d3rvich.quiz.impl.screens.quiz.QuizScreen
+
+@Module
+@InstallIn(ActivityRetainedComponent::class)
+internal object QuizModule {
+
+    @IntoSet
+    @Provides
+    fun provideEntryProviderInstaller(navigator: Navigator): EntryProviderInstaller = {
+        entry<Quiz.StartNavKey> {
+            StartScreen(
+                navigateToFilters = { navigator.navigateToFilters() },
+                navigateToHistory = { navigator.navigateToHistoryContent() }
+            )
+        }
+        val transitionSpec =
+            NavDisplay.transitionSpec {
+                slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = spring(stiffness = Spring.StiffnessLow)
+                ) togetherWith slideOutHorizontally(
+                    targetOffsetX = { -it }, animationSpec = spring(stiffness = Spring.StiffnessLow)
+                )
+            }
+        val popTransitionSpec =
+            NavDisplay.popTransitionSpec {
+                slideInHorizontally(
+                    initialOffsetX = { -it },
+                    animationSpec = spring(stiffness = Spring.StiffnessLow)
+                ) togetherWith slideOutHorizontally(
+                    targetOffsetX = { it }, animationSpec = spring(stiffness = Spring.StiffnessLow)
+                )
+            }
+        val predictivePopTransitionSpec =
+            NavDisplay.predictivePopTransitionSpec {
+                slideInHorizontally(
+                    initialOffsetX = { -it },
+                    animationSpec = spring(stiffness = Spring.StiffnessLow)
+                ) togetherWith slideOutHorizontally(
+                    targetOffsetX = { it }, animationSpec = spring(stiffness = Spring.StiffnessLow)
+                )
+            }
+        entry<Quiz.FiltersNavKey>(
+            metadata = transitionSpec + popTransitionSpec + predictivePopTransitionSpec
+        ) {
+            var category: Category? by rememberSaveable { mutableStateOf(null) }
+            var difficulty: Difficulty? by rememberSaveable { mutableStateOf(null) }
+            FiltersScreen(
+                category = category,
+                difficulty = difficulty,
+                onCategoryChange = { category = it },
+                onDifficultChange = { difficulty = it },
+                onStartQuiz = { navigator.navigateToQuiz(category!!, difficulty!!) },
+                onBack = { navigator.backStack.remove(Quiz.FiltersNavKey) }
+            )
+        }
+        entry<Quiz.QuizNavKey>(
+            metadata = transitionSpec + popTransitionSpec + predictivePopTransitionSpec
+        ) { key ->
+            QuizScreen(
+                quizId = key.quizId,
+                category = key.category,
+                difficulty = key.difficulty,
+                navigateToStart = {
+                    navigator.clear()
+                    navigator.navigateToStart()
+                },
+                navigateToResult = { correctAnswers, totalAnswers ->
+                    navigator.backStack.removeIf { it is Quiz.FiltersNavKey || it is Quiz.QuizNavKey }
+                    navigator.navigateToResult(correctAnswers, totalAnswers)
+                },
+                onBack = { navigator.backStack.removeIf { it is Quiz.QuizNavKey } }
+            )
+        }
+        entry<Quiz.ResultNavKey>(
+            metadata = transitionSpec + popTransitionSpec + predictivePopTransitionSpec
+        ) { key ->
+            val (correctAnswers, totalAnswers) = key
+            ResultsScreen(
+                correctAnswers = correctAnswers,
+                totalQuestions = totalAnswers,
+                navigateToSource = {
+                    navigator.backStack.removeIf { it is Quiz.ResultNavKey }
+                }
+            )
+        }
+    }
+}

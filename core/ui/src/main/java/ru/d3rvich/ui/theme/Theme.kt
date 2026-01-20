@@ -11,10 +11,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple50,
+    primary = Primary,
+    onSurfaceVariant = OnSurfaceContainerDark
 )
 
-private val LightColorScheme = lightColorScheme()
+private val LightColorScheme = lightColorScheme(
+    onSurfaceVariant = OnSurfaceContainerLight
+)
 
 @Composable
 fun DailyQuizTheme(
