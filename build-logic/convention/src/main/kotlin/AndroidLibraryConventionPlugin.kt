@@ -5,14 +5,12 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import ru.d3rvich.dailyquiz.configureKotlinAndroid
 import ru.d3rvich.dailyquiz.libs
-import ru.d3rvich.dailyquiz.testImplementation
 
 class AndroidLibraryConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             pluginManager.apply {
                 apply("com.android.library")
-                apply("org.jetbrains.kotlin.android")
             }
 
             extensions.configure<LibraryExtension> {
@@ -20,6 +18,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                 lint.targetSdk = libs.findVersion("targetSdk").get().requiredVersion.toInt()
                 testOptions {
                     targetSdk = libs.findVersion("targetSdk").get().requiredVersion.toInt()
+                    animationsDisabled = true
                 }
                 buildTypes {
                     release {
@@ -38,7 +37,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
 
             dependencies {
 //                implementation(libs.findLibrary("timber").get())
-                testImplementation(libs.findLibrary("junit").get())
+                "testImplementation"(libs.findLibrary("junit").get())
             }
         }
     }
