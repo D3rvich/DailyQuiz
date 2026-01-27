@@ -1,5 +1,6 @@
 package ru.d3rvich.quiz.impl.screens
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -9,6 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
@@ -23,6 +26,7 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.window.core.layout.WindowSizeClass
 import ru.d3rvich.quiz.impl.R
+import ru.d3rvich.ui.components.DailyQuizButton
 import ru.d3rvich.ui.components.QuizResultCard
 import ru.d3rvich.ui.theme.DailyQuizTheme
 
@@ -30,7 +34,8 @@ import ru.d3rvich.ui.theme.DailyQuizTheme
 internal fun ResultsScreen(
     correctAnswers: Int,
     totalQuestions: Int,
-    navigateToSource: () -> Unit,
+    navigateToHome: () -> Unit,
+    navigateToHistory: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val isLandscape = !(currentWindowAdaptiveInfo().windowSizeClass
@@ -53,9 +58,29 @@ internal fun ResultsScreen(
         QuizResultCard(
             correctAnswers = correctAnswers,
             totalQuestions = totalQuestions,
-            onRetryClick = navigateToSource,
-            modifier = Modifier.widthIn(max = 600.dp)
-        )
+            onRetryClick = navigateToHome,
+            modifier = Modifier.widthIn(max = 600.dp),
+        ) {
+            LazyVerticalGrid(
+                GridCells.Adaptive(minSize = 250.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                item {
+                    DailyQuizButton(
+                        text = stringResource(R.string.home),
+                        onClick = navigateToHome
+                    )
+                }
+                item {
+                    DailyQuizButton(
+                        text = stringResource(R.string.history),
+                        onClick = navigateToHistory,
+                        isPrimary = false
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -63,6 +88,6 @@ internal fun ResultsScreen(
 @Composable
 private fun ResultsPreview() {
     DailyQuizTheme {
-        ResultsScreen(correctAnswers = 4, totalQuestions = 5, {})
+        ResultsScreen(correctAnswers = 4, totalQuestions = 5, {}, {})
     }
 }

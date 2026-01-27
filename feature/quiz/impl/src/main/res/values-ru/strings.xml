@@ -16,4 +16,5 @@
     <string name="filters_message">Осталось выбрать категорию и сложность викторины.</string>
     <string name="timeout_title">Время вышло!</string>
     <string name="timeout_message">Вы не успели завершить викторину. Попробуйте еще раз!</string>
+    <string name="home">На главную</string>
 </resources>

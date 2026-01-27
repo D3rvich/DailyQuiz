@@ -17,7 +17,8 @@ import dagger.hilt.android.components.ActivityRetainedComponent
 import dagger.multibindings.IntoSet
 import ru.d3rvich.domain.model.Category
 import ru.d3rvich.domain.model.Difficulty
-import ru.d3rvich.history.api.navigation.navigateToHistoryContent
+import ru.d3rvich.history.api.navigation.History
+import ru.d3rvich.history.api.navigation.navigateToHistory
 import ru.d3rvich.navigation.EntryProviderInstaller
 import ru.d3rvich.navigation.Navigator
 import ru.d3rvich.quiz.api.navigation.Quiz
@@ -29,6 +30,7 @@ import ru.d3rvich.quiz.impl.screens.FiltersScreen
 import ru.d3rvich.quiz.impl.screens.ResultsScreen
 import ru.d3rvich.quiz.impl.screens.StartScreen
 import ru.d3rvich.quiz.impl.screens.quiz.QuizScreen
+import ru.d3rvich.result.api.navigation.HistoryDetailNavKey
 
 @Module
 @InstallIn(ActivityRetainedComponent::class)
@@ -40,7 +42,7 @@ internal object QuizModule {
         entry<Quiz.StartNavKey> {
             StartScreen(
                 navigateToFilters = { navigator.navigateToFilters() },
-                navigateToHistory = { navigator.navigateToHistoryContent() }
+                navigateToHistory = { navigator.navigateToHistory() }
             )
         }
         val transitionSpec =
@@ -109,8 +111,15 @@ internal object QuizModule {
             ResultsScreen(
                 correctAnswers = correctAnswers,
                 totalQuestions = totalAnswers,
-                navigateToSource = {
-                    navigator.backStack.removeIf { it is Quiz.ResultNavKey }
+                navigateToHome = {
+                    navigator.backStack.clear()
+                    navigator.navigateToStart()
+                },
+                navigateToHistory = {
+                    navigator.backStack.removeIf { it is Quiz.ResultNavKey || it is HistoryDetailNavKey }
+                    if (navigator.backStack.last() != History.HistoryNavKey) {
+                        navigator.navigateToHistory()
+                    }
                 }
             )
         }

@@ -16,4 +16,5 @@
     <string name="filters_message">All that remains is to choose the category and difficulty of the quiz.</string>
     <string name="timeout_title">Time\'s up!</string>
     <string name="timeout_message">You didn\'t manage to finish the quiz. Try again!</string>
+    <string name="home">Home</string>
 </resources>

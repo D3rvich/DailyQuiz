@@ -17,6 +17,6 @@ fun Navigator.navigateToEmptyHistory() {
     navigate(History.EmptyHistoryNavKey)
 }
 
-fun Navigator.navigateToHistoryContent() {
+fun Navigator.navigateToHistory() {
     navigate(History.HistoryNavKey)
 }

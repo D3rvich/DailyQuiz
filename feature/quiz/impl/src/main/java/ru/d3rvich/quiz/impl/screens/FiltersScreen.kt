@@ -50,6 +50,8 @@ import ru.d3rvich.ui.components.DailyQuizButton
 import ru.d3rvich.ui.components.DailyQuizLogo
 import ru.d3rvich.ui.extensions.stringRes
 import ru.d3rvich.ui.theme.DailyQuizTheme
+import java.text.Collator
+import java.util.Locale
 import ru.d3rvich.ui.R as UiR
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -135,11 +137,7 @@ private fun SelectorCard(
                     .padding(bottom = 8.dp),
                 textAlign = TextAlign.Center
             )
-            val categories = Category.entries.sortedBy { it.name }.toMutableList()
-            categories.apply {
-                remove(Category.AnyCategory)
-                add(0, Category.AnyCategory)
-            }
+            val categories = sortCategories(Category.entries.toPersistentList())
             DropdownTextField(
                 selectedValue = category,
                 values = categories.toPersistentList(),
@@ -160,6 +158,18 @@ private fun SelectorCard(
             )
         }
     }
+}
+
+@Composable
+private fun sortCategories(categories: ImmutableList<Category>): ImmutableList<Category> {
+    val collator = Collator.getInstance(Locale.getDefault())
+    val strings = categories.associateWith { stringResource(it.stringRes) }
+    val sorted = categories.sortedWith(compareBy(collator) { strings[it] }).toMutableList()
+    sorted.apply {
+        remove(Category.AnyCategory)
+        add(0, Category.AnyCategory)
+    }
+    return sorted.toPersistentList()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

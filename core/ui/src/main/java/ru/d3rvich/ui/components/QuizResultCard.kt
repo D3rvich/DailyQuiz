@@ -3,7 +3,9 @@ package ru.d3rvich.ui.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,7 +30,8 @@ fun QuizResultCard(
     correctAnswers: Int,
     totalQuestions: Int,
     onRetryClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    actions: @Composable () -> Unit = { DefaultActionButton(onRetryClick) }
 ) {
     Card(
         shape = RoundedCornerShape(40.dp),
@@ -60,11 +63,8 @@ fun QuizResultCard(
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodyLarge,
             )
-            DailyQuizButton(
-                stringResource(id = R.string.restart),
-                onClick = onRetryClick,
-                modifier = Modifier.padding(top = 40.dp)
-            )
+            Spacer(Modifier.height(40.dp))
+            actions()
         }
     }
 }
@@ -80,7 +80,16 @@ private fun ProgressStars(correctCount: Int, totalCount: Int, modifier: Modifier
     }
 }
 
-@Preview(showBackground = true, apiLevel = 35)
+@Composable
+private fun DefaultActionButton(onRetryClick: () -> Unit, modifier: Modifier = Modifier) {
+    DailyQuizButton(
+        stringResource(id = R.string.restart),
+        onClick = onRetryClick,
+        modifier = modifier
+    )
+}
+
+@Preview(showBackground = true)
 @Composable
 private fun QuizResultCardPreview() {
     DailyQuizTheme {
@@ -88,7 +97,7 @@ private fun QuizResultCardPreview() {
     }
 }
 
-@Preview(showBackground = true, apiLevel = 35)
+@Preview(showBackground = true)
 @Composable
 private fun ProgressStarsPreview() {
     DailyQuizTheme {

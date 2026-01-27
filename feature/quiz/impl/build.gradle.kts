@@ -9,6 +9,7 @@ android {
 dependencies {
     implementation(project(":feature:quiz:api"))
     implementation(project(":feature:history:api"))
+    implementation(project(":feature:result:api"))
 
     implementation(libs.androidx.navigation3.ui)
     implementation(libs.androidx.constraintlayout.compose)
