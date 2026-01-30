@@ -16,10 +16,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,6 +36,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
@@ -85,13 +90,16 @@ fun CollapsingTopAppBar(
             scrollBehavior.state.heightOffsetLimit = heightOffsetLimit
         }
     }
-    val collapsedFraction = scrollBehavior?.state?.collapsedFraction ?: 1f
+    val collapsedFraction by remember(scrollBehavior) {
+        derivedStateOf {
+            val limit = scrollBehavior?.state?.heightOffsetLimit ?: 0f
+            if (limit != 0f) scrollBehavior?.state?.collapsedFraction ?: 0f else 0f
+        }
+    }
 
-    val colorTransitionFraction = scrollBehavior?.state?.collapsedFraction ?: 0f
-    val appBarContainerColor = colors.containerColor(colorTransitionFraction)
+    val appBarContainerColor = { colors.containerColor(collapsedFraction) }
 
-    val hideTopTitleSemantics = colorTransitionFraction < 0.5f
-    val hideBottomTitleSemantics = !hideTopTitleSemantics
+    val hideCollapsedTitleSemantics by remember(collapsedFraction) { derivedStateOf { collapsedFraction > 0.5f } }
 
     val actionsRaw = @Composable {
         Row(
@@ -100,7 +108,7 @@ fun CollapsingTopAppBar(
             content = actions
         )
     }
-    val titleAlpha = TopTitleAlphaEasing.transform(colorTransitionFraction)
+    val titleAlpha = { TopTitleAlphaEasing.transform(collapsedFraction) }
 
     val dragModifier = if (scrollBehavior != null) {
         Modifier.draggable(
@@ -121,7 +129,7 @@ fun CollapsingTopAppBar(
         Modifier
     }
 
-    Surface(modifier = modifier.then(dragModifier), color = appBarContainerColor) {
+    Surface(modifier = modifier.then(dragModifier), color = appBarContainerColor()) {
         Box {
             ExpandedContentLayout(
                 modifier = Modifier
@@ -130,8 +138,8 @@ fun CollapsingTopAppBar(
                     .graphicsLayer {
                         alpha = 1 - collapsedFraction
                     },
-                content = expandedContent,
-                scrolledOffset = { scrollBehavior?.state?.heightOffset ?: 0f }
+                scrolledOffset = { scrollBehavior?.state?.heightOffset ?: 0f },
+                content = expandedContent
             )
             TopAppBarLayout(
                 modifier = Modifier
@@ -144,7 +152,7 @@ fun CollapsingTopAppBar(
                 title = title,
                 titleTextStyle = titleTextStyle,
                 titleAlpha = titleAlpha,
-                hideTitleSemantics = hideBottomTitleSemantics,
+                hideTitleSemantics = hideCollapsedTitleSemantics,
                 navigationIcon = navigationIcon,
                 actions = actionsRaw
             )
@@ -160,7 +168,7 @@ private fun TopAppBarLayout(
     titleContentColor: Color,
     navigationIconContentColor: Color,
     actionIconContentColor: Color,
-    titleAlpha: Float,
+    titleAlpha: () -> Float,
     titleTextStyle: TextStyle,
     hideTitleSemantics: Boolean,
     modifier: Modifier = Modifier,
@@ -183,7 +191,7 @@ private fun TopAppBarLayout(
                     .layoutId(TitleId)
                     .padding(horizontal = HorizontalPadding)
                     .then(if (hideTitleSemantics) Modifier.clearAndSetSemantics {} else Modifier)
-                    .graphicsLayer(alpha = titleAlpha)
+                    .graphicsLayer(alpha = titleAlpha())
             ) {
                 val mergedStyle = LocalTextStyle.current.merge(titleTextStyle)
                 CompositionLocalProvider(
@@ -261,7 +269,7 @@ private fun ExpandedContentLayout(
         },
         modifier = modifier
     ) { measurables, constraints ->
-        val scrolledOffsetValue = scrolledOffset.offset()
+        val scrolledOffsetValue = scrolledOffset()
         val heightOffset = if (scrolledOffsetValue.isNaN()) 0 else scrolledOffsetValue.roundToInt()
 
         val layoutHeight =
@@ -286,7 +294,8 @@ private val HorizontalPadding = 4.dp
 private val TopAppBarTitleInset = 16.dp - HorizontalPadding
 
 private val DefaultWindowInsets
-    @Composable get() = WindowInsets.statusBars.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
+    @Composable get() = WindowInsets.statusBars.union(WindowInsets.displayCutout)
+        .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
 
 private const val TitleId = "title"
 private const val NavigationIconId = "navigationIcon"
@@ -387,5 +396,5 @@ object CollapsingTopAppBarDefaults {
 private val TopTitleAlphaEasing = CubicBezierEasing(.8f, 0f, .8f, .15f)
 
 private fun interface ScrolledOffset {
-    fun offset(): Float
+    operator fun invoke(): Float
 }

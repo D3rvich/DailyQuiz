@@ -4,10 +4,17 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -54,6 +61,8 @@ internal fun QuizHistoryTopAppBar(
     modifier: Modifier = Modifier
 ) {
     val expandedHeight = 200.dp
+    val windowInsets = WindowInsets.statusBars.union(WindowInsets.displayCutout)
+        .only(WindowInsetsSides.Top + WindowInsetsSides.Start)
     CollapsingTopAppBar(
         modifier = modifier,
         title = { Text(stringResource(R.string.history)) },
@@ -64,6 +73,7 @@ internal fun QuizHistoryTopAppBar(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .windowInsetsPadding(windowInsets.only(WindowInsetsSides.Start))
                     .height(expandedHeight)
                     .offset(y = heightOffset),
                 contentAlignment = Alignment.Center
@@ -93,7 +103,8 @@ internal fun QuizHistoryTopAppBar(
         colors = CollapsingTopAppBarDefaults.colors.copy(
             containerColor = MaterialTheme.colorScheme.background,
             scrolledContainerColor = MaterialTheme.colorScheme.background
-        )
+        ),
+        windowInsets = windowInsets
     )
 }
 

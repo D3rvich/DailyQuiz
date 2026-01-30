@@ -84,7 +84,7 @@ internal fun QuizResultDetailView(
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
         modifier = modifier.fillMaxWidth(),
-        contentWindowInsets = WindowInsets(0),
+        contentWindowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.End),
         topBar = {
             QuizResultTopAppBar(
                 category = stringResource(quizResult.generalCategory.stringRes),

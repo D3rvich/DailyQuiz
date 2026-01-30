@@ -2,9 +2,16 @@ package ru.d3rvich.result.impl.view
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -41,6 +48,8 @@ internal fun QuizResultTopAppBar(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val windowInsets = WindowInsets.statusBars.union(WindowInsets.displayCutout)
+        .only(WindowInsetsSides.Top + WindowInsetsSides.End)
     val expandedHeight = 260.dp
     CollapsingTopAppBar(
         scrollBehavior = scrollBehavior,
@@ -57,6 +66,7 @@ internal fun QuizResultTopAppBar(
             Column(
                 Modifier
                     .fillMaxWidth()
+                    .windowInsetsPadding(windowInsets.only(WindowInsetsSides.End))
                     .height(expandedHeight),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
@@ -88,7 +98,8 @@ internal fun QuizResultTopAppBar(
         colors = CollapsingTopAppBarDefaults.colors.copy(
             containerColor = MaterialTheme.colorScheme.background,
             scrolledContainerColor = MaterialTheme.colorScheme.background
-        )
+        ),
+        windowInsets = windowInsets
     )
 }
 

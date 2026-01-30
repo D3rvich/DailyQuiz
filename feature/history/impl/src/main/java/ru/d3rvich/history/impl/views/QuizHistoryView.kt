@@ -107,7 +107,7 @@ internal fun QuizHistoryView(
             .drawBehind { drawRect(animateColor) }
             .fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(20.dp),
-        contentPadding = WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal)
+        contentPadding = WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom + WindowInsetsSides.Start)
             .asPaddingValues()
     ) {
         items(quizList, key = { it.id }) { item ->
