@@ -48,7 +48,7 @@ import kotlinx.datetime.format.Padding
 import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
 import ru.d3rvich.quiz.impl.R
-import ru.d3rvich.quiz.impl.screens.quiz.TimerMaxValue
+import ru.d3rvich.quiz.impl.util.TimerMaxValue
 import ru.d3rvich.ui.model.AnswerUiModel
 import ru.d3rvich.ui.model.QuestionUiModel
 import ru.d3rvich.ui.theme.DailyQuizTheme

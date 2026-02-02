@@ -7,7 +7,6 @@ import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -21,6 +20,7 @@ import ru.d3rvich.domain.usecases.SaveQuizUseCase
 import ru.d3rvich.quiz.impl.screens.quiz.model.QuizUiAction
 import ru.d3rvich.quiz.impl.screens.quiz.model.QuizUiEvent
 import ru.d3rvich.quiz.impl.screens.quiz.model.QuizUiState
+import ru.d3rvich.quiz.impl.util.Timer
 import ru.d3rvich.ui.mappers.toQuestionEntity
 import ru.d3rvich.ui.mappers.toQuizUiModel
 import ru.d3rvich.ui.model.QuestionUiModel
@@ -58,49 +58,47 @@ internal class QuizViewModel @AssistedInject constructor(
         }
     }
 
-    private fun startQuiz(quizEntity: QuizEntity, maxValue: Long = TimerMaxValue) {
-        setState(QuizUiState.Quiz(quiz = quizEntity.toQuizUiModel()))
-        viewModelScope.launch {
-            var currentTimer: Long = 0
-            val tick = 1000L
-            while (isActive && currentTimer < maxValue) {
-                delay(tick)
-                currentTimer += tick
-                (currentState as? QuizUiState.Quiz)?.also { quizState ->
-                    setState(quizState.copy(timer = currentTimer))
-                }
-            }
+    private val timer by lazy {
+        Timer(scope = viewModelScope, onTick = { currentTimer ->
             (currentState as? QuizUiState.Quiz)?.also { quizState ->
-                setState(quizState.copy(showTimeout = true))
+                setState(quizState.copy(timer = currentTimer))
             }
-        }
+        }, onFinish = {
+            (currentState as? QuizUiState.Quiz)?.let {
+                setState(it.copy(showTimeout = true))
+            }
+        })
+    }
+
+    private fun startQuiz(quizEntity: QuizEntity) {
+        setState(QuizUiState.Quiz(quiz = quizEntity.toQuizUiModel()))
+        timer.start()
     }
 
     private suspend fun showCorrectAnswerAndContinue(state: QuizUiState.Quiz) {
         requireNotNull(state.quiz.questions[state.currentQuestionIndex].selectedAnswerIndex)
         setState(state.copy(frozen = true, showCorrectAnswer = true))
+        timer.pause()
         delay(2000L)
         if (state.currentQuestionIndex == state.quiz.questions.lastIndex) {
             saveQuizAndShowResult(state, false)
+            timer.stop()
         } else {
-            val currentTimer = (currentState as? QuizUiState.Quiz)?.timer
+            val currentTimer = state.timer
             val nextIndex = state.currentQuestionIndex + 1
-            if ((currentTimer ?: state.timer) < state.maxTimerValue) {
-                setState(
-                    state.copy(
-                        timer = currentTimer ?: state.timer,
-                        currentQuestionIndex = nextIndex,
-                    )
-                )
-            } else (currentState as? QuizUiState.Quiz)?.let { state ->
-                setState(state.copy(frozen = false))
+            if (currentTimer < state.maxTimerValue) {
+                setState(state.copy(currentQuestionIndex = nextIndex))
+            } else {
+                (currentState as? QuizUiState.Quiz)?.let { state ->
+                    setState(state.copy(frozen = false))
+                }
             }
+            timer.resume()
         }
     }
 
     @OptIn(ExperimentalTime::class)
     private fun saveQuizAndShowResult(state: QuizUiState.Quiz, hasTimeout: Boolean) {
-        require(state.quiz.questions.all { it.selectedAnswerIndex != null })
         viewModelScope.launch {
             val questions = if (hasTimeout) {
                 state.quiz.questions.map { question ->
@@ -175,5 +173,3 @@ internal class QuizViewModel @AssistedInject constructor(
         ): QuizViewModel
     }
 }
-
-internal const val TimerMaxValue: Long = 5 * 60 * 1000  // 5 minutes
