@@ -38,6 +38,8 @@ import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneSt
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -49,7 +51,11 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -160,6 +166,7 @@ private fun QuizResultItem(
 ) {
     var showMenu by remember { mutableStateOf(false) }
     var pressOffset by remember { mutableStateOf(DpOffset.Zero) }
+    var itemHeight by remember { mutableStateOf(0.dp) }
     val interactionSource = remember { MutableInteractionSource() }
     val listDetailStrategy = rememberListDetailSceneStrategy<NavKey>()
     val sharedModifier =
@@ -177,6 +184,11 @@ private fun QuizResultItem(
         } else {
             Modifier
         }
+    val density = LocalDensity.current
+    val screenHeightPx = LocalWindowInfo.current.containerSize.height
+    var anchorTopY by remember { mutableFloatStateOf(0f) }
+    var anchorHeight by remember { mutableIntStateOf(0) }
+    val estimatedMenuHeightPx = remember { with(density) { 100.dp.toPx() } }
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -184,6 +196,11 @@ private fun QuizResultItem(
             .then(sharedModifier)
             .clip(RoundedCornerShape(40.dp))
             .then(modifier)
+            .onGloballyPositioned {
+                itemHeight = with(density) { it.size.height.toDp() }
+                anchorTopY = it.positionInWindow().y
+                anchorHeight = it.size.height
+            }
     ) {
         QuizResultItemContent(
             quizResult = quizResult,
@@ -207,6 +224,11 @@ private fun QuizResultItem(
                         }
                     )
                 })
+        val offsetY = if (screenHeightPx - (anchorHeight + anchorTopY) > estimatedMenuHeightPx) {
+            pressOffset.y - itemHeight
+        } else {
+            0.dp
+        }
         RemoveItemMenu(
             isVisible = showMenu,
             onCloseRequest = {
@@ -214,7 +236,7 @@ private fun QuizResultItem(
                 showMenu = false
             },
             onRemove = onRemoveQuiz,
-            offset = pressOffset.copy(y = 0.dp)
+            offset = pressOffset.copy(y = offsetY)
         )
     }
 }

@@ -1,6 +1,7 @@
 package ru.d3rvich.data.repositories
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import ru.d3rvich.data.mapper.toQuestionEntity
@@ -31,7 +32,8 @@ internal class DailyQuizRepositoryImpl(
         difficulty: Difficulty
     ): Flow<Result<QuizEntity>> = flow {
         quizId?.also {
-            emit(quizDao.getQuizBy(quizId).toQuizEntity(true))
+            val daoFlow = quizDao.getQuizBy(quizId).map { it.toQuizEntity(true) }
+            emitAll(daoFlow)
         } ?: when (val result =
             networkDataSource.getQuiz(DefaultQuestionsAmount, category, difficulty)) {
             is NetworkResult.Failure -> throw result.exception
@@ -55,9 +57,8 @@ internal class DailyQuizRepositoryImpl(
         quizDao.getQuizHistory(sortBy = sortBy)
             .map { list -> list.map(QuizDBO::toQuizResultEntity) }
 
-    override fun getQuizBy(id: Long): Flow<Result<QuizResultEntity>> = flow {
-        emit((quizDao.getQuizBy(id = id).toQuizResultEntity()))
-    }.asResult()
+    override fun getQuizBy(id: Long): Flow<Result<QuizResultEntity>> =
+        quizDao.getQuizBy(id = id).map { it.toQuizResultEntity() }.asResult()
 
     override suspend fun removeQuiz(quizResult: QuizResultEntity) =
         quizDao.removeQuiz(quizResult.toQuizDBO())

@@ -44,7 +44,7 @@ interface QuizDao {
     fun getQuizHistoryDesc(sortBy: String): Flow<List<QuizDBO>>
 
     @Query("SELECT * FROM quiz WHERE id LIKE :id")
-    suspend fun getQuizBy(id: Long): QuizDBO
+    fun getQuizBy(id: Long): Flow<QuizDBO>
 
     @Delete
     suspend fun removeQuiz(quizDBO: QuizDBO)
