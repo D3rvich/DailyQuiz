@@ -31,7 +31,7 @@ import ru.d3rvich.ui.model.SortByUiModel
 @Composable
 internal fun HistoryScreen(
     navigateToEmptyHistory: () -> Unit,
-    navigateToQuizResult: (quizId: Long) -> Unit,
+    navigateToQuizResult: (quizResult: QuizResultUiModel) -> Unit,
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -55,7 +55,7 @@ internal fun HistoryScreen(
 internal fun HistoryScreen(
     state: HistoryUiState,
     onSortChange: (selectedSort: SortByUiModel) -> Unit,
-    onQuizClick: (quizId: Long) -> Unit,
+    onQuizClick: (quizResult: QuizResultUiModel) -> Unit,
     onRemoveQuiz: (quizResult: QuizResultUiModel) -> Unit,
     onEmptyHistory: () -> Unit,
     onBackClick: () -> Unit,

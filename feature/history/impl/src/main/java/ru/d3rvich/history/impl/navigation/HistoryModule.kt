@@ -78,7 +78,7 @@ internal object HistoryModule {
                 },
                 navigateToQuizResult = { quizId ->
                     navigator.backStack.removeIf { it is HistoryDetailNavKey }
-                    navigator.navigateToHistoryDetail(quizId = quizId)
+                    navigator.navigateToHistoryDetail(quiz = quizId)
                 },
                 navigateBack = {
                     navigator.backStack.removeIf { it is History.HistoryNavKey || it is HistoryDetailNavKey }

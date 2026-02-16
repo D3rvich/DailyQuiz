@@ -93,7 +93,7 @@ import kotlin.time.ExperimentalTime
 @Composable
 internal fun QuizHistoryView(
     quizList: ImmutableList<QuizResultUiModel>,
-    onQuizCLick: (quizId: Long) -> Unit,
+    onQuizCLick: (quizResult: QuizResultUiModel) -> Unit,
     onRemoveQuiz: (quizResult: QuizResultUiModel) -> Unit,
     onSelectionChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
@@ -128,7 +128,7 @@ internal fun QuizHistoryView(
                         }
                     },
                 quizResult = item,
-                onQuizCLick = { onQuizCLick(item.id) },
+                onQuizCLick = { onQuizCLick(item) },
                 onRemoveQuiz = {
                     showDialog = true
                     onRemoveQuiz(item)
