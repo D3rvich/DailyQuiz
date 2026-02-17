@@ -6,7 +6,7 @@
     <string name="question_count">Вопрос %1$d из %2$d</string>
     <string name="next">Далее</string>
     <string name="complete">Завершить</string>
-    <string name="warning_massage">Вернуться к предыдущим вопросам нельзя</string>
+    <string name="warning_message">Вернуться к предыдущим вопросам нельзя</string>
     <string name="results">Результаты</string>
     <string name="error_message">Ошибка! Попробуйте ещё раз</string>
     <string name="history">История</string>

@@ -1,6 +1,5 @@
 package ru.d3rvich.quiz.impl.views
 
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,15 +18,13 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.retain.retain
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -81,7 +78,7 @@ internal fun QuizView(
         },
         bottomBar = {
             Text(
-                text = stringResource(R.string.warning_massage),
+                text = stringResource(R.string.warning_message),
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom))
@@ -109,7 +106,11 @@ internal fun QuizView(
                 LaunchedEffect(currentQuestionIndex) {
                     state.animateScrollToPage(currentQuestionIndex)
                 }
-                HorizontalPager(state, userScrollEnabled = false) { currentIndex ->
+                HorizontalPager(
+                    state = state,
+                    userScrollEnabled = false,
+                    verticalAlignment = Alignment.Top
+                ) { currentIndex ->
                     val question = questions[currentIndex]
                     QuestionCard(
                         isLandscape = isLandscape,
@@ -134,27 +135,29 @@ internal fun QuizView(
 @OptIn(ExperimentalTime::class)
 @Composable
 private fun TimerView(currentValue: Long, maxValue: Long, modifier: Modifier = Modifier) {
-    require(maxValue > 0) { "Timer max value had to be greater than zero." }
-    require(currentValue <= maxValue) { "Timer current value can't me greater it's max value." }
+    require(maxValue > 0) { "Timer max value must be greater than zero." }
+    require(currentValue <= maxValue) { "Timer current value can't be greater its max value." }
     Column(modifier.fillMaxWidth()) {
-        val currentDateTime = Instant.fromEpochMilliseconds(currentValue)
-            .toLocalDateTime(TimeZone.currentSystemDefault())
-        val maxDataTime = Instant.fromEpochMilliseconds(maxValue)
-            .toLocalDateTime(TimeZone.currentSystemDefault())
-        val formater = remember {
+        val formater = retain {
             LocalDateTime.Format {
                 minute(Padding.ZERO)
                 char(':')
                 second(Padding.ZERO)
             }
         }
+        val formattedCurrentDateTime = retain(currentValue) {
+            Instant.fromEpochMilliseconds(currentValue)
+                .toLocalDateTime(TimeZone.currentSystemDefault())
+                .format(formater)
+        }
+        val formattedMaxDataTime = retain(maxValue) {
+            Instant.fromEpochMilliseconds(maxValue)
+                .toLocalDateTime(TimeZone.currentSystemDefault())
+                .format(formater)
+        }
         val progress = currentValue.toFloat() / maxValue
-        val animatedProgress by animateFloatAsState(
-            targetValue = progress,
-            animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
-        )
         LinearProgressIndicator(
-            progress = { animatedProgress },
+            progress = { progress },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(4.dp)
@@ -166,12 +169,12 @@ private fun TimerView(currentValue: Long, maxValue: Long, modifier: Modifier = M
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                currentDateTime.format(formater),
+                formattedCurrentDateTime,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.primary,
             )
             Text(
-                maxDataTime.format(formater),
+                formattedMaxDataTime,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.primary,
             )
