@@ -1,5 +1,6 @@
 package ru.d3rvich.quiz.impl.screens
 
+import android.content.Context
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -27,12 +28,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.retain.retain
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -137,7 +140,8 @@ private fun SelectorCard(
                     .padding(bottom = 8.dp),
                 textAlign = TextAlign.Center
             )
-            val categories = sortCategories(Category.entries.toPersistentList())
+            val context = LocalContext.current
+            val categories = retain { sortCategories(context, Category.entries.toPersistentList()) }
             DropdownTextField(
                 selectedValue = category,
                 values = categories.toPersistentList(),
@@ -158,18 +162,6 @@ private fun SelectorCard(
             )
         }
     }
-}
-
-@Composable
-private fun sortCategories(categories: ImmutableList<Category>): ImmutableList<Category> {
-    val collator = Collator.getInstance(Locale.getDefault())
-    val strings = categories.associateWith { stringResource(it.stringRes) }
-    val sorted = categories.sortedWith(compareBy(collator) { strings[it] }).toMutableList()
-    sorted.apply {
-        remove(Category.AnyCategory)
-        add(0, Category.AnyCategory)
-    }
-    return sorted.toPersistentList()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -228,6 +220,20 @@ private fun <T> DropdownTextField(
             }
         }
     }
+}
+
+private fun sortCategories(
+    context: Context,
+    categories: ImmutableList<Category>
+): ImmutableList<Category> {
+    val collator = Collator.getInstance(Locale.getDefault())
+    val strings = categories.associateWith { context.getString(it.stringRes) }
+    val sorted = categories.sortedWith(compareBy(collator) { strings[it] }).toMutableList()
+    sorted.apply {
+        remove(Category.AnyCategory)
+        add(0, Category.AnyCategory)
+    }
+    return sorted.toPersistentList()
 }
 
 @PreviewScreenSizes

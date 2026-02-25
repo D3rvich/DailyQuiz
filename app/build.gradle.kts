@@ -30,6 +30,7 @@ dependencies {
     implementation(project(":feature:result:api"))
     implementation(project(":feature:result:impl"))
 
+    implementation(libs.androidx.splashscreen)
     implementation(libs.androidx.activity.compose)
     implementation(libs.kotlinx.serializationJson)
     implementation(libs.androidx.navigation3.runtime)
