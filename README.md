@@ -35,11 +35,10 @@ Tech Stack
 
 Video
 ---------
+[Launch](https://github.com/user-attachments/assets/5fc729b8-922b-4e37-b607-e5e85e532d15)
 
-[Screen_recording_20250804_012451.webm](https://github.com/user-attachments/assets/8e715d2b-3f48-4c2d-ba19-4932bf7aa41c)
+[Quiz](https://github.com/user-attachments/assets/37d624f0-e482-49c5-aeda-f57776605f24)
 
-[Screen_recording_20250804_012830.webm](https://github.com/user-attachments/assets/244587cb-702b-44e9-8193-8ada3bc362f9)
+[History](https://github.com/user-attachments/assets/2dcb8e33-c2ca-4ad0-9956-c338d688fe49)
 
-[Screen_recording_20250804_012943.webm](https://github.com/user-attachments/assets/0286d34f-a648-48ed-8eaa-53050ea57f73)
-
-[Screen_recording_20250804_013252.webm](https://github.com/user-attachments/assets/d084f91b-3e82-41ec-8384-f6175999df4a)
+[History Detail](https://github.com/user-attachments/assets/e67b6b45-2ecd-494a-adab-c776ceb7fc37)
